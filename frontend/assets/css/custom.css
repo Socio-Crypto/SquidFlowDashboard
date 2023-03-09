@@ -1,0 +1,17 @@
+.top_navbar {
+	background: #0b2e5e !important;
+	border-bottom: 1px solid #0b2e5e
+}
+
+.sidebar.h_menu {
+	background: #0b2e5e
+}
+
+section.content::before {
+	background: #0b2e5e
+}
+
+/* .theme-cyan .active-bg {
+	background: rgb(24, 26, 32);
+	color: #fff
+} */
