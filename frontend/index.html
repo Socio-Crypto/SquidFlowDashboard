@@ -6,7 +6,7 @@
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 <meta name="description" content="Terra High Level Dashboard">
 <title>Sociocrypto: </title>
-<link rel="icon" href="favicon.ico" type="image/x-icon"> <!-- Favicon-->
+<link rel="icon" href="" type="image/x-icon"> <!-- Favicon-->
 <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/css/bootstrap-select.min.css"  crossorigin="anonymous">
@@ -17,18 +17,18 @@
 <!--Get your own code at fontawesome.com-->
 <title>Font Awesome 5 Icons</title>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
-<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+<!-- <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script> -->
 <!-- Custom Css -->
 <link rel="stylesheet" href="assets/css/main.css">
 <link rel="stylesheet" href="assets/css/color_skins.css">
 <link rel="stylesheet" href="assets/css/custom.css">
-<link rel="icon" type="image/x-icon" href="assets\images\m-logo.webp">
+<link rel="icon" type="image/x-icon" href="">
 </head>
 <body class="theme-dashboard">
 <!-- Page Loader -->
 <div class="page-loader-wrapper">
     <div class="loader">
-        <div class="m-t-30"><img class="zmdi-hc-spin" src="assets\images\m-logo.webp" width="48" height="48" alt="sociocrypto"></div>
+        <div class="m-t-30"><img class="zmdi-hc-spin" src="" width="48" height="48" alt="sociocrypto"></div>
         <p>Please wait...</p>        
     </div>
 </div>
@@ -42,7 +42,7 @@
             <div class="col-12">
                 <div class="navbar-logo">
                     <a href="javascript:void(0);" class="bars"></a>
-                    <a class="navbar-brand" href=""><img src="assets\images\metricsdao.webp" width="160" alt=""><span class="m-l-10"> dashboard</span></a>
+                    <a class="navbar-brand" href=""><img src="" width="160" alt=""><span class="m-l-10"> dashboard</span></a>
                 </div>
                 <ul class="nav navbar-nav">
                 </ul>
@@ -125,7 +125,7 @@
                             font-size: larger;     margin-block: auto;">2023 Developed by <a href="https://twitter.com/SocioCrypto" target="_blank">Socio<strong>Crypto</strong></a></p>
                             <p class="copyright m-b-0 text-white col-lg-6" style="color: black!important;text-align: center;
                             font-size: larger;">
-                                Data Powered by <img src="assets/images/flipside_logo.png"  height="70" alt="flipside">
+                                Data Powered by <img src=""  height="70" alt="flipside">
                             </p>                
             
                         </div>
@@ -147,239 +147,6 @@
 <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.2/iconify-icon.min.js"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.5/iconify-icon.min.js"></script>
-<script>
-    function nFormatter(num) {
-        if (num >= 1000000000) {
-            return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
-        }
-        if (num >= 1000000) {
-            return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-        }
-        if (num >= 1000) {
-            return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-        }
-        return num;
-    }
-        async function last_update() {
-            const act_users = await fetch('https://node-api.flipsidecrypto.com/api/v2/queries/1a046688-da5d-4ad1-9571-68b45b036b43/data/latest');
-            active_users = await act_users.json();
-            document.getElementById('last_update').innerText = nFormatter(active_users[0]['DATE'].slice(0, 10));
-            console.log(active_users)
-        };
-        last_update();
-</script>
-
-
-
-<script>
-    async function number_act_users(){
-        const act_users = await fetch('https://node-api.flipsidecrypto.com/api/v2/queries/1a046688-da5d-4ad1-9571-68b45b036b43/data/latest');
-        active_users = await act_users.json();
-        document.getElementById('num_active_users').innerText = active_users[0]['N_ACTIVE_WALLET'];
-        console.log(active_users)
-    };
-    number_act_users();
-    
-    async function number_new_users(){
-        const new_users = await fetch('https://node-api.flipsidecrypto.com/api/v2/queries/1a046688-da5d-4ad1-9571-68b45b036b43/data/latest');
-        neww_users = await new_users.json();
-        document.getElementById('num_new_users').innerText = neww_users[0]['N_NEW_WALLET'];
-    };
-    number_new_users();
-   
-    async function number_of_total_wallets(){
-        const new_users = await fetch('https://node-api.flipsidecrypto.com/api/v2/queries/1a046688-da5d-4ad1-9571-68b45b036b43/data/latest');
-        neww_users = await new_users.json();
-        document.getElementById('number_of_total_wallets').innerText = neww_users[0]['CUM_WALLETS'];
-    };
-    number_of_total_wallets();
-    
-
-
-    async function diff_users(){
-        const user_data = await fetch('https://node-api.flipsidecrypto.com/api/v2/queries/1a046688-da5d-4ad1-9571-68b45b036b43/data/latest');
-        users_data = await user_data.json();
-
-        
-        diff_active_users = users_data[0]['N_ACTIVE_WALLET']-users_data[1]['N_ACTIVE_WALLET'];
-        diff_active_users_id = document.getElementById('diff_active_users');
-        diff_number_of_total_wallets_id = document.getElementById('diff_number_of_total_wallets');
-        if(diff_active_users >= 0){
-            diff_active_users_id.innerHTML = '+' + diff_active_users   
-            $(diff_active_users_id).css('color', 'rgb(14, 203, 129)'); 
-        }else{
-            if(diff_active_users < 0){
-                diff_active_users_id.innerHTML = diff_active_users
-                $(diff_active_users_id).css('color', 'red'); 
-            }
-        }
-
-        diff_new_users = users_data[0]['N_NEW_WALLET']-users_data[1]['N_NEW_WALLET'];
-        diff_new_users_id = document.getElementById('diff_new_users');
-        if(diff_new_users >= 0){
-            diff_new_users_id.innerHTML = '+' + diff_new_users   
-            $(diff_new_users_id).css('color', 'rgb(14, 203, 129)'); 
-        }else{
-            if(diff_new_users < 0){
-                diff_new_users_id.innerHTML = diff_new_users
-                $(diff_new_users_id).css('color', 'red'); 
-            }
-        }
-
-        diff_number_of_total_wallets = users_data[0]['CUM_WALLETS']-users_data[1]['CUM_WALLETS'];
-        diff_number_of_total_wallets_id = document.getElementById('diff_number_of_total_wallets');
-        if(diff_number_of_total_wallets >= 0){
-            diff_number_of_total_wallets_id.innerHTML = '+' + diff_number_of_total_wallets   
-            $(diff_number_of_total_wallets_id).css('color', 'rgb(14, 203, 129)'); 
-        }else{
-            if(diff_number_of_total_wallets < 0){
-                diff_number_of_total_wallets_id.innerHTML = diff_number_of_total_wallets
-                $(diff_number_of_total_wallets_id).css('color', 'red'); 
-            }
-        }
-
-    };
-
-    diff_users()
-
-</script>
-
-
-
-<script>
-    uwalls = [];
-    nwalls = [];
-    async function line_api(api){
-        const line_main_data = await fetch(api);
-        line_data = await line_main_data.json();
-        for (let index = 0; index < line_data.length; index++) {
-            const y_element = line_data[index];
-            if (y_element['N_NEW_WALLET']!= null&y_element['N_ACTIVE_WALLET']!=null&y_element['DATE']!=null){
-            // list.push(y_element['DATE'].slice(5,7)+'/'+y_element['DATE'].slice(8,10)+'/'+y_element['DATE'].slice(0,4))
-            uwalls.push([y_element['DATE'].slice(5,7)+'/'+y_element['DATE'].slice(8,10)+'/'+y_element['DATE'].slice(0,4),y_element['N_ACTIVE_WALLET']]);
-            nwalls.push([y_element['DATE'].slice(5,7)+'/'+y_element['DATE'].slice(8,10)+'/'+y_element['DATE'].slice(0,4),y_element['N_NEW_WALLET']]);
-            }
-            
-        };
-       
-        var options = {
-          series: [
-          {
-            name: "Active Wallets",
-            labels:{
-              style:{
-                color:'white'
-              }
-            },
-            data: uwalls
-          },
-          {
-            name: "New Wallets",
-            data: nwalls
-          }
-        ],
-          chart: {
-            id: 'line_chart',
-          type: 'line',
-          stacked: false,
-          height: 450,
-          zoom: {
-            type: 'x',
-            enabled: true,
-            autoScaleYaxis: true
-          },
-          toolbar: {
-            show:true,
-            autoSelected: 'zoom',
-            tools:{
-              download: true,
-              customIcons: [{
-                  icon: '<a href="https://app.flipsidecrypto.com/velocity/queries/'+ api.split('/')[6]+'" target="blank_"><span class="iconify" data-icon="fa:database"></span></a>',
-                  index: 5,
-                  title: 'Query',
-                  class: 'custom-icon'
-                  }]
-            } 
-          }
-        },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          curve: 'smooth',
-          width: 2
-        },
-      //   markers: {
-      //     size: 0,
-      //   },
-        title: {
-          text: '',
-          align: 'left',
-          style:{
-              color:'white'
-            },
-        },
-      //   fill: {
-      //     type: 'gradient',
-      //     gradient: {
-      //       shadeIntensity: 1,
-      //       inverseColors: false,
-      //       opacityFrom: 0.5,
-      //       opacityTo: 0,
-      //       stops: [0, 90, 100]
-      //     },
-      //   },
-        yaxis: {
-          labels: {
-            formatter: function (val) {
-              var result = (val / 10**3).toFixed(0);
-              return result + 'k';
-            },
-            // style:{
-            //   colors:['white']
-            // }
-            
-          },
-          title: {
-            text: ''
-          }
-        },
-        
-        colors:['#0b2e5e', 'black'],
-        legend:{
-          show:true,
-          // labels:{
-            
-          //   colors:'white'
-            
-          // }
-        },
-  
-        xaxis: {
-          type: 'datetime',
-          labels:{
-            // style:{
-            //   colors:'white'
-            // }
-          }
-        },
-        tooltip: {
-          shared: false,
-          y: {
-            formatter: function (val) {
-              return (val).toFixed(0)
-            }
-          }
-        }
-        };
-  
-        var chart = new ApexCharts(document.querySelector("#chart_div"), options);
-        chart.render(); 
-    };
-  </script>
-<script>
-    line_api('https://node-api.flipsidecrypto.com/api/v2/queries/1a046688-da5d-4ad1-9571-68b45b036b43/data/latest');
-</script>
 
 </body>
 </html>
