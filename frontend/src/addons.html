@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-sankey"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: flex-start;
+            align-content: flex-start;
+            gap: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="sankeychart-container" style="display: block;">
+        <style>
+            .sankeychart {
+                position: relative;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+            }
+
+            .sankeychart canvas {
+                width: 100%;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+        </style>
+        <div id="sankeychart" class="sankeychart">
+            <canvas id="sankey-chart"></canvas>
+        </div>
+        <script>
+            //scriptSankeychart()
+            function scriptSankeychart() {
+                var callback = {};
+
+                method1();
+
+                function init(data) {
+
+                }
+
+                function method2() {
+
+
+                    //"justify", // e.g., d3.sankeyJustify; set by input above
+                    // "source-target", // e.g., "source" or "target"; set by input above
+                    //width,
+
+                    let nodeAlignment = ["justify", "left", "right", "center"]
+                    let linkColor = ["static", "source-target", "source", "target"];
+                    let chart = SankeyChart({
+                        links: net.addressStats  //energy
+                    }, {
+                        nodeGroup: d => d.id.split(/\W/)[0], // take first word for color
+                        format: (f => d => `${f(d)} TWh`)(d3.format(",.1~f")),
+                        width: 600,
+                        height: 600
+                    })
+                }
+
+                function method1() {
+                    var ctx = document.getElementById("sankey-chart").getContext("2d");
+
+                    // var colors = {
+                    //     Oil: "black",
+                    //     Coal: "gray",
+                    //     "Fossil Fuels": "slategray",
+                    //     Electricity: "blue",
+                    //     Energy: "orange"
+                    // };
+
+                    // // the y-order of nodes, smaller = higher
+                    // var priority = {
+                    //     Oil: 1,
+                    //     'Narural Gas': 2,
+                    //     Coal: 3,
+                    //     'Fossil Fuels': 1,
+                    //     Electricity: 2,
+                    //     Energy: 1
+                    // };
+
+                    // var labels = {
+                    //     Oil: 'black gold (label changed)'
+                    // }
+                    var colors = {
+                        Binance: "green",
+                        Fantom: "gray",
+                        Avalanche: "slategray",
+                        Polygon: "blue",
+                        Moonbeam: "orange"
+                    };
+
+                    // the y-order of nodes, smaller = higher
+                    var priority = {
+                        Binance: 1,
+                        Fantom: 2,
+                        Avalanche: 3,
+                        Polygon: 1,
+                        Moonbeam: 2,
+                    };
+
+                    var labels = {
+                        Binance: ''
+                    }
+
+
+                    function getColor(name) {
+                        return colors[name] || "green";
+                    }
+
+                    var chart = new Chart(ctx, {
+                        type: "sankey",
+                        data: {
+                            datasets: [
+                                {
+                                    data: [
+                                        {
+                                            flow: 368180739,
+                                            from: "Fantom",
+                                            to: "Polygon",
+                                        },
+                                        {
+                                            flow: 2982761639,
+                                            from: "Fantom",
+                                            to: "Binance",
+                                        },
+                                        {
+                                            flow: 123405106,
+                                            from: "Fantom",
+                                            to: "Avalanche",
+                                        },
+                                        {
+                                            flow: 962274848,
+                                            from: "Moonbeam",
+                                            to: "Avalanche",
+                                        },
+                                        {
+                                            flow: 15592850032,
+                                            from: "Moonbeam",
+                                            to: "Binance",
+                                        },
+                                        {
+                                            flow: 757739,
+                                            from: "Moonbeam",
+                                            to: "Polygon",
+                                        },
+                                    ],
+                                    // data: [
+                                    //     { from: "Oil", to: "Fossil Fuels", flow: 15 },
+                                    //     { from: "Natural Gas", to: "Fossil Fuels", flow: 20 },
+                                    //     { from: "Coal", to: "Fossil Fuels", flow: 25 },
+                                    //     { from: "Coal", to: "Electricity", flow: 25 },
+                                    //     { from: "Fossil Fuels", to: "Energy", flow: 60 },
+                                    //     { from: "Electricity", to: "Energy", flow: 25 }
+                                    // ],
+                                    priority,
+                                    labels,
+                                    colorFrom: (c) => getColor(c.dataset.data[c.dataIndex].from),
+                                    colorTo: (c) => getColor(c.dataset.data[c.dataIndex].to),
+                                    borderWidth: 2,
+                                    borderColor: 'black'
+                                }
+                            ]
+                        }
+                    });
+
+                    var colors2 = ['#fff5eb', '#fee6ce', '#fdd0a2', '#fdae6b', '#fd8d3c', '#f16913', '#d94801', '#a63603', '#7f2704'];
+                    var assigned = {};
+                    function c2(name) {
+                        return assigned[name] || (assigned[name] = colors2[Object.keys(assigned).length % colors2.length]);
+                    }
+                }
+                return {
+                    method: {
+                        init: function (data) {
+                            init(data);
+                        },
+                        setCallback: function (arg) {
+                            callback = arg;
+                        },
+                    }
+                }
+            }
+        </script>
+    </div>
+
+    <div id="forcechart-container" style="display: block;">
+        <style>
+            .forcechart {
+                position: relative;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+            }
+
+            .forcechart canvas {
+                width: 100%;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+        </style>
+        <div id="forcechart" class="forcechart">
+        </div>
+        <script>
+            function scriptForcechart() {
+                var callback = {};
+
+                method1();
+
+                function method1() {
+                    // Gen random data
+                    const N = 300;
+                    const gData = {
+                        nodes: [...Array(N).keys()].map(i => ({ id: i })),
+                        links: [...Array(N).keys()]
+                            .filter(id => id)
+                            .map(id => ({
+                                source: id,
+                                target: Math.round(Math.random() * (id - 1))
+                            }))
+                    };
+
+                    const Graph = new ThreeForceGraph()
+                        .graphData(gData);
+
+                    // Setup renderer
+                    const renderer = new THREE.WebGLRenderer();
+                    let box = document.getElementById('forcechart');
+                    let width = box.offsetWidth;
+                    let height = box.offsetHeight;
+                    renderer.setSize(width, 0.5 * width);  //window.innerWidth, window.innerHeight);
+                    document.getElementById('forcechart').appendChild(renderer.domElement);
+
+                    // Setup scene
+                    const scene = new THREE.Scene();
+                    scene.add(Graph);
+                    scene.add(new THREE.AmbientLight(0xbbbbbb));
+
+                    // Setup camera
+                    const camera = new THREE.PerspectiveCamera();
+                    camera.far = 10000;
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    camera.lookAt(Graph.position);
+                    camera.position.z = Math.cbrt(N) * 180;
+
+                    // Add camera controls
+                    const tbControls = new THREE.TrackballControls(camera, renderer.domElement);
+
+                    // Kick-off renderer
+                    (function animate() { // IIFE
+                        Graph.tickFrame();
+
+                        // Frame cycle
+                        tbControls.update();
+                        renderer.render(scene, camera);
+                        requestAnimationFrame(animate);
+                    })();
+                }
+                function method2() {
+                    let chart = ForceGraph(miserables, {
+                        nodeId: d => d.id,
+                        nodeGroup: d => d.group,
+                        nodeTitle: d => `${d.id}\n${d.group}`,
+                        linkStrokeWidth: l => Math.sqrt(l.value),
+                        height: 600,
+                        //invalidation // a promise to stop the simulation when the cell is re-run
+                    })
+
+                }
+                function init(data) {
+
+                }
+
+                return {
+                    method: {
+                        init: function (data) {
+                            init(data);
+                        },
+                        setCallback: function (arg) {
+                            callback = arg;
+                        },
+                    }
+                }
+            }
+        </script>
+    </div>
+
+</body>
+
+</html>
