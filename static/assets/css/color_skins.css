@@ -1,0 +1,85 @@
+.theme-purple .btn-primary {
+	background: #a60b56
+}
+
+.theme-purple .btn-primary:active,
+.theme-purple .btn-primary:hover,
+.theme-purple .btn-primary:visited,
+.theme-purple .btn-primary:focus {
+	background: #2D306A !important
+}
+
+.theme-purple .btn-primary.btn-simple {
+	border-color: #a60b56 !important;
+	color: #a60b56 !important;
+	background: transparent
+}
+
+.theme-purple .page-loader-wrapper,
+.theme-purple .active-bg {
+	background: #2D306A
+}
+
+.theme-purple .sidebar .menu .list li.active.open .active a {
+	color: #47A2DF
+}
+
+.theme-purple .sidebar .menu .list a:hover {
+	color: #47A2DF
+}
+
+.theme-purple .sidebar.h_menu .menu li.active.open>a {
+	color: #47A2DF
+}
+
+.theme-purple .sidebar.h_menu .menu li.active.open>a:before {
+	background: #47A2DF
+}
+
+.theme-purple .sidebar.h_menu .menu li a:hover:before {
+	background: #47A2DF
+}
+
+.theme-purple .checkbox input[type="checkbox"]:checked+label::after {
+	border-color: #a60b56;
+	background: #a60b56;
+	color: #fff
+}
+
+.theme-purple .nav-tabs .nav-link.active {
+	border: 1px solid #a60b56 !important;
+	background: #a60b56;
+	color: #fff
+}
+
+.theme-purple .card .header h2:before {
+	background: #a60b56
+}
+
+.theme-purple .card .header h2 strong {
+	color: #a60b56
+}
+
+.theme-purple .card .header .dropdown-menu li a:hover {
+	background-color: #a60b56;
+	color: #fff
+}
+
+.theme-purple .authentication .navbar,
+.theme-purple .authentication .page-header {
+	background: #a60b56 !important
+}
+
+.theme-purple .form-control:focus,
+.theme-purple .form-control:focus+.input-group-addon,
+.theme-purple .form-control:focus~.input-group-addon {
+	border-color: #a60b56
+}
+
+.theme-purple.theme-dark .top_navbar {
+	background: #a60b56
+}
+
+.theme-purple.theme-dark .input-group-focus .input-group-addon {
+	border-color: #a60b56
+}
