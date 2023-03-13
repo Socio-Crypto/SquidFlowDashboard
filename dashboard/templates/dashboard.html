@@ -1,0 +1,34 @@
+{% extends "base-dashboard.html" %}
+{% load i18n %}
+{% block secondary_menu %}
+{% endblock secondary_menu %}
+{% load static %}
+
+{% block title %}
+<!-- {% trans 'Accounts' %} -->
+{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">
+    <a href=""><i class="icon-home"></i>
+    </a>
+</li>
+<li class="breadcrumb-item active">{% trans 'Dashboard' %}</li>
+{% endblock %}
+                                    
+
+{% block content %}
+
+<section class="container assess-list">
+    <div class="container-fluid project-list">
+        <div class="row clearfix">
+           
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}
