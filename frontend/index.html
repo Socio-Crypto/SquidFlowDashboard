@@ -32,59 +32,16 @@
 
 
     <!-- // #region chart // -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-sankey"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.2/d3.min.js"></script>
-
-    <script src="//unpkg.com/three"></script>
-    <script src="//unpkg.com/three-forcegraph"></script>
-
-    <script type="importmap">{
-        "imports": {
-            "three": "https://unpkg.com/three@latest/build/three.module.js"
-        }
-    }</script>
-
-    <script type="module">
-        import { TrackballControls } from '//unpkg.com/three/examples/jsm/controls/TrackballControls.js';
-        Object.assign(THREE, { TrackballControls });
-    </script>
-
-    <!-- <script type="module">
-        import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
-    </script> -->
-
-    <script src="https://unpkg.com/d3@7.8.2/dist/d3.min.js"></script>
-    <script src="./src/d3-sankey.js"></script>
-    <!-- <script src="https://unpkg.com/d3-array@1"></script>
-    <script src="https://unpkg.com/d3-collection@1"></script>
-    <script src="https://unpkg.com/d3-path@1"></script>
-    <script src="https://unpkg.com/d3-shape@1"></script>
-    <script src="https://unpkg.com/d3-sankey@0"></script> -->
-    <script>
-        var d3Sankey = d3.sankey();
-    </script>
-    <script src="./src/sankeychart.js"></script>
-    <script src="./src/energy.js"></script>
-    <script src="./src/net.js"></script>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/d3-dispatch@3"></script>
-    <script src="https://cdn.jsdelivr.net/npm/d3-quadtree@3"></script>
-    <script src="https://cdn.jsdelivr.net/npm/d3-timer@3"></script>
-    <script src="https://cdn.jsdelivr.net/npm/d3-force@3"></script>
-    <script>
-        //const simulation = d3.forceSimulation(nodes);
-    </script>
-    <script src="./src/forcegraph.js"></script>
-    <script src="./src/miserables.js"></script>
-
-
+    <script src="./src/s.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl@1/dist/echarts-gl.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat@1/dist/ecStat.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4/dist/extension/dataTool.min.js"></script> -->
     <script type="module">
         import { moduleInfo } from './src/Addons.js';
     </script>
-
     <!-- // #endregion chart // -->
+
 </head>
 
 <body class="theme-dashboard">

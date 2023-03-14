@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-sankey"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: flex-start;
+            align-content: flex-start;
+            gap: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="sankeychart-container" style="display: block;">
+        <style>
+            .sankeychart {
+                position: relative;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+                height: 600px;
+
+                display: flex;
+                justify-content: center;
+            }
+
+            .sankeychart canvas {
+                width: 100%;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+        </style>
+        <div id="sankeychart" class="sankeychart">
+            <!-- <canvas id="sankey-chart"></canvas> -->
+        </div>
+        <script>
+            //scriptSankeychart()
+            function scriptSankeychart() {
+                var callback = {};
+
+                //let { nodes, links } = latestToData();
+                function latestToData() {
+                    let links = latest.filter(x => Object.values(x).every(value => { return !(value === null || value === undefined || value === false) }))
+                    links = links.map(x => {
+                        return {
+                            source: x.FROM_CHAIN.charAt(0).toUpperCase() + x.FROM_CHAIN.slice(1),
+                            target: x.TO_CHAIN.charAt(0).toUpperCase() + x.TO_CHAIN.slice(1),
+                            value: x.VOLUME
+                        }
+                    })
+                    let nodes = links.map(x => { return [x.source, x.target] })
+                    nodes = [].concat.apply([], nodes)
+                    nodes = [...new Set(nodes)].map((x, index) => { return { id: x, group: index } });
+
+                    return { nodes, links }
+                }
+
+                method3();
+
+                function method3() {
+                    var myChart = echarts.init(document.getElementById('sankeychart'));
+
+                    myChart.showLoading();
+                    myChart.hideLoading();
+
+                    let links1 = links.map(x => { return { source: x.source + "-S", target: x.target + "-T", value: x.value } })
+                    let nodes1 = links1.map(x => { return [x.source, x.target] })
+                    nodes1 = [].concat.apply([], nodes1)
+                    nodes1 = [...new Set(nodes1)].map(x => { return { name: x } })
+
+                    let option = {
+                        title: {
+                            text: 'Sankey Diagram'
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            triggerOn: 'mousemove'
+                        },
+                        series: [
+                            {
+                                type: 'sankey',
+                                data: nodes1,
+                                links: links1,
+                                focusNodeAdjacency: 'allEdges',
+                                itemStyle: {
+                                    borderWidth: 1,
+                                    borderColor: '#aaa'
+                                },
+                                lineStyle: {
+                                    color: 'source',
+                                    curveness: 0.5
+                                }
+                            }
+                        ]
+                    }
+                    myChart.setOption(option);
+                }
+
+                function method2() {
+
+                    //"justify", // e.g., d3.sankeyJustify; set by input above
+                    // "source-target", // e.g., "source" or "target"; set by input above
+                    //width,
+
+                    let stats = links.map(x => { return { source: x.source + "-S", target: x.target + "-T", value: x.value } })
+                    let nodeAlignment = ["justify", "left", "right", "center"]
+                    let linkColor = ["static", "source-target", "source", "target"];
+                    let chart = SankeyChart({
+                        links: stats,  //net.addressStats  //energy
+                    }, {
+                        nodeGroup: d => d.id.split(/\W/)[0], // take first word for color
+                        format: (f => d => `${f(d)} TWh`)(d3.format(",.1~f")),
+                        width: 800,
+                        height: 600
+                    })
+
+                    document.getElementById("sankeychart").append(chart);
+
+                }
+
+                function init(data) {
+                }
+                function method1() {
+                    var ctx = document.getElementById("sankey-chart").getContext("2d");
+
+                    // var colors = {
+                    //     Oil: "black",
+                    //     Coal: "gray",
+                    //     "Fossil Fuels": "slategray",
+                    //     Electricity: "blue",
+                    //     Energy: "orange"
+                    // };
+
+                    // // the y-order of nodes, smaller = higher
+                    // var priority = {
+                    //     Oil: 1,
+                    //     'Narural Gas': 2,
+                    //     Coal: 3,
+                    //     'Fossil Fuels': 1,
+                    //     Electricity: 2,
+                    //     Energy: 1
+                    // };
+
+                    // var labels = {
+                    //     Oil: 'black gold (label changed)'
+                    // }
+                    var colors = {
+                        Binance: "green",
+                        Fantom: "gray",
+                        Avalanche: "slategray",
+                        Polygon: "blue",
+                        Moonbeam: "orange"
+                    };
+
+                    // the y-order of nodes, smaller = higher
+                    var priority = {
+                        Binance: 1,
+                        Fantom: 2,
+                        Avalanche: 3,
+                        Polygon: 1,
+                        Moonbeam: 2,
+                    };
+
+                    var labels = {
+                        Binance: ''
+                    }
+
+
+                    function getColor(name) {
+                        return colors[name] || "green";
+                    }
+
+                    links = links.map(x => { return { from: x.source, to: x.target, flow: x.value } })
+
+                    var chart = new Chart(ctx, {
+                        type: "sankey",
+                        data: {
+                            datasets: [
+                                {
+                                    data: links,
+                                    // data: [
+                                    //     {
+                                    //         flow: 368180739,
+                                    //         from: "Fantom",
+                                    //         to: "Polygon",
+                                    //     },
+                                    //     {
+                                    //         flow: 2982761639,
+                                    //         from: "Fantom",
+                                    //         to: "Binance",
+                                    //     },
+                                    //     {
+                                    //         flow: 123405106,
+                                    //         from: "Fantom",
+                                    //         to: "Avalanche",
+                                    //     },
+                                    //     {
+                                    //         flow: 962274848,
+                                    //         from: "Moonbeam",
+                                    //         to: "Avalanche",
+                                    //     },
+                                    //     {
+                                    //         flow: 15592850032,
+                                    //         from: "Moonbeam",
+                                    //         to: "Binance",
+                                    //     },
+                                    //     {
+                                    //         flow: 757739,
+                                    //         from: "Moonbeam",
+                                    //         to: "Polygon",
+                                    //     },
+                                    // ],
+                                    // data: [
+                                    //     { from: "Oil", to: "Fossil Fuels", flow: 15 },
+                                    //     { from: "Natural Gas", to: "Fossil Fuels", flow: 20 },
+                                    //     { from: "Coal", to: "Fossil Fuels", flow: 25 },
+                                    //     { from: "Coal", to: "Electricity", flow: 25 },
+                                    //     { from: "Fossil Fuels", to: "Energy", flow: 60 },
+                                    //     { from: "Electricity", to: "Energy", flow: 25 }
+                                    // ],
+                                    priority,
+                                    labels,
+                                    colorFrom: (c) => getColor(c.dataset.data[c.dataIndex].from),
+                                    colorTo: (c) => getColor(c.dataset.data[c.dataIndex].to),
+                                    borderWidth: 2,
+                                    borderColor: 'black'
+                                }
+                            ]
+                        }
+                    });
+
+                    var colors2 = ['#fff5eb', '#fee6ce', '#fdd0a2', '#fdae6b', '#fd8d3c', '#f16913', '#d94801', '#a63603', '#7f2704'];
+                    var assigned = {};
+                    function c2(name) {
+                        return assigned[name] || (assigned[name] = colors2[Object.keys(assigned).length % colors2.length]);
+                    }
+                }
+                return {
+                    method: {
+                        init: function (data) {
+                            init(data);
+                        },
+                        setCallback: function (arg) {
+                            callback = arg;
+                        },
+                    }
+                }
+            }
+        </script>
+    </div>
+
+    <div id="forcechart-container" style="display: block;">
+        <style>
+            .forcechart {
+                position: relative;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+                height: 800px;
+
+                display: flex;
+                justify-content: center;
+            }
+
+            .forcechart canvas {
+                position: absolute;
+                width: 100%;
+                height: auto;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+        </style>
+        <div id="forcechart" class="forcechart">
+        </div>
+        <script>
+            function scriptForcechart() {
+                var callback = {};
+
+                method3();
+
+                function method4() {
+
+                    var myChart = echarts.init(document.getElementById('forcechart'));
+
+                    myChart.showLoading();
+                    myChart.hideLoading();
+
+                    var categories = [];
+                    for (var i = 0; i < 9; i++) {
+                        categories[i] = {
+                            name: '类目' + i
+                        };
+                    }
+                    graph.nodes.forEach(function (node) {
+                        node.itemStyle = null;
+                        node.value = node.symbolSize;
+                        node.symbolSize /= 1.5;
+                        node.label = {
+                            normal: {
+                                show: node.symbolSize > 10
+                            }
+                        };
+                        node.category = node.attributes.modularity_class;
+                    });
+                    option = {
+                        title: {
+                            text: 'Les Miserables',
+                            subtext: 'Circular layout',
+                            top: 'bottom',
+                            left: 'right'
+                        },
+                        tooltip: {},
+                        legend: [{
+                            data: categories.map(function (a) {
+                                return a.name;
+                            })
+                        }],
+                        animationDurationUpdate: 1500,
+                        animationEasingUpdate: 'quinticInOut',
+                        series: [
+                            {
+                                type: 'graph',
+                                layout: 'none',
+                                symbol: 'roundRect',
+                                symbolSize: [100, 30],
+                                roam: true,
+                                label: {
+                                    normal: {
+                                        formatter: '{b}',
+                                        show: true
+                                    }
+                                },
+                                edgeSymbol: ['circle', 'arrow'],
+                                edgeSymbolSize: [4, 10],
+                                edgeLabel: {
+                                    textStyle: {
+                                        fontSize: 14
+                                    }
+                                },
+                                data: [
+                                    {
+                                        "y": 0,
+                                        "x": 0,
+                                        "name": "1",
+                                        "id": "1",
+                                        "itemStyle": {
+                                            "opacity": 0.75
+                                        },
+                                        "value": 13545
+                                    },
+                                    {
+                                        "y": 50,
+                                        "x": 150,
+                                        "name": "2",
+                                        "id": "2",
+                                        "itemStyle": {
+                                            "opacity": 0.75
+                                        },
+                                        "value": 11748
+                                    },
+                                    {
+                                        "y": 100,
+                                        "x": 0,
+                                        "name": "3",
+                                        "id": "3",
+                                        "itemStyle": {
+                                            "opacity": 0.75
+                                        },
+                                        "value": 3989
+                                    },
+                                    {
+                                        "y": 150,
+                                        "x": 150,
+                                        "name": "4",
+                                        "id": "4",
+                                        "itemStyle": {
+                                            "opacity": 0.75
+                                        },
+                                        "value": 514
+                                    },
+                                    {
+                                        "y": 200,
+                                        "x": 0,
+                                        "name": "5",
+                                        "id": "5",
+                                        "itemStyle": {
+                                            "opacity": 0.75
+                                        },
+                                        "value": 159
+                                    }
+                                ],
+                                links: [
+                                    {
+                                        "lineStyle": {
+                                            "normal": {
+                                                "curveness": 0.2,
+                                                "width": 12.998
+                                            }
+                                        },
+                                        "source": "1",
+                                        "symbolSize": [
+                                            4,
+                                            32.495
+                                        ],
+                                        "id": "1",
+                                        "target": "2"
+                                    },
+                                    {
+                                        "lineStyle": {
+                                            "normal": {
+                                                "curveness": 0.2,
+                                                "width": 1
+                                            }
+                                        },
+                                        "source": "1",
+                                        "symbolSize": [
+                                            4,
+                                            10
+                                        ],
+                                        "id": "2",
+                                        "target": "3"
+                                    },
+                                    {
+                                        "lineStyle": {
+                                            "normal": {
+                                                "curveness": 0.2,
+                                                "width": 3.623
+                                            }
+                                        },
+                                        "source": "2",
+                                        "symbolSize": [
+                                            4,
+                                            10
+                                        ],
+                                        "id": "3",
+                                        "target": "3"
+                                    },
+                                    {
+                                        "lineStyle": {
+                                            "normal": {
+                                                "curveness": 0.2,
+                                                "width": 6.986
+                                            }
+                                        },
+                                        "source": "2",
+                                        "symbolSize": [
+                                            4,
+                                            17.465
+                                        ],
+                                        "id": "4",
+                                        "target": "4"
+                                    },
+                                    {
+                                        "lineStyle": {
+                                            "normal": {
+                                                "curveness": 0.2,
+                                                "width": 1.118
+                                            }
+                                        },
+                                        "source": "2",
+                                        "symbolSize": [
+                                            4,
+                                            10
+                                        ],
+                                        "id": "5",
+                                        "target": "5"
+                                    },
+                                    {
+                                        "lineStyle": {
+                                            "normal": {
+                                                "curveness": 0.2,
+                                                "width": 1
+                                            }
+                                        },
+                                        "source": "3",
+                                        "symbolSize": [
+                                            4,
+                                            10
+                                        ],
+                                        "id": "6",
+                                        "target": "2"
+                                    },
+                                    {
+                                        "lineStyle": {
+                                            "normal": {
+                                                "curveness": 0.2,
+                                                "width": 3.086
+                                            }
+                                        },
+                                        "source": "3",
+                                        "symbolSize": [
+                                            4,
+                                            10
+                                        ],
+                                        "id": "7",
+                                        "target": "4"
+                                    },
+                                    {
+                                        "lineStyle": {
+                                            "normal": {
+                                                "curveness": 0.2,
+                                                "width": 1
+                                            }
+                                        },
+                                        "source": "3",
+                                        "symbolSize": [
+                                            4,
+                                            10
+                                        ],
+                                        "id": "8",
+                                        "target": "5"
+                                    },
+                                    {
+                                        "lineStyle": {
+                                            "normal": {
+                                                "curveness": 0.2,
+                                                "width": 1
+                                            }
+                                        },
+                                        "source": "4",
+                                        "symbolSize": [
+                                            4,
+                                            10
+                                        ],
+                                        "id": "9",
+                                        "target": "2"
+                                    },
+                                    {
+                                        "lineStyle": {
+                                            "normal": {
+                                                "curveness": 0.2,
+                                                "width": 1
+                                            }
+                                        },
+                                        "source": "4",
+                                        "symbolSize": [
+                                            4,
+                                            10
+                                        ],
+                                        "id": "10",
+                                        "target": "3"
+                                    },
+                                    {
+                                        "lineStyle": {
+                                            "normal": {
+                                                "curveness": 0.2,
+                                                "width": 1
+                                            }
+                                        },
+                                        "source": "4",
+                                        "symbolSize": [
+                                            4,
+                                            10
+                                        ],
+                                        "id": "11",
+                                        "target": "5"
+                                    },
+                                    {
+                                        "lineStyle": {
+                                            "normal": {
+                                                "curveness": 0.2,
+                                                "width": 1
+                                            }
+                                        },
+                                        "source": "5",
+                                        "symbolSize": [
+                                            4,
+                                            10
+                                        ],
+                                        "id": "12",
+                                        "target": "2"
+                                    }
+                                ],
+                                lineStyle: {
+                                    normal: {
+                                        opacity: 1,
+                                        width: 1,
+                                        curveness: 0
+                                    }
+                                }
+                            }
+                        ]
+                    };
+
+                    myChart.setOption(option);
+                };
+                function method3() {
+                    const container = document.getElementById('forcechart');
+                    const myChart = echarts.init(container);  //, null, { width: 800, height: 600 });
+
+                    myChart.showLoading();
+
+                    myChart.hideLoading();
+
+                    var categories = [];
+                    let minN = graph.nodes.reduce(function (prev, curr) {
+                        return prev.size < curr.size ? prev : curr;
+                    });
+                    let maxN = graph.nodes.reduce(function (prev, curr) {
+                        return prev.size > curr.size ? prev : curr;
+                    });
+                    graph.nodes.forEach(function (node) {
+                        node.itemStyle = null;
+                        node.value = 5 + 0.00005 * Math.pow(Math.log2(node.size), 4);
+                        node.symbolSize = node.value; //50 + 100 * node.size / (maxN - minN);
+                        //node.category = node.attributes.modularity_class;
+                        // Use random x, y
+                        node.x = node.y = null;
+                        node.name = node.label;
+                        // node.label = {
+                        //     show: node.symbolSize > 10
+                        // };
+                        node.itemStyle = {
+                            color: node.color
+                        };
+                        node.draggable = true;
+
+                        //node.category = node.attributes.modularity_class;
+                        categories.push({ name: node.label });  //, color: node.color });
+
+                        //node.category = node.attributes.modularity_class;
+                    });
+
+                    let minL = graph.links.reduce(function (prev, curr) {
+                        return prev.size < curr.size ? prev : curr;
+                    });
+                    let maxL = graph.links.reduce(function (prev, curr) {
+                        return prev.size > curr.size ? prev : curr;
+                    });
+                    graph.links.forEach(function (link) {
+                        let size = 0.0001 * Math.pow(Math.log2(link.size), 4); //10 + 5 * Math.log10(link.size);   //20 * Math.random();  //5 + 20 * x.size / (max.size - min.size);
+                        //link.size = 10 * size;
+                        let color = blendColors(graph.nodes.find(x => link.source == x.id).color,
+                            graph.nodes.find(x => link.target == x.id).color, 1);
+                        link.lineStyle = {
+                            normal: {
+                                curveness: 0.3,
+                                width: size,
+                                opacity: 0.7,
+                                color: color,
+                                //color: 'source',
+                            },
+                        };
+                        link.symbolSize = [1, size * 3]
+                    });
+
+                    let option = {
+                        // scale: true,
+                        // scaleSize: 20,
+                        // responsive: true,
+                        // maintainAspectRatio: false,
+
+                        title: {
+                            text: 'vfn - graph',
+                            subtext: 'Default layout',
+                            top: 'bottom',
+                            left: 'right'
+                        },
+                        tooltip: {},
+                        legend: [{
+                            // selectedMode: 'single',
+                            data: categories.map(function (a) {
+                                return a.name;  //, color: a.color };
+                            }),
+                            selectedMode: true,
+
+                        }],
+                        // animation: true,
+                        // animationDurationUpdate: 1500,
+                        // animationEasingUpdate: 'quinticInOut',
+                        series: [
+                            {
+                                name: 'vfn - graph',
+                                type: 'graph',
+                                layout: 'force',
+                                data: graph.nodes,
+                                links: graph.links,
+                                categories: categories,
+                                roam: true,
+                                focusNodeAdjacency: true,
+                                label: {
+                                    formatter: '{b}',
+                                    position: 'right',
+                                    show: true,
+                                    normal: {
+                                        formatter: '{b}',
+                                        position: 'right',
+                                        show: true
+                                    }
+                                },
+                                itemStyle: {
+                                    borderColor: '#fff',
+                                    borderWidth: 1,
+                                    shadowBlur: 10,
+                                    shadowColor: 'rgba(0, 0, 0, 0.3)'
+                                },
+                                edgeSymbol: ['circle', 'arrow'],
+                                edgeLabel: {
+                                    textStyle: {
+                                        fontSize: 12
+                                    }
+                                },
+                                force: {
+                                    repulsion: 100
+                                },
+                                emphasis: {
+                                    label: {
+                                        position: 'right',
+                                        show: true
+                                    }
+                                },
+                            }
+                        ]
+                    };
+
+                    myChart.setOption(option);
+                    // new ResizeObserver(() => myChart.resize()).observe(container);
+
+                    // window.addEventListener('resize', function () {
+                    //     myChart.resize();
+                    // });
+
+                }
+                function method2() {
+                    let min = links.reduce(function (prev, curr) {
+                        return prev.value < curr.value ? prev : curr;
+                    });
+                    let max = links.reduce(function (prev, curr) {
+                        return prev.value > curr.value ? prev : curr;
+                    });
+
+                    let links1 = links.map(x => { return { source: x.source + "-S", target: x.target + "-T", value: x.value } })
+                    links1.forEach(x => {
+                        x.value = 2 + 10 * x.value / (max.value - min.value)
+                    });
+                    let nodes1 = links1.map(x => { return [x.source, x.target] })
+                    nodes1 = [].concat.apply([], nodes1)
+                    nodes1 = [...new Set(nodes1)].map((x, index) => { return { id: x, group: Math.floor(Math.random() * index * 6) } });
+
+                    let chart = ForceGraph({ nodes: nodes1, links: links1 }, { //miserables, {  //miserables, {  //{ nodes, links }, { //
+                        nodeId: d => d.id,
+                        nodeGroup: d => d.group,
+                        nodeTitle: d => `${d.id}\n${d.group}`,
+                        linkStrokeWidth: l => Math.sqrt(l.value),
+                        height: 600,
+                        width: 800,
+                        //invalidation // a promise to stop the simulation when the cell is re-run
+                    })
+
+                    document.getElementById("forcechart").append(chart);
+                    //d3.select("forcechart").append(chart);
+
+                }
+                function method1() {
+                    // Gen random data
+                    const N = 300;
+                    const gData = {
+                        nodes: [...Array(N).keys()].map(i => ({ id: i })),
+                        links: [...Array(N).keys()]
+                            .filter(id => id)
+                            .map(id => ({
+                                source: id,
+                                target: Math.round(Math.random() * (id - 1))
+                            }))
+                    };
+
+                    const Graph = new ThreeForceGraph()
+                        .graphData(gData);
+
+                    // Setup renderer
+                    const renderer = new THREE.WebGLRenderer();
+                    let box = document.getElementById('forcechart');
+                    let width = box.offsetWidth;
+                    let height = box.offsetHeight;
+                    renderer.setSize(width, 0.5 * width);  //window.innerWidth, window.innerHeight);
+                    document.getElementById('forcechart').appendChild(renderer.domElement);
+
+                    // Setup scene
+                    const scene = new THREE.Scene();
+                    scene.add(Graph);
+                    scene.add(new THREE.AmbientLight(0xbbbbbb));
+
+                    // Setup camera
+                    const camera = new THREE.PerspectiveCamera();
+                    camera.far = 10000;
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    camera.lookAt(Graph.position);
+                    camera.position.z = Math.cbrt(N) * 180;
+
+                    // Add camera controls
+                    const tbControls = new THREE.TrackballControls(camera, renderer.domElement);
+
+                    // Kick-off renderer
+                    (function animate() { // IIFE
+                        Graph.tickFrame();
+
+                        // Frame cycle
+                        tbControls.update();
+                        renderer.render(scene, camera);
+                        requestAnimationFrame(animate);
+                    })();
+                }
+
+                function blendColors(color1, color2, percentage) {
+                    if (color1.length != 4 && color1.length != 7)
+                        throw new error('colors must be provided as hexes');
+
+                    if (color2.length != 4 && color2.length != 7)
+                        throw new error('colors must be provided as hexes');
+
+                    if (percentage > 1 || percentage < 0)
+                        throw new error('percentage must be between 0 and 1');
+
+                    if (color1.length == 4)
+                        color1 = color1[1] + color1[1] + color1[2] + color1[2] + color1[3] + color1[3];
+                    else
+                        color1 = color1.substring(1);
+                    if (color2.length == 4)
+                        color2 = color2[1] + color2[1] + color2[2] + color2[2] + color2[3] + color2[3];
+                    else
+                        color2 = color2.substring(1);
+                    // 3: we have valid input, convert colors to rgb
+                    color1 = [parseInt(color1[0] + color1[1], 16), parseInt(color1[2] + color1[3], 16), parseInt(color1[4] + color1[5], 16)];
+                    color2 = [parseInt(color2[0] + color2[1], 16), parseInt(color2[2] + color2[3], 16), parseInt(color2[4] + color2[5], 16)];
+                    // 4: blend
+                    var color3 = [
+                        (1 - percentage) * color1[0] + percentage * color2[0],
+                        (1 - percentage) * color1[1] + percentage * color2[1],
+                        (1 - percentage) * color1[2] + percentage * color2[2]
+                    ];
+                    // 5: convert to hex
+                    color3 = '#' + int_to_hex(color3[0]) + int_to_hex(color3[1]) + int_to_hex(color3[2]);
+                    // return hex
+                    return color3;
+                }
+                function int_to_hex(num) {
+                    var hex = Math.round(num).toString(16);
+                    if (hex.length == 1)
+                        hex = '0' + hex;
+                    return hex;
+                }
+                function init(data) {
+                }
+                return {
+                    method: {
+                        init: function (data) {
+                            init(data);
+                        },
+                        setCallback: function (arg) {
+                            callback = arg;
+                        },
+                    }
+                }
+            }
+        </script>
+    </div>
+
+</body>
+
+</html>

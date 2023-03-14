@@ -38,8 +38,8 @@ modules["addons"] = await fetch("./src/addons.html")
 export var moduleInfo = {};
 
 moduleManage().loadModules([
-  { core: "addons", name: "forcechart" },
   { core: "addons", name: "sankeychart" },
+  { core: "addons", name: "forcechart" },
 ]);
 
 // #region add-ons loading //
