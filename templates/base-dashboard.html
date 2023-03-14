@@ -1,0 +1,115 @@
+{% load static %}
+{% load i18n %}
+{% with current_path=request.resolver_match.url_name %}
+<!DOCTYPE html>
+<html class="no-js " lang="LANGUAGE_CODE">
+<head>
+
+    {% include "includes/_base-head.html" %}{% block extra_css %}{% endblock extra_css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    {% block extra_styles %}{% endblock %}
+
+</head>
+
+<body class="theme-purple {% if bidi %}rtl{% endif %}">
+    <div class="page-loader-wrapper">
+        <div class="loader">
+            <div class="m-t-30">
+            <video width="320" height="240" autoplay muted loop playsinline>
+                <source src="{% static 'images/squid-logo.webp' %}" type="video/webm">
+              </video>
+            </div>
+            <p>{% trans "Please wait..." %}</p>        
+        </div>
+    </div>
+    <div class="overlay"></div>
+
+    <!-- Top Bar -->
+    <nav class="top_navbar" style="background-image: linear-gradient( 
+        53.25turn, #c29be7, 77%, #c29be7);" >
+        <div class="container">
+            
+            <div class="row clearfix">
+                <div class="col-12">
+                    <div class="navbar-logo">
+                        <a href="javascript:void(0);" class="bars"></a>
+                        <a class="navbar-brand" href="">
+                            <img src="{% static 'images/squid-logo.webp' %}" width="45" alt="squid">
+                            <span class="m-l-10">{% trans "" %}</span>
+                        </a>
+                    </div>
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown app_menu hidden-sm">
+                            <div class="input-group" style="margin-top: 9px;">                
+                                <img src="{% static 'images/github-logo.png' %}" width="25" height="25" alt="github" style="margin-right: 18px;">
+                                <img src="{% static 'images/twitter-logo.png' %}" width="25" height="25" alt="twitter" style="margin-right: 18px;">
+                                <img src="{% static 'images/discord-logo.png' %}" width="28" height="23" alt="discoed">
+                            </div>
+                            
+                        </li>
+                    </ul>
+                   
+                </div>
+            </div>        
+        </div>
+    </nav>
+    
+    <section class="content profile_page">
+        <div class="container">
+            <!-- Strart Breadcrumbs Section -->
+           
+            <!-- End Breadcrumbs Section -->
+           
+            <!-- Start Main Content Section -->
+            <div class="row">
+                    {% block content %} {% endblock %}
+                    
+            </div>
+            <div class="row clearfix">
+                <div class="col-md-12 col-lg-12">
+                    <!-- <div class="card active-bg"> -->
+                        <!-- <div class="body"> -->
+                            <hr style="height: 1px;
+                            border: none;
+                            background-color: black;">
+                            <div class="row clearfix" style="margin-top: -32px;">
+                                <p class="copyright m-b-0 text-white col-lg-6"  style="    text-align: end; place-self: center;">
+                                 <img src="static\images\axelar-logo.avif"  height="20" alt="axelar">
+                                </p>                
+                
+                                <p class="copyright m-b-0 text-white col-lg-6" >
+                                    <img src="static/images/flipside_logo.png"  height="80" alt="flipside">
+                                </p>                
+                
+                            </div>
+                        <!-- </div> -->
+                    <!-- </div> -->
+                </div>
+            </div>
+            
+            <!-- End Main Content Section -->
+        </div>
+        
+    </section>
+    
+    <script src="{% static 'assets/bundles/libscripts.bundle.js' %}"></script> <!-- Lib Scripts Plugin Js ( jquery.v3.2.1, Bootstrap4 js) --> 
+    <script src="{% static 'assets/bundles/vendorscripts.bundle.js' %}"></script> <!-- slimscroll, waves Scripts Plugin Js -->
+
+    <script src="{% static 'assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js' %}"></script> <!-- Bootstrap Colorpicker Js --> 
+    <script src="{% static 'assets/plugins/jquery-inputmask/jquery.inputmask.bundle.js' %}"></script> <!-- Input Mask Plugin Js --> 
+    <script src="{% static 'assets/plugins/multi-select/js/jquery.multi-select.js' %}"></script> <!-- Multi Select Plugin Js --> 
+    <script src="{% static 'assets/plugins/jquery-spinner/js/jquery.spinner.js' %}"></script> <!-- Jquery Spinner Plugin Js --> 
+    <script src="{% static 'assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js' %}"></script> <!-- Bootstrap Tags Input Plugin Js --> 
+    <script src="{% static 'assets/plugins/nouislider/nouislider.js' %}"></script> <!-- noUISlider Plugin Js --> 
+    <script src="{% static 'assets/plugins/sweetalert/sweetalert.min.js' %}"></script> <!-- noUISlider Plugin Js --> 
+    <script src="{% static 'assets/plugins/bootstrap-notify/bootstrap-notify.js' %}"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="{% static 'assets/bundles/mainscripts.bundle.js' %}"></script>
+
+    {% include "includes/_base-scripts.inc" %}
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>
+{% endwith %}
+
