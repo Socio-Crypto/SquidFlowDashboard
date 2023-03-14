@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-g6rz-=+s+&cme^1frxl5jl5i140j17aiz4d*qk6xzj2*477=)8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -77,12 +77,16 @@ WSGI_APPLICATION = 'SquidFlowDashboard.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+     'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME', 'twitter'),
+        'USER': os.environ.get('DB_USER', 'twitter'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 1234),
+        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
+    }
+}
 
 
 # Password validation
