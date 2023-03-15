@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>
+    <script src="./modules/data.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: flex-start;
+            align-content: flex-start;
+            gap: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="sankeychart-container" style="display: block;">
+        <style>
+            .sankeychart {
+                position: relative;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+                height: 600px;
+
+                display: flex;
+                justify-content: center;
+            }
+
+            .sankeychart canvas {
+                width: 100%;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+        </style>
+        <div id="sankeychart" class="sankeychart">
+        </div>
+        <script>
+            function scriptSankeychart() {
+                var callback = {};
+
+                echart();
+
+                function echart() {
+                    var container = document.getElementById('sankeychart');
+                    var myChart = echarts.init(container);
+
+                    let links1 = graph.links.map(x => { return { source: x.source + "-S", target: x.target + "-T", value: x.size } })
+                    let nodes1 = links1.map(x => { return [x.source, x.target] })
+                    nodes1 = [].concat.apply([], nodes1)
+                    nodes1 = [...new Set(nodes1)].map(x => { return { name: x } })
+
+                    let option = {
+                        title: {
+                            text: 'Sankey Diagram'
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            triggerOn: 'mousemove'
+                        },
+                        series: [
+                            {
+                                type: 'sankey',
+                                data: nodes1,
+                                links: links1,
+                                focusNodeAdjacency: 'allEdges',
+                                itemStyle: {
+                                    borderWidth: 1,
+                                    borderColor: '#aaa'
+                                },
+                                lineStyle: {
+                                    color: 'source',
+                                    curveness: 0.5
+                                }
+                            }
+                        ]
+                    }
+                    myChart.setOption(option);
+                }
+                function init(data) {
+                }
+                return {
+                    method: {
+                        init: function (data) {
+                            init(data);
+                        },
+                        setCallback: function (arg) {
+                            callback = arg;
+                        },
+                    }
+                }
+            }
+        </script>
+    </div>
+
+    <div id="forcechart-container" style="display: block;">
+        <style>
+            .forcechart {
+                position: relative;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+                height: 800px;
+
+                display: flex;
+                justify-content: center;
+            }
+
+            .forcechart canvas {
+                position: absolute;
+                width: 100%;
+                height: auto;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+        </style>
+        <div id="forcechart" class="forcechart">
+        </div>
+        <script>
+            function scriptForcechart() {
+                var callback = {};
+                echart();
+                function echart() {
+                    const container = document.getElementById('forcechart');
+                    const myChart = echarts.init(container);  //, null, { width: 800, height: 600 });
+
+                    myChart.showLoading();
+                    myChart.hideLoading();
+
+                    var categories = [];
+                    let minN = graph.nodes.reduce(function (prev, curr) {
+                        return prev.size < curr.size ? prev : curr;
+                    });
+                    let maxN = graph.nodes.reduce(function (prev, curr) {
+                        return prev.size > curr.size ? prev : curr;
+                    });
+                    graph.nodes.forEach(function (node) {
+                        node.itemStyle = null;
+                        node.value = 5 + 0.00005 * Math.pow(Math.log2(node.size), 4);
+                        node.symbolSize = node.value; //50 + 100 * node.size / (maxN - minN);
+                        //node.category = node.attributes.modularity_class;
+                        // Use random x, y
+                        node.x = node.y = null;
+                        node.name = node.label;
+                        // node.label = {
+                        //     show: node.symbolSize > 10
+                        // };
+                        node.itemStyle = {
+                            color: node.color
+                        };
+                        node.draggable = true;
+
+                        //node.symbol = "image://./src/icons/" + node.label + ".png";
+                        //node.category = node.attributes.modularity_class;
+                        categories.push({ name: node.label });  //, color: node.color });
+
+                        //node.category = node.attributes.modularity_class;
+                    });
+
+                    let minL = graph.links.reduce(function (prev, curr) {
+                        return prev.size < curr.size ? prev : curr;
+                    });
+                    let maxL = graph.links.reduce(function (prev, curr) {
+                        return prev.size > curr.size ? prev : curr;
+                    });
+                    graph.links.forEach(function (link) {
+                        let size = 0.0001 * Math.pow(Math.log2(link.size), 4); //10 + 5 * Math.log10(link.size);   //20 * Math.random();  //5 + 20 * x.size / (max.size - min.size);
+                        //link.size = 10 * size;
+                        let color = blendColors(graph.nodes.find(x => link.source == x.id).color,
+                            graph.nodes.find(x => link.target == x.id).color, 1);
+                        link.lineStyle = {
+                            normal: {
+                                curveness: 0.3,
+                                width: size,
+                                opacity: 0.7,
+                                color: color,
+                                //color: 'source',
+                            },
+                        };
+                        link.symbolSize = [1, size * 3]
+                    });
+
+                    let option = {
+                        // scale: true,
+                        // scaleSize: 20,
+                        // responsive: true,
+                        // maintainAspectRatio: false,
+
+                        title: {
+                            text: 'vfn - graph',
+                            subtext: 'Default layout',
+                            top: 'bottom',
+                            left: 'right'
+                        },
+                        tooltip: {},
+                        legend: [{
+                            selectedMode: 'single',
+                            data: categories.map(function (a) {
+                                return a.name;  //, color: a.color };
+                            }),
+                            selectedMode: true,
+
+                        }],
+                        // animation: true,
+                        // animationDurationUpdate: 1500,
+                        // animationEasingUpdate: 'quinticInOut',
+                        series: [
+                            {
+                                name: 'vfn - graph',
+                                type: 'graph',
+                                layout: 'force',
+                                data: graph.nodes,
+                                links: graph.links,
+                                categories: categories,
+                                roam: true,
+                                focusNodeAdjacency: true,
+                                label: {
+                                    formatter: '{b}',
+                                    position: 'right',
+                                    show: true,
+                                    normal: {
+                                        formatter: '{b}',
+                                        position: 'right',
+                                        show: true
+                                    }
+                                },
+                                itemStyle: {
+                                    borderColor: '#fff',
+                                    borderWidth: 1,
+                                    shadowBlur: 10,
+                                    shadowColor: 'rgba(0, 0, 0, 0.3)'
+                                },
+                                edgeSymbol: ['circle', 'arrow'],
+                                edgeLabel: {
+                                    textStyle: {
+                                        fontSize: 12
+                                    }
+                                },
+                                force: {
+                                    repulsion: 100
+                                },
+                                emphasis: {
+                                    label: {
+                                        position: 'right',
+                                        show: true
+                                    }
+                                },
+                            }
+                        ]
+                    };
+
+                    myChart.setOption(option);
+                    // new ResizeObserver(() => myChart.resize()).observe(container);
+
+                    // window.addEventListener('resize', function () {
+                    //     myChart.resize();
+                    // });
+
+                }
+                function blendColors(color1, color2, percentage) {
+                    if (color1.length != 4 && color1.length != 7)
+                        throw new error('colors must be provided as hexes');
+
+                    if (color2.length != 4 && color2.length != 7)
+                        throw new error('colors must be provided as hexes');
+
+                    if (percentage > 1 || percentage < 0)
+                        throw new error('percentage must be between 0 and 1');
+
+                    if (color1.length == 4)
+                        color1 = color1[1] + color1[1] + color1[2] + color1[2] + color1[3] + color1[3];
+                    else
+                        color1 = color1.substring(1);
+                    if (color2.length == 4)
+                        color2 = color2[1] + color2[1] + color2[2] + color2[2] + color2[3] + color2[3];
+                    else
+                        color2 = color2.substring(1);
+                    // 3: we have valid input, convert colors to rgb
+                    color1 = [parseInt(color1[0] + color1[1], 16), parseInt(color1[2] + color1[3], 16), parseInt(color1[4] + color1[5], 16)];
+                    color2 = [parseInt(color2[0] + color2[1], 16), parseInt(color2[2] + color2[3], 16), parseInt(color2[4] + color2[5], 16)];
+                    // 4: blend
+                    var color3 = [
+                        (1 - percentage) * color1[0] + percentage * color2[0],
+                        (1 - percentage) * color1[1] + percentage * color2[1],
+                        (1 - percentage) * color1[2] + percentage * color2[2]
+                    ];
+                    // 5: convert to hex
+                    color3 = '#' + int_to_hex(color3[0]) + int_to_hex(color3[1]) + int_to_hex(color3[2]);
+                    // return hex
+                    return color3;
+                }
+                function int_to_hex(num) {
+                    var hex = Math.round(num).toString(16);
+                    if (hex.length == 1)
+                        hex = '0' + hex;
+                    return hex;
+                }
+                function init(data) {
+                }
+                return {
+                    method: {
+                        init: function (data) {
+                            init(data);
+                        },
+                        setCallback: function (arg) {
+                            callback = arg;
+                        },
+                    }
+                }
+            }
+        </script>
+    </div>
+
+</body>
+
+</html>
