@@ -1,5 +1,5 @@
 .theme-purple .btn-primary {
-	background: #a60b56
+	background: #e6fa36
 }
 
 .theme-purple .btn-primary:active,
@@ -10,8 +10,8 @@
 }
 
 .theme-purple .btn-primary.btn-simple {
-	border-color: #a60b56 !important;
-	color: #a60b56 !important;
+	border-color: #e6fa36 !important;
+	color: #e6fa36 !important;
 	background: transparent
 }
 
@@ -41,45 +41,45 @@
 }
 
 .theme-purple .checkbox input[type="checkbox"]:checked+label::after {
-	border-color: #a60b56;
-	background: #a60b56;
+	border-color: #e6fa36;
+	background: #e6fa36;
 	color: #fff
 }
 
 .theme-purple .nav-tabs .nav-link.active {
-	border: 1px solid #a60b56 !important;
-	background: #a60b56;
-	color: #fff
+	border: 1px solid #e6fa36 !important;
+	background: #c29be7;
+	color: #e6fa36
 }
 
 .theme-purple .card .header h2:before {
-	background: #a60b56
+	background: #e6fa36
 }
 
 .theme-purple .card .header h2 strong {
-	color: #a60b56
+	color: #e6fa36
 }
 
 .theme-purple .card .header .dropdown-menu li a:hover {
-	background-color: #a60b56;
+	background-color: #e6fa36;
 	color: #fff
 }
 
 .theme-purple .authentication .navbar,
 .theme-purple .authentication .page-header {
-	background: #a60b56 !important
+	background: #e6fa36 !important
 }
 
 .theme-purple .form-control:focus,
 .theme-purple .form-control:focus+.input-group-addon,
 .theme-purple .form-control:focus~.input-group-addon {
-	border-color: #a60b56
+	border-color: #e6fa36
 }
 
 .theme-purple.theme-dark .top_navbar {
-	background: #a60b56
+	background: #e6fa36
 }
 
 .theme-purple.theme-dark .input-group-focus .input-group-addon {
-	border-color: #a60b56
+	border-color: #e6fa36
 }
