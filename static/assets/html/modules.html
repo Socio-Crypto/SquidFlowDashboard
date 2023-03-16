@@ -51,7 +51,7 @@
 
                 function echart() {
                     var container = document.getElementById('sankeychart');
-                    var myChart = echarts.init(container);
+                    var myChart = echarts.init(container, null, { renderer: 'svg' });
 
                     let links1 = graph.links.map(x => { return { source: x.source + "-S", target: x.target + "-T", value: x.size } })
                     let nodes1 = links1.map(x => { return [x.source, x.target] })
@@ -71,6 +71,10 @@
                                 type: 'sankey',
                                 data: nodes1,
                                 links: links1,
+                                top: "5%",
+                                right: "10%",
+                                bottom: "5%",
+                                left: "5%",
                                 focusNodeAdjacency: 'allEdges',
                                 itemStyle: {
                                     borderWidth: 1,
@@ -133,7 +137,7 @@
                 echart();
                 function echart() {
                     const container = document.getElementById('forcechart');
-                    const myChart = echarts.init(container);  //, null, { width: 800, height: 600 });
+                    const myChart = echarts.init(container, null, { renderer: 'svg' });  //, null, { width: 800, height: 600 });
 
                     myChart.showLoading();
                     myChart.hideLoading();
@@ -148,7 +152,7 @@
                     graph.nodes.forEach(function (node) {
                         node.itemStyle = null;
                         node.value = 5 + 0.00005 * Math.pow(Math.log2(node.size), 4);
-                        node.symbolSize = node.value; //50 + 100 * node.size / (maxN - minN);
+                        node.symbolSize = node.value;
                         //node.category = node.attributes.modularity_class;
                         // Use random x, y
                         node.x = node.y = null;
@@ -161,7 +165,7 @@
                         };
                         node.draggable = true;
 
-                        //node.symbol = "image://./src/icons/" + node.label + ".png";
+                        node.symbol = "image://./static/images/" + node.label + ".svg"; //"-w.svg";
                         //node.category = node.attributes.modularity_class;
                         categories.push({ name: node.label });  //, color: node.color });
 
@@ -177,8 +181,9 @@
                     graph.links.forEach(function (link) {
                         let size = 0.0001 * Math.pow(Math.log2(link.size), 4); //10 + 5 * Math.log10(link.size);   //20 * Math.random();  //5 + 20 * x.size / (max.size - min.size);
                         //link.size = 10 * size;
-                        let color = blendColors(graph.nodes.find(x => link.source == x.id).color,
-                            graph.nodes.find(x => link.target == x.id).color, 1);
+                        let color = graph.nodes.find(x => link.target == x.id).color;
+                        //                        let color = blendColors(graph.nodes.find(x => link.source == x.id).color,
+                        //                            graph.nodes.find(x => link.target == x.id).color, 1);
                         link.lineStyle = {
                             normal: {
                                 curveness: 0.3,
@@ -192,10 +197,10 @@
                     });
 
                     let option = {
-                        // scale: true,
-                        // scaleSize: 20,
-                        // responsive: true,
-                        // maintainAspectRatio: false,
+                        scale: true,
+                        scaleSize: 20,
+                        responsive: true,
+                        maintainAspectRatio: false,
 
                         title: {
                             text: 'vfn - graph',
@@ -205,16 +210,19 @@
                         },
                         tooltip: {},
                         legend: [{
-                            selectedMode: 'single',
+                            //selectedMode: 'single',
                             data: categories.map(function (a) {
                                 return a.name;  //, color: a.color };
                             }),
-                            selectedMode: true,
-
+                            top: "5%",
+                            textStyle: {
+                                fontSize: 14,
+                                color: "#ffffff"
+                            }
                         }],
-                        // animation: true,
-                        // animationDurationUpdate: 1500,
-                        // animationEasingUpdate: 'quinticInOut',
+                        animation: true,
+                        animationDurationUpdate: 300,
+                        animationEasingUpdate: 'quinticInOut',
                         series: [
                             {
                                 name: 'vfn - graph',
@@ -222,6 +230,10 @@
                                 layout: 'force',
                                 data: graph.nodes,
                                 links: graph.links,
+                                top: "10%",
+                                right: "5%",
+                                bottom: "5%",
+                                left: "5%",
                                 categories: categories,
                                 roam: true,
                                 focusNodeAdjacency: true,
@@ -233,13 +245,17 @@
                                         formatter: '{b}',
                                         position: 'right',
                                         show: true
+                                    },
+                                    textStyle: {
+                                        fontSize: 14,
+                                        color: "#ffffff"
                                     }
                                 },
                                 itemStyle: {
-                                    borderColor: '#fff',
-                                    borderWidth: 1,
-                                    shadowBlur: 10,
-                                    shadowColor: 'rgba(0, 0, 0, 0.3)'
+                                    //  borderColor: '#fff',
+                                    //borderWidth: 1,
+                                    //shadowBlur: 10,
+                                    //shadowColor: 'rgba(0, 0, 0, 0.3)'
                                 },
                                 edgeSymbol: ['circle', 'arrow'],
                                 edgeLabel: {
@@ -261,6 +277,7 @@
                     };
 
                     myChart.setOption(option);
+                    //myChart.resize({ width: "auto", height: "800px" })
                     // new ResizeObserver(() => myChart.resize()).observe(container);
 
                     // window.addEventListener('resize', function () {

@@ -8,41 +8,43 @@ var graphcolor = [
   "#ca8622",
   "#bda29a",
   "#6e7074",
+  "#546570",
+  "#c4ccd3",
 ];
 var graph = {
   color: graphcolor,
   nodes: [
     {
       color: graphcolor[0],
+      label: "Arbitrum",
+      id: "Arbitrum",
+      size: 805917.634263,
+    },
+    {
+      color: graphcolor[1],
+      label: "Avalanche",
+      id: "Avalanche",
+      size: 636595.407793,
+    },
+    {
+      color: graphcolor[2],
+      label: "Binance",
+      id: "Binance",
+      size: 197390.962191,
+    },
+    { color: graphcolor[3], label: "Bsc", id: "Bsc", size: 641011.081998 },
+    { color: graphcolor[4], label: "Celo", id: "Celo", size: 94130.355599 },
+    {
+      color: graphcolor[5],
       label: "Ethereum",
       id: "Ethereum",
       size: 1060403.364277,
     },
     {
-      color: graphcolor[1],
+      color: graphcolor[6],
       label: "Fantom",
       id: "Fantom",
       size: 621123.211535,
-    },
-    {
-      color: graphcolor[2],
-      label: "Arbitrum",
-      id: "Arbitrum",
-      size: 805917.634263,
-    },
-    { color: graphcolor[3], label: "Celo", id: "Celo", size: 94130.355599 },
-    {
-      color: graphcolor[4],
-      label: "Polygon",
-      id: "Polygon",
-      size: 1161456.1241579999,
-    },
-    { color: graphcolor[5], label: "Bsc", id: "Bsc", size: 641011.081998 },
-    {
-      color: graphcolor[6],
-      label: "Avalanche",
-      id: "Avalanche",
-      size: 636595.407793,
     },
     {
       color: graphcolor[7],
@@ -52,9 +54,9 @@ var graph = {
     },
     {
       color: graphcolor[8],
-      label: "Binance",
-      id: "Binance",
-      size: 197390.962191,
+      label: "Polygon",
+      id: "Polygon",
+      size: 1161456.1241579999,
     },
   ],
   links: [
