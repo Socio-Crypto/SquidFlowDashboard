@@ -9,7 +9,11 @@ from django.views.generic import View
 from graphqlclient import GraphQLClient
 from collections import Counter
 
-from .services import get_wallet_activity
+from itertools import groupby
+from operator import itemgetter
+import pandas as pd
+
+from .services import get_network_data, get_source_chain_based_on_date , get_destination_chain_based_on_date
 
 
 def get_data_from_the_graph(name, tokensQuery):
@@ -32,6 +36,28 @@ def get_data_from_the_graph(name, tokensQuery):
     
     return data_dic
 
+
+def get_data_from_tokenstatbydates(name, tokensQuery, chain):
+    """
+    https://thegraph.com/en/
+    """
+    APIURL = 'https://api.thegraph.com/subgraphs/name/kidacrypto/' + name
+
+   
+    client = GraphQLClient(APIURL)
+    data = client.execute(tokensQuery)
+    data_dic = []
+
+    for item in json.loads(data)['data']['tokenStatByDates']:
+            data_dic.append({
+                'date': item['date'],
+                chain: item[chain],
+                'value': int(item['volume']) / 10**6,
+            })
+    
+    return data_dic
+
+
 def aggregate_dictionary(data):
     sum_dict = {}
     for item in data:
@@ -42,6 +68,64 @@ def aggregate_dictionary(data):
                 sum_dict[key] = value
 
     return sum_dict
+
+
+def group_by_chain(data, chain):
+    
+    data.sort(key=itemgetter('date', chain))
+    df = pd.DataFrame(data)
+
+    # groupby date and chain and sum the value column
+    result = df.groupby(['date', chain])['value'].sum().reset_index()
+    result['cum'] = result['value'].cumsum()
+    return result.to_dict('records')
+
+
+def get_data_of_source_chain():
+    tokensQuery = """
+            query {
+               tokenStatByDates {
+                    date
+                    volume
+                    sourceChain
+                }
+            }
+            """
+    fantom = group_by_chain(get_data_from_tokenstatbydates('fantom-squid-protocol', tokensQuery, 'sourceChain'), 'sourceChain')
+    moonbeam = group_by_chain(get_data_from_tokenstatbydates('moonbeam-squid-protocol', tokensQuery, 'sourceChain'), 'sourceChain')
+    celo = group_by_chain(get_data_from_tokenstatbydates('celo-squid-protocol', tokensQuery, 'sourceChain'), 'sourceChain')
+    flipside = get_source_chain_based_on_date()
+    data = []
+    data.extend(fantom)
+    data.extend(moonbeam)
+    data.extend(celo)
+    data.extend(flipside)
+
+    return data
+
+
+def get_data_of_destination_chain():
+    tokensQuery = """
+            query {
+               tokenStatByDates {
+                    date
+                    volume
+                    destinationChain
+                }
+            }
+            """
+    fantom = group_by_chain(get_data_from_tokenstatbydates('fantom-squid-protocol', tokensQuery, 'destinationChain'), 'destinationChain')
+    moonbeam = group_by_chain(get_data_from_tokenstatbydates('moonbeam-squid-protocol', tokensQuery, 'destinationChain'), 'destinationChain')
+    celo = group_by_chain(get_data_from_tokenstatbydates('celo-squid-protocol', tokensQuery, 'destinationChain'), 'destinationChain')
+    flipside = get_destination_chain_based_on_date()
+    data = []
+    data.extend(fantom)
+    data.extend(moonbeam)
+    data.extend(celo)
+    data.extend(flipside)
+
+    return data
+
 
 class DashboardView(View):
 
@@ -63,7 +147,7 @@ class DashboardView(View):
         fantom = get_data_from_the_graph('fantom-squid-protocol', tokensQuery)
         moonbeam = get_data_from_the_graph('moonbeam-squid-protocol', tokensQuery)
         celo = get_data_from_the_graph('celo-squid-protocol', tokensQuery)
-        flipside = get_wallet_activity()
+        flipside = get_network_data()
         
         links.extend(fantom)
         links.extend(moonbeam)
@@ -112,10 +196,14 @@ class DashboardView(View):
             
           
         
-        print(labels_source_val)
+        data_of_source_chain = get_data_of_source_chain()
+        data_of_destination_chain = get_data_of_destination_chain()
+
         context = {
             'links': links,
             'nodes': nodes,
+            'data_of_source_chain': data_of_source_chain,
+            'data_of_destination_chain': data_of_destination_chain,
         }
 
         return render(request, 'dashboard.html', context=context)
