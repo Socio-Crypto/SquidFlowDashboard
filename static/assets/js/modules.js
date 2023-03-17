@@ -55,6 +55,7 @@ function startModule() {
   moduleManage().loadModules([
     { core: "addons", name: "sankeychart" },
     { core: "addons", name: "forcechart" },
+    { core: "addons", name: "chart1-container" },
   ]);
 
   // #region add-ons loading //
@@ -178,6 +179,26 @@ function startModule() {
       },
     };
   }
+  function moduleHandle_chart1() {
+    init();
 
+    function init() {
+      moduleInfo.chart1.method.init();
+    }
+
+    return {
+      init: function () {
+        init();
+      },
+      event: function (arg) {
+        switch (arg.action) {
+          case "event1":
+            break;
+          case "event2":
+            break;
+        }
+      },
+    };
+  }
   // #endregion add-ons/modules handling //
 }

@@ -51,7 +51,7 @@
 
                 function echart() {
                     var container = document.getElementById('sankeychart');
-                    var myChart = echarts.init(container, null, { renderer: 'svg' });
+                    var myChart = echarts.init(container, null, { renderer: 'canvas' });
 
                     let links1 = graph.links.map(x => { return { source: x.source + "-S", target: x.target + "-T", value: x.size } })
                     let nodes1 = links1.map(x => { return [x.source, x.target] })
@@ -137,7 +137,7 @@
                 echart();
                 function echart() {
                     const container = document.getElementById('forcechart');
-                    const myChart = echarts.init(container, null, { renderer: 'svg' });  //, null, { width: 800, height: 600 });
+                    const myChart = echarts.init(container, null, { renderer: 'canvas' });  //, null, { width: 800, height: 600 });
 
                     myChart.showLoading();
                     myChart.hideLoading();
@@ -201,6 +201,7 @@
                         scaleSize: 20,
                         responsive: true,
                         maintainAspectRatio: false,
+                        zoom: 1,
 
                         title: {
                             text: 'vfn - graph',
@@ -277,12 +278,12 @@
                     };
 
                     myChart.setOption(option);
-                    //myChart.resize({ width: "auto", height: "800px" })
-                    // new ResizeObserver(() => myChart.resize()).observe(container);
+                    myChart.resize({ width: "auto", height: "800px" })
+                    new ResizeObserver(() => myChart.resize()).observe(container);
 
-                    // window.addEventListener('resize', function () {
-                    //     myChart.resize();
-                    // });
+                    window.addEventListener('resize', function () {
+                        myChart.resize();
+                    });
 
                 }
                 function blendColors(color1, color2, percentage) {
@@ -322,6 +323,52 @@
                     if (hex.length == 1)
                         hex = '0' + hex;
                     return hex;
+                }
+                function init(data) {
+                }
+                return {
+                    method: {
+                        init: function (data) {
+                            init(data);
+                        },
+                        setCallback: function (arg) {
+                            callback = arg;
+                        },
+                    }
+                }
+            }
+        </script>
+    </div>
+
+
+    <div id="chart1-container" style="display: block;">
+        <style>
+            .chart1 {
+                position: relative;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+                height: 800px;
+
+                display: flex;
+                justify-content: center;
+            }
+        </style>
+        <div id="chart1" class="chart1">
+        </div>
+        <script>
+            function scriptChart1() {
+                var callback = {};
+                echart();
+                function echart() {
+                    const container = document.getElementById('chart1');
+                    const myChart = echarts.init(container, null, { renderer: 'svg' });
+
+                    myChart.showLoading();
+                    myChart.hideLoading();
+
                 }
                 function init(data) {
                 }
