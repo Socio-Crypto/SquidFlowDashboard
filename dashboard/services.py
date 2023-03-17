@@ -23,7 +23,7 @@ def get_wallet_activity():
        select 
         source_chain as source,
         destination_chain as target,
-        sum(amount) as size
+        sum(amount) as value
         from axelar.core.EZ_SQUID
         WHERE  destination_chain in ('ethereum', 'avalanche', 'binance', 'arbitrum', 'polygon', 'celo', 'fantom', 'moonbeam')
         group by 1,2
