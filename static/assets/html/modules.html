@@ -46,14 +46,13 @@
         <script>
             function scriptSankeychart() {
                 var callback = {};
-
-                echart();
+                var moduleData = {};
 
                 function echart() {
                     var container = document.getElementById('sankeychart');
                     var myChart = echarts.init(container, null, { renderer: 'canvas' });
 
-                    let links1 = graph.links.map(x => { return { source: x.source + "-S", target: x.target + "-T", value: x.size } })
+                    let links1 = moduleData.links.map(x => { return { source: x.source + "-S", target: x.target + "-T", value: x.value } })
                     let nodes1 = links1.map(x => { return [x.source, x.target] })
                     nodes1 = [].concat.apply([], nodes1)
                     nodes1 = [...new Set(nodes1)].map(x => { return { name: x } })
@@ -90,6 +89,8 @@
                     myChart.setOption(option);
                 }
                 function init(data) {
+                    moduleData = data;
+                    echart();
                 }
                 return {
                     method: {
@@ -134,7 +135,8 @@
         <script>
             function scriptForcechart() {
                 var callback = {};
-                echart();
+                var moduleData = {};
+
                 function echart() {
                     const container = document.getElementById('forcechart');
                     const myChart = echarts.init(container, null, { renderer: 'canvas' });  //, null, { width: 800, height: 600 });
@@ -143,15 +145,20 @@
                     myChart.hideLoading();
 
                     var categories = [];
-                    let minN = graph.nodes.reduce(function (prev, curr) {
-                        return prev.size < curr.size ? prev : curr;
+                    for (i = 0; i < moduleData.nodes.length; i++) {
+                        moduleData.nodes[i].value = moduleData.nodes[i].value_in + moduleData.nodes[i].value_out;
+                        if (moduleData.nodes[i].color == undefined)
+                            moduleData.nodes[i].color = graphcolor[i % graphcolor.length]
+                    }
+                    let minN = moduleData.nodes.reduce(function (prev, curr) {
+                        return prev.value < curr.value ? prev : curr;
                     });
-                    let maxN = graph.nodes.reduce(function (prev, curr) {
-                        return prev.size > curr.size ? prev : curr;
+                    let maxN = moduleData.nodes.reduce(function (prev, curr) {
+                        return prev.value > curr.value ? prev : curr;
                     });
-                    graph.nodes.forEach(function (node) {
+                    moduleData.nodes.forEach(function (node) {
                         node.itemStyle = null;
-                        node.value = 5 + 0.00005 * Math.pow(Math.log2(node.size), 4);
+                        node.value = 5 + 0.00005 * Math.pow(Math.log2(node.value), 4);
                         node.symbolSize = node.value;
                         //node.category = node.attributes.modularity_class;
                         // Use random x, y
@@ -172,18 +179,18 @@
                         //node.category = node.attributes.modularity_class;
                     });
 
-                    let minL = graph.links.reduce(function (prev, curr) {
-                        return prev.size < curr.size ? prev : curr;
+                    let minL = moduleData.links.reduce(function (prev, curr) {
+                        return prev.value < curr.value ? prev : curr;
                     });
-                    let maxL = graph.links.reduce(function (prev, curr) {
-                        return prev.size > curr.size ? prev : curr;
+                    let maxL = moduleData.links.reduce(function (prev, curr) {
+                        return prev.value > curr.value ? prev : curr;
                     });
-                    graph.links.forEach(function (link) {
-                        let size = 0.0001 * Math.pow(Math.log2(link.size), 4); //10 + 5 * Math.log10(link.size);   //20 * Math.random();  //5 + 20 * x.size / (max.size - min.size);
+                    moduleData.links.forEach(function (link) {
+                        let size = 0.0001 * Math.pow(Math.log2(link.value), 4); //10 + 5 * Math.log10(link.size);   //20 * Math.random();  //5 + 20 * x.size / (max.size - min.size);
                         //link.size = 10 * size;
-                        let color = graph.nodes.find(x => link.target == x.id).color;
-                        //                        let color = blendColors(graph.nodes.find(x => link.source == x.id).color,
-                        //                            graph.nodes.find(x => link.target == x.id).color, 1);
+                        let color = moduleData.nodes.find(x => link.target == x.label).color;
+                        //                        let color = blendColors(moduleData.nodes.find(x => link.source == x.id).color,
+                        //                            moduleData.nodes.find(x => link.target == x.id).color, 1);
                         link.lineStyle = {
                             normal: {
                                 curveness: 0.3,
@@ -229,8 +236,8 @@
                                 name: 'vfn - graph',
                                 type: 'graph',
                                 layout: 'force',
-                                data: graph.nodes,
-                                links: graph.links,
+                                data: moduleData.nodes,
+                                links: moduleData.links,
                                 top: "10%",
                                 right: "5%",
                                 bottom: "5%",
@@ -325,6 +332,8 @@
                     return hex;
                 }
                 function init(data) {
+                    moduleData = data;
+                    echart();
                 }
                 return {
                     method: {
@@ -345,15 +354,22 @@
         <style>
             .chart1 {
                 position: relative;
-                left: 0;
-                right: 0;
-                top: 0;
-                bottom: 0;
+                left: 0px;
+                right: 0px;
+                top: 0px;
+                bottom: 0px;
                 width: 100%;
-                height: 800px;
+                height: 400px;
 
                 display: flex;
                 justify-content: center;
+            }
+
+            .chart1 canvas {
+                width: 100%;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
             }
         </style>
         <div id="chart1" class="chart1">
@@ -361,10 +377,11 @@
         <script>
             function scriptChart1() {
                 var callback = {};
-                echart();
+                var moduleData = {};
+
                 function echart() {
                     const container = document.getElementById('chart1');
-                    const myChart = echarts.init(container, null, { renderer: 'svg' });
+                    const myChart = echarts.init(container, null, { renderer: 'canvas' });
 
                     myChart.showLoading();
                     myChart.hideLoading();
@@ -373,10 +390,10 @@
                     var data1 = [];
                     var data2 = [];
 
-                    for (var i = 0; i < graph.nodes.length; i++) {
-                        xAxisData.push(graph.nodes[i].id);
-                        data1.push((Math.random() * 2).toFixed(2));
-                        data2.push(-Math.random().toFixed(2));
+                    for (var i = 0; i < moduleData.nodes.length; i++) {
+                        xAxisData.push(moduleData.nodes[i].label);
+                        data1.push(moduleData.nodes[i].value_in);
+                        data2.push(-moduleData.nodes[i].value_out);
                     }
 
                     var emphasisStyle = {
@@ -390,60 +407,36 @@
                     };
 
                     option = {
-                        backgroundColor: '#eee',
+                        backgroundColor: 'transparent',  //rgba(0, 0, 0, 1)',  //'#eee',
                         legend: {
                             data: ['source', 'target'],
-                            left: 10
+                            left: 10,
+                            top: 10,
+                            textStyle: { color: '#808080' }
                         },
-                        // brush: {
-                        //     toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
-                        //     xAxisIndex: 0
-                        // },
-                        // toolbox: {
-                        //     feature: {
-                        //         magicType: {
-                        //             type: ['stack', 'tiled']
-                        //         },
-                        //         dataView: {}
-                        //     }
-                        // },
                         tooltip: {},
                         xAxis: {
+                            inside: true,
+                            axisLabel: {
+                                rotate: 90,
+                                fontWeight: 'bold',
+                                textStyle: { color: '#808080' }
+                            },
                             data: xAxisData,
-                            name: 'X Axis',
-                            axisLine: { onZero: true },
-                            splitLine: { show: false },
+                            axisLine: { onZero: true, lineStyle: { color: '#303030' } },
+                            splitLine: { show: false, lineStyle: { color: '#303030' } },
                             splitArea: { show: false }
                         },
                         yAxis: {
                             inverse: true,
-                            splitArea: { show: false }
+                            splitArea: { show: false },
+                            axisLabel: {
+                                fontWeight: 'bold',
+                                textStyle: { color: '#808080' }
+                            },
                         },
                         grid: {
                             left: 100
-                        },
-                        visualMap: {
-                            type: 'continuous',
-                            dimension: 1,
-                            text: ['High', 'Low'],
-                            inverse: true,
-                            itemHeight: 200,
-                            calculable: true,
-                            min: -2,
-                            max: 6,
-                            top: 60,
-                            left: 10,
-                            inRange: {
-                                colorLightness: [0.4, 0.8]
-                            },
-                            outOfRange: {
-                                color: '#bbb'
-                            },
-                            controller: {
-                                inRange: {
-                                    color: '#2f4554'
-                                }
-                            }
                         },
                         series: [
                             {
@@ -464,39 +457,17 @@
                     };
 
                     myChart.setOption(option);
-                    myChart.resize({ width: "auto", height: "800px" })
+                    myChart.resize({ width: auto, height: "400px" })
                     new ResizeObserver(() => myChart.resize()).observe(container);
 
                     window.addEventListener('resize', function () {
                         myChart.resize();
                     });
 
-                    myChart.on('brushSelected', renderBrushed);
-
-                    function renderBrushed(params) {
-                        var brushed = [];
-                        var brushComponent = params.batch[0];
-
-                        for (var sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
-                            var rawIndices = brushComponent.selected[sIdx].dataIndex;
-                            brushed.push('[Series ' + sIdx + '] ' + rawIndices.join(', '));
-                        }
-                        myChart.setOption({
-                            title: {
-                                backgroundColor: '#333',
-                                text: 'SELECTED DATA INDICES: \n' + brushed.join('\n'),
-                                bottom: 0,
-                                right: 0,
-                                width: 100,
-                                textStyle: {
-                                    fontSize: 12,
-                                    color: '#fff'
-                                }
-                            }
-                        });
-                    }
                 }
                 function init(data) {
+                    moduleData = data;
+                    echart();
                 }
                 return {
                     method: {

@@ -50,6 +50,21 @@ caller();
 // #endregion fetch the core modules //
 
 var moduleInfo = {};
+var moduleData = {};
+moduleData.nodes = JSON.parse(
+  document.getElementById("nodes").value.replaceAll("'", '"')
+);
+moduleData.links = JSON.parse(
+  document.getElementById("links").value.replaceAll("'", '"')
+);
+moduleData.source = JSON.parse(
+  document.getElementById("data_of_source_chain").value.replaceAll("'", '"')
+);
+moduleData.destination = JSON.parse(
+  document
+    .getElementById("data_of_destination_chain")
+    .value.replaceAll("'", '"')
+);
 
 function startModule() {
   moduleManage().loadModules([
@@ -141,7 +156,7 @@ function startModule() {
     init();
 
     function init() {
-      moduleInfo.sankeychart.method.init();
+      moduleInfo.sankeychart.method.init(moduleData);
     }
 
     return {
@@ -162,7 +177,7 @@ function startModule() {
     init();
 
     function init() {
-      moduleInfo.forcechart.method.init();
+      moduleInfo.forcechart.method.init(moduleData);
     }
 
     return {
@@ -183,7 +198,7 @@ function startModule() {
     init();
 
     function init() {
-      moduleInfo.chart1.method.init();
+      moduleInfo.chart1.method.init(moduleData);
     }
 
     return {
