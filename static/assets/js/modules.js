@@ -55,7 +55,7 @@ function startModule() {
   moduleManage().loadModules([
     { core: "addons", name: "sankeychart" },
     { core: "addons", name: "forcechart" },
-    { core: "addons", name: "chart1-container" },
+    { core: "addons", name: "chart1" },
   ]);
 
   // #region add-ons loading //
