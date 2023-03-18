@@ -13,7 +13,12 @@ from itertools import groupby
 from operator import itemgetter
 import pandas as pd
 
-from .services import get_network_data, get_source_chain_based_on_date , get_destination_chain_based_on_date
+from .services import (
+    get_network_data, 
+    get_source_chain_based_on_date, 
+    get_destination_chain_based_on_date, 
+    get_leader_board
+    )
 
 
 def get_data_from_the_graph(name, tokensQuery):
@@ -29,8 +34,8 @@ def get_data_from_the_graph(name, tokensQuery):
 
     for item in json.loads(data)['data']['tokenStats']:
             data_dic.append({
-                'source': item['sourceChain'],
-                'target': item['destinationChain'],
+                'source': item['sourceChain'].lower(),
+                'target': item['destinationChain'].lower(),
                 'value': int(item['volume']) / 10**6,
             })
     
@@ -51,8 +56,29 @@ def get_data_from_tokenstatbydates(name, tokensQuery, chain):
     for item in json.loads(data)['data']['tokenStatByDates']:
             data_dic.append({
                 'date': item['date'],
-                chain: item[chain],
+                chain: item[chain].lower(),
                 'value': int(item['volume']) / 10**6,
+            })
+    
+    return data_dic
+
+
+def get_data_addressstats(name, tokensQuery, chain):
+    """
+    https://thegraph.com/en/
+    """
+    APIURL = 'https://api.thegraph.com/subgraphs/name/kidacrypto/' + name
+
+   
+    client = GraphQLClient(APIURL)
+    data = client.execute(tokensQuery)
+    data_dic = []
+
+    for item in json.loads(data)['data']['addressStats']:
+            data_dic.append({
+                'user': item['user_address'],
+                # chain: item[chain],
+                item[chain].lower(): int(item['volume']) / 10**6,
             })
     
     return data_dic
@@ -96,10 +122,7 @@ def get_data_of_source_chain():
     celo = group_by_chain(get_data_from_tokenstatbydates('celo-squid-protocol', tokensQuery, 'sourceChain'), 'sourceChain')
     flipside = get_source_chain_based_on_date()
     data = []
-    data.extend(fantom)
-    data.extend(moonbeam)
-    data.extend(celo)
-    data.extend(flipside)
+    data = fantom + moonbeam + celo + flipside
 
     return data
 
@@ -119,12 +142,43 @@ def get_data_of_destination_chain():
     celo = group_by_chain(get_data_from_tokenstatbydates('celo-squid-protocol', tokensQuery, 'destinationChain'), 'destinationChain')
     flipside = get_destination_chain_based_on_date()
     data = []
-    data.extend(fantom)
-    data.extend(moonbeam)
-    data.extend(celo)
-    data.extend(flipside)
+    data = fantom + moonbeam + celo + flipside
 
     return data
+
+
+def group_by_user(data, chain):
+    
+    df = pd.DataFrame(data)
+    # groupby user and sourceChain and sum the value column
+    result = df.groupby(['user'])[chain].sum().reset_index()
+    return result.to_dict('records')
+
+
+def get_users_data():
+    tokensQuery = """
+        query {
+            addressStats {
+                user_address
+                volume
+                sourceChain
+            }
+        }
+    """
+    fantom = group_by_user(get_data_addressstats('fantom-squid-protocol', tokensQuery, 'sourceChain'), 'Fantom')
+    moonbeam = group_by_user(get_data_addressstats('moonbeam-squid-protocol', tokensQuery, 'sourceChain'), 'Moonbeam')
+    celo = group_by_user(get_data_addressstats('celo-squid-protocol', tokensQuery, 'sourceChain'),'celo')
+    flipside = get_leader_board()
+    data = []
+    data = fantom + moonbeam + celo + flipside
+
+    data_df = pd.DataFrame(data)
+    data_df.fillna(value=0, inplace=True)
+
+    grouped_df = data_df.groupby('user').sum().reset_index()
+    list_of_dicts = grouped_df.to_dict(orient='records')
+
+    return list_of_dicts
 
 
 class DashboardView(View):
@@ -149,10 +203,7 @@ class DashboardView(View):
         celo = get_data_from_the_graph('celo-squid-protocol', tokensQuery)
         flipside = get_network_data()
         
-        links.extend(fantom)
-        links.extend(moonbeam)
-        links.extend(celo)
-        links.extend(flipside)
+        links = fantom + moonbeam + celo + flipside
 
         labels_source = []
         labels_target = []
@@ -165,15 +216,15 @@ class DashboardView(View):
             labels_source_val.append({item['source']: item['value']})
             labels_target_val.append({item['target']: item['value']})
         
-        labels.extend(labels_source)
-        labels.extend(labels_target)
+        labels = labels_source + labels_target
+
         unique_labels = set(labels)
 
         
         for label in unique_labels:
             nodes.append({
-                "label_short": label, 
-                "label": label,
+                "id_short": label, 
+                "id": label,
                 "value_in": 0,
                 "value_out": 0,
                 "count_in": 0,
@@ -187,18 +238,19 @@ class DashboardView(View):
         agg_target_val = aggregate_dictionary(labels_target_val)
 
         for i in range(len(nodes)):
-            if nodes[i]['label'] in labels_source_count:
-                nodes[i]['count_out'] = labels_source_count[nodes[i]['label']]
-                nodes[i]['value_out'] = agg_source_val[nodes[i]['label']]
-            if nodes[i]['label'] in labels_target_count:
-                nodes[i]['count_in'] = labels_target_count[nodes[i]['label']]
-                nodes[i]['value_in'] = agg_target_val[nodes[i]['label']]
+            if nodes[i]['id'] in labels_source_count:
+                nodes[i]['count_out'] = labels_source_count[nodes[i]['id']]
+                nodes[i]['value_out'] = agg_source_val[nodes[i]['id']]
+            if nodes[i]['id'] in labels_target_count:
+                nodes[i]['count_in'] = labels_target_count[nodes[i]['id']]
+                nodes[i]['value_in'] = agg_target_val[nodes[i]['id']]
             
           
         
         data_of_source_chain = get_data_of_source_chain()
         data_of_destination_chain = get_data_of_destination_chain()
 
+        # get_users_data()
         context = {
             'links': links,
             'nodes': nodes,
