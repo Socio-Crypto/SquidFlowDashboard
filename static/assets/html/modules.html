@@ -28,7 +28,7 @@
                 top: 0;
                 bottom: 0;
                 width: 100%;
-                height: 600px;
+                height: 700px;
 
                 display: flex;
                 justify-content: center;
@@ -59,7 +59,13 @@
 
                     let option = {
                         title: {
-                            text: 'Sankey Diagram'
+                            text: "Sankey Diagram",
+                            bottom: 10,
+                            right: 10,
+                            textStyle: {
+                                color: '#b0b000',
+                                fontSize: 15,
+                            }
                         },
                         tooltip: {
                             trigger: 'item',
@@ -115,7 +121,7 @@
                 top: 0;
                 bottom: 0;
                 width: 100%;
-                height: 800px;
+                height: 700px;
 
                 display: flex;
                 justify-content: center;
@@ -147,8 +153,8 @@
                     var categories = [];
                     for (i = 0; i < moduleData.nodes.length; i++) {
                         moduleData.nodes[i].value = moduleData.nodes[i].value_in + moduleData.nodes[i].value_out;
-                        if (moduleData.nodes[i].color == undefined)
-                            moduleData.nodes[i].color = graphcolor[i % graphcolor.length]
+                        // if (moduleData.nodes[i].color == undefined)
+                        //     moduleData.nodes[i].color = graphcolor[i % graphcolor.length]
                     }
                     let minN = moduleData.nodes.reduce(function (prev, curr) {
                         return prev.value < curr.value ? prev : curr;
@@ -163,18 +169,18 @@
                         //node.category = node.attributes.modularity_class;
                         // Use random x, y
                         node.x = node.y = null;
-                        node.name = node.label;
-                        // node.label = {
+                        node.name = node.id;
+                        // node.id = {
                         //     show: node.symbolSize > 10
                         // };
-                        node.itemStyle = {
-                            color: node.color
-                        };
+                        // node.itemStyle = {
+                        //     color: node.color
+                        // };
                         node.draggable = true;
 
-                        node.symbol = "image://./static/images/" + node.label + ".svg"; //"-w.svg";
+                        node.symbol = "image://./static/images/" + node.id + ".svg"; //"-w.svg";
                         //node.category = node.attributes.modularity_class;
-                        categories.push({ name: node.label });  //, color: node.color });
+                        categories.push({ name: node.id });  //, color: node.color });
 
                         //node.category = node.attributes.modularity_class;
                     });
@@ -188,7 +194,7 @@
                     moduleData.links.forEach(function (link) {
                         let size = 0.0001 * Math.pow(Math.log2(link.value), 4); //10 + 5 * Math.log10(link.size);   //20 * Math.random();  //5 + 20 * x.size / (max.size - min.size);
                         //link.size = 10 * size;
-                        let color = moduleData.nodes.find(x => link.target == x.label).color;
+                        //let color = moduleData.nodes.find(x => link.target == x.id).color;
                         //                        let color = blendColors(moduleData.nodes.find(x => link.source == x.id).color,
                         //                            moduleData.nodes.find(x => link.target == x.id).color, 1);
                         link.lineStyle = {
@@ -196,25 +202,28 @@
                                 curveness: 0.3,
                                 width: size,
                                 opacity: 0.7,
-                                color: color,
-                                //color: 'source',
+                                //color: color,
+                                color: 'target',
                             },
                         };
                         link.symbolSize = [1, size * 3]
                     });
 
                     let option = {
+                        color: graphcolor,
                         scale: true,
                         scaleSize: 20,
                         responsive: true,
                         maintainAspectRatio: false,
                         zoom: 1,
-
                         title: {
-                            text: 'vfn - graph',
-                            subtext: 'Default layout',
-                            top: 'bottom',
-                            left: 'right'
+                            text: "Force Directed Graph",
+                            bottom: 10,
+                            right: 10,
+                            textStyle: {
+                                color: '#b0b000',
+                                fontSize: 15,
+                            }
                         },
                         tooltip: {},
                         legend: [{
@@ -222,11 +231,8 @@
                             data: categories.map(function (a) {
                                 return a.name;  //, color: a.color };
                             }),
-                            top: "5%",
-                            textStyle: {
-                                fontSize: 14,
-                                color: "#ffffff"
-                            }
+                            top: 10,
+                            textStyle: { color: '#808080' }
                         }],
                         animation: true,
                         animationDurationUpdate: 300,
@@ -285,7 +291,7 @@
                     };
 
                     myChart.setOption(option);
-                    myChart.resize({ width: "auto", height: "800px" })
+                    myChart.resize({ width: "auto", height: "700px" })
                     new ResizeObserver(() => myChart.resize()).observe(container);
 
                     window.addEventListener('resize', function () {
@@ -391,9 +397,9 @@
                     var data2 = [];
 
                     for (var i = 0; i < moduleData.nodes.length; i++) {
-                        xAxisData.push(moduleData.nodes[i].label);
-                        data1.push(moduleData.nodes[i].value_in);
-                        data2.push(-moduleData.nodes[i].value_out);
+                        xAxisData.push(moduleData.nodes[i].id);
+                        data1.push(-moduleData.nodes[i].value_out);
+                        data2.push(moduleData.nodes[i].value_in);
                     }
 
                     var emphasisStyle = {
@@ -406,7 +412,18 @@
                         }
                     };
 
+                    //'var(--r-text-color)'
                     option = {
+                        color: graphcolor,
+                        title: {
+                            text: "Total Volume Of Bridge",
+                            bottom: 10,
+                            right: 10,
+                            textStyle: {
+                                color: '#b0b000',
+                                fontSize: 15,
+                            }
+                        },
                         backgroundColor: 'transparent',  //rgba(0, 0, 0, 1)',  //'#eee',
                         legend: {
                             data: ['source', 'target'],
@@ -416,19 +433,23 @@
                         },
                         tooltip: {},
                         xAxis: {
-                            inside: true,
+                            data: xAxisData,
+                            inside: false,
                             axisLabel: {
                                 rotate: 90,
                                 fontWeight: 'bold',
                                 textStyle: { color: '#808080' }
                             },
-                            data: xAxisData,
-                            axisLine: { onZero: true, lineStyle: { color: '#303030' } },
-                            splitLine: { show: false, lineStyle: { color: '#303030' } },
-                            splitArea: { show: false }
+                            axisLine: { onZero: true, lineStyle: { color: '#404040' } },
+                            splitLine: { show: false },
+                            splitArea: { show: false },
                         },
                         yAxis: {
-                            inverse: true,
+                            inverse: false,
+                            splitLine: {
+                                show: true,
+                                lineStyle: { color: '#404040' }
+                            },
                             splitArea: { show: false },
                             axisLabel: {
                                 fontWeight: 'bold',
@@ -436,7 +457,8 @@
                             },
                         },
                         grid: {
-                            left: 100
+                            left: 100,
+                            bottom: 100
                         },
                         series: [
                             {
@@ -457,13 +479,527 @@
                     };
 
                     myChart.setOption(option);
-                    myChart.resize({ width: auto, height: "400px" })
+                    myChart.resize({ width: "auto", height: "400px" })
                     new ResizeObserver(() => myChart.resize()).observe(container);
 
                     window.addEventListener('resize', function () {
                         myChart.resize();
                     });
 
+                }
+                function init(data) {
+                    moduleData = data;
+                    echart();
+                }
+                return {
+                    method: {
+                        init: function (data) {
+                            init(data);
+                        },
+                        setCallback: function (arg) {
+                            callback = arg;
+                        },
+                    }
+                }
+            }
+        </script>
+    </div>
+
+
+    <div id="chart3-container" style="display: block;">
+        <style>
+            .chart3 {
+                position: relative;
+                left: 0px;
+                right: 0px;
+                top: 0px;
+                bottom: 0px;
+                width: 100%;
+                height: 400px;
+
+                display: flex;
+                justify-content: center;
+            }
+
+            .chart3 canvas {
+                width: 100%;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+        </style>
+        <div id="chart3" class="chart3">
+        </div>
+        <script>
+            function scriptChart3() {
+                var callback = {};
+                var moduleData = {};
+
+                function echart() {
+                    const container = document.getElementById('chart3');
+                    const myChart = echarts.init(container, null, { renderer: 'canvas' });
+
+                    myChart.showLoading();
+                    myChart.hideLoading();
+
+                    let dimensions = ['timestamp'];
+                    let timeseries = [];
+                    for (i = 0; i < moduleData.nodes.length; i++) {
+                        dimensions.push(moduleData.nodes[i]);
+                        timeseries.push({
+                            name: moduleData.nodes[i].id,
+                            stack: 'one',
+                            type: 'bar',
+                            encode: {
+                                x: 'timestamp',
+                                y: moduleData.nodes[i].id
+                            }
+                        })
+                    }
+
+                    var option = {
+                        color: graphcolor,
+                        title: {
+                            text: 'Daily Volume Of Bridge by Source',
+                            bottom: 10,
+                            right: 10,
+                            textStyle: {
+                                color: '#b0b000',
+                                fontSize: 15,
+                            }
+                        },
+                        legend: {
+                            left: 10,
+                            top: 10,
+                            textStyle: { color: '#808080' }
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                        },
+                        dataset: {
+                            source: moduleData.sourceStacked,
+                            dimensions: dimensions,
+                        },
+                        xAxis: {
+                            type: 'time',
+                            axisLabel: {
+                                fontWeight: 'bold',
+                                textStyle: { color: '#808080' }
+                            },
+                            axisLine: { onZero: true, lineStyle: { color: '#404040' } },
+                            splitLine: { show: false },
+                            splitArea: { show: false },
+                        },
+                        yAxis: {
+                            inverse: false,
+                            splitLine: {
+                                show: true,
+                                lineStyle: { color: '#404040' }
+                            },
+                            splitArea: { show: false },
+                            axisLabel: {
+                                fontWeight: 'bold',
+                                textStyle: { color: '#808080' }
+                            },
+                        },
+                        series: timeseries
+                    };
+
+                    // for (i = 0; i < moduleData.nodes.length; i++) {
+                    //     moduleData.sourceCategorized[i] = {
+                    //         name: moduleData.nodes[i].id,
+                    //         type: 'bar',
+                    //         stack: 'one',
+                    //         emphasis: emphasisStyle,
+                    //         data: moduleData.source.filter(x => { return (x.sourcechain == moduleData.nodes[i].id) })
+                    //     }
+                    // }
+
+
+                    myChart.setOption(option);
+                    myChart.resize({ width: "auto", height: "400px" })
+                    new ResizeObserver(() => myChart.resize()).observe(container);
+
+                    window.addEventListener('resize', function () {
+                        myChart.resize();
+                    });
+
+                }
+                function init(data) {
+                    moduleData = data;
+                    echart();
+                }
+                return {
+                    method: {
+                        init: function (data) {
+                            init(data);
+                        },
+                        setCallback: function (arg) {
+                            callback = arg;
+                        },
+                    }
+                }
+            }
+        </script>
+    </div>
+
+
+    <div id="chart4-container" style="display: block;">
+        <style>
+            .chart4 {
+                position: relative;
+                left: 0px;
+                right: 0px;
+                top: 0px;
+                bottom: 0px;
+                width: 100%;
+                height: 400px;
+
+                display: flex;
+                justify-content: center;
+            }
+
+            .chart4 canvas {
+                width: 100%;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+        </style>
+        <div id="chart4" class="chart4">
+        </div>
+        <script>
+            function scriptChart4() {
+                var callback = {};
+                var moduleData = {};
+
+                function echart() {
+                    const container = document.getElementById('chart4');
+                    const myChart = echarts.init(container, null, { renderer: 'canvas' });
+
+                    myChart.showLoading();
+                    myChart.hideLoading();
+
+                    let dimensions = ['timestamp'];
+                    let timeseries = [];
+                    for (i = 0; i < moduleData.nodes.length; i++) {
+                        dimensions.push(moduleData.nodes[i]);
+                        timeseries.push({
+                            name: moduleData.nodes[i].id,
+                            stack: 'one',
+                            type: 'bar',
+                            encode: {
+                                x: 'timestamp',
+                                y: moduleData.nodes[i].id
+                            }
+                        })
+                    }
+                    var option = {
+                        color: graphcolor,
+                        title: {
+                            text: 'Daily Volume Of Bridge by Target',
+                            bottom: 10,
+                            right: 10,
+                            textStyle: {
+                                color: '#b0b000',
+                                fontSize: 15,
+                            }
+                        },
+                        legend: {
+                            left: 10,
+                            top: 10,
+                            textStyle: { color: '#808080' }
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                        },
+                        dataset: {
+                            source: moduleData.destinationStacked,
+                            dimensions: dimensions,
+                        },
+                        xAxis: {
+                            type: 'time',
+                            axisLabel: {
+                                fontWeight: 'bold',
+                                textStyle: { color: '#808080' }
+                            },
+                            axisLine: { onZero: true, lineStyle: { color: '#404040' } },
+                            splitLine: { show: false },
+                            splitArea: { show: false },
+                        },
+                        yAxis: {
+                            inverse: false,
+                            splitLine: {
+                                show: true,
+                                lineStyle: { color: '#404040' }
+                            },
+                            splitArea: { show: false },
+                            axisLabel: {
+                                fontWeight: 'bold',
+                                textStyle: { color: '#808080' }
+                            },
+                        },
+                        series: timeseries
+                    };
+
+                    myChart.setOption(option);
+                    myChart.resize({ width: "auto", height: "400px" })
+                    new ResizeObserver(() => myChart.resize()).observe(container);
+
+                    window.addEventListener('resize', function () {
+                        myChart.resize();
+                    });
+                }
+                function init(data) {
+                    moduleData = data;
+                    echart();
+                }
+                return {
+                    method: {
+                        init: function (data) {
+                            init(data);
+                        },
+                        setCallback: function (arg) {
+                            callback = arg;
+                        },
+                    }
+                }
+            }
+        </script>
+    </div>
+
+    <div id="chart5-container" style="display: block;">
+        <style>
+            .chart5 {
+                position: relative;
+                left: 0px;
+                right: 0px;
+                top: 0px;
+                bottom: 0px;
+                width: 100%;
+                height: 400px;
+
+                display: flex;
+                justify-content: center;
+            }
+
+            .chart5 canvas {
+                width: 100%;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+        </style>
+        <div id="chart5" class="chart5">
+        </div>
+        <script>
+            function scriptChart5() {
+                var callback = {};
+                var moduleData = {};
+
+                function echart() {
+                    const container = document.getElementById('chart5');
+                    const myChart = echarts.init(container, null, { renderer: 'canvas' });
+
+                    myChart.showLoading();
+                    myChart.hideLoading();
+
+                    let dimensions = ['timestamp'];
+                    let timeseries = [];
+                    for (i = 0; i < moduleData.nodes.length; i++) {
+                        dimensions.push(moduleData.nodes[i]);
+                        timeseries.push({
+                            name: moduleData.nodes[i].id,
+                            stack: 'one',
+                            type: 'bar',
+                            encode: {
+                                x: 'timestamp',
+                                y: moduleData.nodes[i].id
+                            }
+                        })
+                    }
+
+                    var option = {
+                        color: graphcolor,
+                        title: {
+                            text: 'Normalized Daily Volume Of Bridge by Source',
+                            bottom: 10,
+                            right: 10,
+                            textStyle: {
+                                color: '#b0b000',
+                                fontSize: 15,
+                            }
+                        },
+                        legend: {
+                            left: 10,
+                            top: 10,
+                            textStyle: { color: '#808080' }
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                        },
+                        dataset: {
+                            source: moduleData.sourceStacked100,
+                            dimensions: dimensions,
+                        },
+                        xAxis: {
+                            type: 'time',
+                            axisLabel: {
+                                fontWeight: 'bold',
+                                textStyle: { color: '#808080' }
+                            },
+                            axisLine: { onZero: true, lineStyle: { color: '#404040' } },
+                            splitLine: { show: false },
+                            splitArea: { show: false },
+                        },
+                        yAxis: {
+                            inverse: false,
+                            splitLine: {
+                                show: true,
+                                lineStyle: { color: '#404040' }
+                            },
+                            splitArea: { show: false },
+                            axisLabel: {
+                                fontWeight: 'bold',
+                                textStyle: { color: '#808080' }
+                            },
+                        },
+                        series: timeseries
+                    };
+
+                    myChart.setOption(option);
+                    myChart.resize({ width: "auto", height: "400px" })
+                    new ResizeObserver(() => myChart.resize()).observe(container);
+
+                    window.addEventListener('resize', function () {
+                        myChart.resize();
+                    });
+
+                }
+                function init(data) {
+                    moduleData = data;
+                    echart();
+                }
+                return {
+                    method: {
+                        init: function (data) {
+                            init(data);
+                        },
+                        setCallback: function (arg) {
+                            callback = arg;
+                        },
+                    }
+                }
+            }
+        </script>
+    </div>
+
+
+    <div id="chart6-container" style="display: block;">
+        <style>
+            .chart6 {
+                position: relative;
+                left: 0px;
+                right: 0px;
+                top: 0px;
+                bottom: 0px;
+                width: 100%;
+                height: 400px;
+
+                display: flex;
+                justify-content: center;
+            }
+
+            .chart6 canvas {
+                width: 100%;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+        </style>
+        <div id="chart6" class="chart6">
+        </div>
+        <script>
+            function scriptChart6() {
+                var callback = {};
+                var moduleData = {};
+
+                function echart() {
+                    const container = document.getElementById('chart6');
+                    const myChart = echarts.init(container, null, { renderer: 'canvas' });
+
+                    myChart.showLoading();
+                    myChart.hideLoading();
+
+                    let dimensions = ['timestamp'];
+                    let timeseries = [];
+                    for (i = 0; i < moduleData.nodes.length; i++) {
+                        dimensions.push(moduleData.nodes[i]);
+                        timeseries.push({
+                            name: moduleData.nodes[i].id,
+                            stack: 'one',
+                            type: 'bar',
+                            encode: {
+                                x: 'timestamp',
+                                y: moduleData.nodes[i].id
+                            }
+                        })
+                    }
+                    var option = {
+                        color: graphcolor,
+                        title: {
+                            text: 'Normalized Daily Volume Of Bridge by Target',
+                            bottom: 10,
+                            right: 10,
+                            textStyle: {
+                                color: '#b0b000',
+                                fontSize: 15,
+                            }
+                        },
+                        legend: {
+                            left: 10,
+                            top: 10,
+                            textStyle: { color: '#808080' }
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                        },
+                        dataset: {
+                            source: moduleData.destinationStacked100,
+                            dimensions: dimensions,
+                        },
+                        xAxis: {
+                            type: 'time',
+                            axisLabel: {
+                                fontWeight: 'bold',
+                                textStyle: { color: '#808080' }
+                            },
+                            axisLine: { onZero: true, lineStyle: { color: '#404040' } },
+                            splitLine: { show: false },
+                            splitArea: { show: false },
+                        },
+                        yAxis: {
+                            inverse: false,
+                            splitLine: {
+                                show: true,
+                                lineStyle: { color: '#404040' }
+                            },
+                            splitArea: { show: false },
+                            axisLabel: {
+                                fontWeight: 'bold',
+                                textStyle: { color: '#808080' }
+                            },
+                        },
+                        series: timeseries
+                    };
+
+                    myChart.setOption(option);
+                    myChart.resize({ width: "auto", height: "400px" })
+                    new ResizeObserver(() => myChart.resize()).observe(container);
+
+                    window.addEventListener('resize', function () {
+                        myChart.resize();
+                    });
                 }
                 function init(data) {
                     moduleData = data;

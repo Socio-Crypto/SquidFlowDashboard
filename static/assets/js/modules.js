@@ -26,51 +26,136 @@ async function caller() {
   startModule();
 }
 caller();
-
-// var tags = Array.prototype.slice
-//   .call(modules["addons"]["head"].getElementsByTagName("script"))
-//   .concat(
-//     Array.prototype.slice.call(
-//       modules["addons"]["head"].getElementsByTagName("link")
-//     )
-//   );
-// tags.forEach((element) => {
-//   var tag = document.createElement(element.nodeName);
-//   tag.onload = () => {
-//     console.log(element.name, " loaded successfuly");
-//   };
-//   Array.prototype.forEach.call(element.attributes, (element) => {
-//     tag.setAttribute(element.name, element.textContent);source
-//   });
-//   // tag.setAttribute("async", false);
-//   // tag.defer = true;
-//   document.head.appendChild(tag);
-//   //eval(tag.outerHTML);
-// });
 // #endregion fetch the core modules //
 
+var graphcolor = [
+  "#c23531",
+  "#2f4554",
+  "#61a0a8",
+  "#d48265",
+  "#91c7ae",
+  "#749f83",
+  "#ca8622",
+  "#bda29a",
+  "#6e7074",
+  "#546570",
+  "#c4ccd3",
+];
 var moduleInfo = {};
 var moduleData = {};
-moduleData.nodes = JSON.parse(
-  document.getElementById("nodes").value.replaceAll("'", '"')
-);
-moduleData.links = JSON.parse(
-  document.getElementById("links").value.replaceAll("'", '"')
-);
-moduleData.source = JSON.parse(
-  document.getElementById("data_of_source_chain").value.replaceAll("'", '"')
-);
-moduleData.destination = JSON.parse(
-  document
-    .getElementById("data_of_destination_chain")
-    .value.replaceAll("'", '"')
-);
 
 function startModule() {
+  function preprocessData() {
+    moduleData.nodes = JSON.parse(
+      document.getElementById("nodes").value.replaceAll("'", '"')
+    ).sort((a, b) => {
+      return compare(a, b, "id");
+    });
+
+    moduleData.links = JSON.parse(
+      document.getElementById("links").value.replaceAll("'", '"')
+    );
+
+    moduleData.source = JSON.parse(
+      document.getElementById("data_of_source_chain").value.replaceAll("'", '"')
+    ).sort((a, b) => {
+      return compare(a, b, "date");
+    });
+
+    moduleData.destination = JSON.parse(
+      document
+        .getElementById("data_of_destination_chain")
+        .value.replaceAll("'", '"')
+    ).sort((a, b) => {
+      return compare(a, b, "date");
+    });
+
+    let date1 = "";
+    moduleData.nodeList = {};
+    const datainit = new Array(moduleData.nodes.length).fill(0);
+    for (i = 0; i < moduleData.nodes.length; i++) {
+      moduleData.nodeList[moduleData.nodes[i].id] = i;
+    }
+
+    moduleData.sourceStacked = [];
+    moduleData.sourceStacked100 = [];
+    moduleData.source.forEach((x) => {
+      if (x.date != date1) {
+        date1 = x.date;
+        moduleData.sourceStacked.push([x.date, ...datainit]);
+        moduleData.sourceStacked[moduleData.sourceStacked.length - 1][
+          moduleData.nodeList[x.sourcechain] + 1
+        ] = x.value;
+      } else {
+        moduleData.sourceStacked[moduleData.sourceStacked.length - 1][
+          moduleData.nodeList[x.sourcechain] + 1
+        ] = x.value;
+      }
+    });
+    moduleData.sourceStacked100 = moduleData.sourceStacked.map((obj) => {
+      const [id, ...rest] = obj;
+      const sum = rest.reduce((acc, val) => acc + val);
+      return [sum, id, ...rest];
+    });
+    moduleData.sourceStacked100 = moduleData.sourceStacked100.map((obj) => {
+      const [sum, id, ...rest] = obj;
+      const rest2 = rest.map((val) => val / sum || 0);
+      return [sum, id, ...rest2];
+    });
+    moduleData.sourceStacked100.forEach((array) => array.splice(0, 1));
+
+    moduleData.destinationStacked = [];
+    moduleData.destinationStacked100 = [];
+    moduleData.destination.forEach((x) => {
+      if (x.date != date1) {
+        date1 = x.date;
+        moduleData.destinationStacked.push([x.date, ...datainit]);
+        moduleData.destinationStacked[moduleData.destinationStacked.length - 1][
+          moduleData.nodeList[x.destinationchain] + 1
+        ] = x.value;
+      } else {
+        moduleData.destinationStacked[moduleData.destinationStacked.length - 1][
+          moduleData.nodeList[x.destinationchain] + 1
+        ] = x.value;
+      }
+    });
+    moduleData.destinationStacked100 = moduleData.destinationStacked.map(
+      (obj) => {
+        const [id, ...rest] = obj;
+        const sum = rest.reduce((acc, val) => acc + val);
+        return [sum, id, ...rest];
+      }
+    );
+    moduleData.destinationStacked100 = moduleData.destinationStacked100.map(
+      (obj) => {
+        const [sum, id, ...rest] = obj;
+        const rest2 = rest.map((val) => val / sum || 0);
+        return [sum, id, ...rest2];
+      }
+    );
+    moduleData.destinationStacked100.forEach((array) => array.splice(0, 1));
+
+    function compare(a, b, key) {
+      if (a[key] < b[key]) {
+        return -1;
+      } else if (a[key] > b[key]) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+  }
+
+  preprocessData();
+
   moduleManage().loadModules([
     { core: "addons", name: "sankeychart" },
     { core: "addons", name: "forcechart" },
     { core: "addons", name: "chart1" },
+    { core: "addons", name: "chart3" },
+    { core: "addons", name: "chart4" },
+    { core: "addons", name: "chart5" },
+    { core: "addons", name: "chart6" },
   ]);
 
   // #region add-ons loading //
@@ -163,14 +248,7 @@ function startModule() {
       init: function () {
         init();
       },
-      event: function (arg) {
-        switch (arg.action) {
-          case "event1":
-            break;
-          case "event2":
-            break;
-        }
-      },
+      event: function (arg) {},
     };
   }
   function moduleHandle_forcechart() {
@@ -184,14 +262,7 @@ function startModule() {
       init: function () {
         init();
       },
-      event: function (arg) {
-        switch (arg.action) {
-          case "event1":
-            break;
-          case "event2":
-            break;
-        }
-      },
+      event: function (arg) {},
     };
   }
   function moduleHandle_chart1() {
@@ -205,14 +276,63 @@ function startModule() {
       init: function () {
         init();
       },
-      event: function (arg) {
-        switch (arg.action) {
-          case "event1":
-            break;
-          case "event2":
-            break;
-        }
+      event: function (arg) {},
+    };
+  }
+  function moduleHandle_chart3() {
+    init();
+
+    function init() {
+      moduleInfo.chart3.method.init(moduleData);
+    }
+
+    return {
+      init: function () {
+        init();
       },
+      event: function (arg) {},
+    };
+  }
+  function moduleHandle_chart4() {
+    init();
+
+    function init() {
+      moduleInfo.chart4.method.init(moduleData);
+    }
+
+    return {
+      init: function () {
+        init();
+      },
+      event: function (arg) {},
+    };
+  }
+  function moduleHandle_chart5() {
+    init();
+
+    function init() {
+      moduleInfo.chart5.method.init(moduleData);
+    }
+
+    return {
+      init: function () {
+        init();
+      },
+      event: function (arg) {},
+    };
+  }
+  function moduleHandle_chart6() {
+    init();
+
+    function init() {
+      moduleInfo.chart6.method.init(moduleData);
+    }
+
+    return {
+      init: function () {
+        init();
+      },
+      event: function (arg) {},
     };
   }
   // #endregion add-ons/modules handling //
