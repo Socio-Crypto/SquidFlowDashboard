@@ -1,20 +1,14 @@
 import json
 import os
-from urllib.parse import urlparse
 
-from django.conf import settings
 import json
 import os
-from urllib.parse import urlparse
 
-from django.conf import settings
 from django.shortcuts import render
-from django.urls import reverse
 from django.views.generic import View
-from graphqlclient import GraphQLClient
 from collections import Counter
+import requests
 
-from itertools import groupby
 from operator import itemgetter
 import pandas as pd
 
@@ -31,13 +25,18 @@ def get_data_from_the_graph(name, tokensQuery):
     https://thegraph.com/en/
     """
     APIURL = 'https://api.thegraph.com/subgraphs/name/kidacrypto/' + name
-
-   
-    client = GraphQLClient(APIURL)
-    data = client.execute(tokensQuery)
     data_dic = []
 
-    for item in json.loads(data)['data']['tokenStats']:
+    
+    headers = {'Content-Type': 'application/json'}
+    query = {'query': tokensQuery}
+
+    response = requests.post(APIURL, headers=headers, json=query)
+
+    # Get the response data as a dictionary
+    data = response.json()['data']
+
+    for item in data['tokenStats']:
             data_dic.append({
                 'source': item['sourceChain'].lower(),
                 'target': item['destinationChain'].lower(),
@@ -54,11 +53,17 @@ def get_data_from_tokenstatbydates(name, tokensQuery, chain):
     APIURL = 'https://api.thegraph.com/subgraphs/name/kidacrypto/' + name
 
    
-    client = GraphQLClient(APIURL)
-    data = client.execute(tokensQuery)
     data_dic = []
 
-    for item in json.loads(data)['data']['tokenStatByDates']:
+    headers = {'Content-Type': 'application/json'}
+    query = {'query': tokensQuery}
+
+    response = requests.post(APIURL, headers=headers, json=query)
+
+    # Get the response data as a dictionary
+    data = response.json()['data']
+
+    for item in data['tokenStatByDates']:
             data_dic.append({
                 'date': item['date'],
                 chain: item[chain].lower(),
@@ -75,11 +80,17 @@ def get_data_addressstats(name, tokensQuery, chain):
     APIURL = 'https://api.thegraph.com/subgraphs/name/kidacrypto/' + name
 
    
-    client = GraphQLClient(APIURL)
-    data = client.execute(tokensQuery)
     data_dic = []
 
-    for item in json.loads(data)['data']['addressStats']:
+    headers = {'Content-Type': 'application/json'}
+    query = {'query': tokensQuery}
+
+    response = requests.post(APIURL, headers=headers, json=query)
+
+    # Get the response data as a dictionary
+    data = response.json()['data']
+
+    for item in data['addressStats']:
             data_dic.append({
                 'user': item['user_address'],
                 # chain: item[chain],
@@ -170,8 +181,8 @@ def get_users_data():
             }
         }
     """
-    fantom = group_by_user(get_data_addressstats('fantom-squid-protocol', tokensQuery, 'sourceChain'), 'Fantom')
-    moonbeam = group_by_user(get_data_addressstats('moonbeam-squid-protocol', tokensQuery, 'sourceChain'), 'Moonbeam')
+    fantom = group_by_user(get_data_addressstats('fantom-squid-protocol', tokensQuery, 'sourceChain'), 'fantom')
+    moonbeam = group_by_user(get_data_addressstats('moonbeam-squid-protocol', tokensQuery, 'sourceChain'), 'moonbeam')
     celo = group_by_user(get_data_addressstats('celo-squid-protocol', tokensQuery, 'sourceChain'),'celo')
     flipside = get_leader_board()
     data = []
@@ -183,7 +194,13 @@ def get_users_data():
     grouped_df = data_df.groupby('user').sum().reset_index()
     list_of_dicts = grouped_df.to_dict(orient='records')
 
-    return list_of_dicts
+    for item in list_of_dicts:
+        total = sum([v for k, v in item.items() if k != 'user' and k != 'total_volume'])
+        item['total_volume'] = total
+
+    sorted_list = sorted(list_of_dicts, key=lambda x: x['total_volume'], reverse=True)
+
+    return sorted_list
 
 
 class DashboardView(View):
@@ -255,12 +272,13 @@ class DashboardView(View):
         data_of_source_chain = get_data_of_source_chain()
         data_of_destination_chain = get_data_of_destination_chain()
 
-        # get_users_data()
+        leaderboard = get_users_data()
         context = {
             'links': links,
             'nodes': nodes,
             'data_of_source_chain': data_of_source_chain,
             'data_of_destination_chain': data_of_destination_chain,
+            'leaderboard': leaderboard,
         }
 
         return render(request, 'dashboard.html', context=context)

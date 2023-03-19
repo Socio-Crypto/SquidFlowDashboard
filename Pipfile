@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 django = "*"
 shroomdk = "*"
-graphqlclient = "*"
 pandas = "*"
 
 [dev-packages]

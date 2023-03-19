@@ -79,7 +79,7 @@ def get_leader_board():
         SELECT
         sender as user,
         --  source_chain as source,
-        sum(amount) as "Total Volume",
+        sum(amount) as "Total_Volume",
         sum(
             CASE
             when source_chain = 'ethereum' then amount
@@ -145,7 +145,7 @@ def get_leader_board():
         GROUP BY
         1--,2
         ORDER BY
-        "Total Volume" DESC
+        "Total_Volume" DESC
     """
 
     return get_result_from_query(sql_query)
