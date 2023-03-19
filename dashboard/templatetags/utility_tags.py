@@ -6,3 +6,7 @@ register = template.Library()
 def subtract(value, value_2):
     return round(value - value_2)
 
+@register.filter
+def sum(value, value_2):
+    return round(value + value_2)
+
