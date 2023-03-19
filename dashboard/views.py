@@ -275,7 +275,7 @@ class DashboardView(View):
         leaderboard = get_users_data()
         context = {
             'links': links,
-            'nodes': nodes,
+            'nodes': sorted(nodes, key=lambda x: x['id']),
             'data_of_source_chain': data_of_source_chain,
             'data_of_destination_chain': data_of_destination_chain,
             'leaderboard': leaderboard,
