@@ -97,8 +97,8 @@
                             <th>{{ node.id }}</th>
                             <td>{{ node.value_in|floatformat:0 }}</td>
                             <td>{{ node.value_out|floatformat:0 }}</td>
-                            <td>{{ node.value_in|subtract:node.value_out }}</td>
                             <td>{{ node.value_in|sum:node.value_out }}</td>
+                            <td>{{ node.value_in|subtract:node.value_out }}</td>
                         </tr>
                       {% endfor %}
                     </tbody>
