@@ -173,9 +173,9 @@
                         // node.id = {
                         //     show: node.symbolSize > 10
                         // };
-                        // node.itemStyle = {
-                        //     color: node.color
-                        // };
+                        //node.itemStyle = {
+                        //    color: node.color
+                        //};
                         node.draggable = true;
 
                         node.symbol = "image://./static/images/" + node.id + ".svg"; //"-w.svg";
@@ -194,7 +194,7 @@
                     moduleData.links.forEach(function (link) {
                         let size = 0.0001 * Math.pow(Math.log2(link.value), 4); //10 + 5 * Math.log10(link.size);   //20 * Math.random();  //5 + 20 * x.size / (max.size - min.size);
                         //link.size = 10 * size;
-                        //let color = moduleData.nodes.find(x => link.target == x.id).color;
+                        let color = moduleData.nodes.find(x => link.target == x.id).color;
                         //                        let color = blendColors(moduleData.nodes.find(x => link.source == x.id).color,
                         //                            moduleData.nodes.find(x => link.target == x.id).color, 1);
                         link.lineStyle = {
@@ -205,12 +205,13 @@
                                 //color: color,
                                 color: 'target',
                             },
+                            color: 'target',
                         };
                         link.symbolSize = [1, size * 3]
                     });
 
                     let option = {
-                        color: graphcolor,
+                        //color: graphcolor,
                         scale: true,
                         scaleSize: 20,
                         responsive: true,
