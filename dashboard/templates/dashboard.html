@@ -70,7 +70,6 @@
           </div>
         </div>
 
-       
         <div class="row clearfix">
           <div class="col-md-12 col-lg-7 col-xl-6">
             <div class="card">
@@ -81,32 +80,32 @@
             <div class="card">
               <div id="chart2-container"></div>
               <div class="body table-responsive">
-                <table class="table m-b-0 table-striped table-dark">
-                    <thead>
-                        <tr>
-                            <th scope="col">Network</th>
-                            <th scope="col">Inflow</th>
-                            <th scope="col">Outflow</th>
-                            <th scope="col">Total</th>
-                            <th scope="col">Net</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                      {% for node in nodes %}
-                        <tr>
-                            <th>{{ node.id }}</th>
-                            <td>{{ node.value_in|floatformat:0 }}</td>
-                            <td>{{ node.value_out|floatformat:0 }}</td>
-                            <td>{{ node.value_in|sum:node.value_out }}</td>
-                            <td>{{ node.value_in|subtract:node.value_out }}</td>
-                        </tr>
-                      {% endfor %}
-                    </tbody>
+                <table class="table m-b-0 table-striped table-dark table-borderless table-black">
+                  <thead>
+                    <tr>
+                      <th scope="col">Network</th>
+                      <th scope="col">Inflow</th>
+                      <th scope="col">Outflow</th>
+                      <th scope="col">Total</th>
+                      <th scope="col">Net</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for node in nodes %}
+                    <tr>
+                      <th>{{ node.id }}</th>
+                      <td>{{ node.value_in|floatformat:0 }}</td>
+                      <td>{{ node.value_out|floatformat:0 }}</td>
+                      <td>{{ node.value_in|sum:node.value_out }}</td>
+                      <td>{{ node.value_in|subtract:node.value_out }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
                 </table>
-            </div>
+              </div>
             </div>
           </div>
-          
+
         </div>
 
         <div class="row clearfix">
@@ -157,42 +156,42 @@
             <div class="card">
               <div class="body">
                 <div class="table-responsive" style="height: 434px;">
-                <table class="table m-b-0 table-striped table-dark">
+                  <table class="table m-b-0 table-striped table-dark table-borderless table-black">
                     <thead>
-                        <tr>
-                            <th style="color: white;">Sender</th>
-                            <th style="color: white;">Total Volume</th>
-                            <th style="color: white;">ETHEREUM</th>
-                            <th style="color: white;">AVALANCHE</th>
-                            <th style="color: white;">BINANCE</th>
-                            <th style="color: white;">ARBITRUM</th>
-                            <th style="color: white;">POLYGON</th>
-                            <th style="color: white;">CELO</th>
-                            <th style="color: white;">FANTOM</th>
-                            <th style="color: white;">MOONBEAM</th>
-                        </tr>
+                      <tr>
+                        <th>Sender</th>
+                        <th>Total Volume</th>
+                        <th>ETHEREUM</th>
+                        <th>AVALANCHE</th>
+                        <th>BINANCE</th>
+                        <th>ARBITRUM</th>
+                        <th>POLYGON</th>
+                        <th>CELO</th>
+                        <th>FANTOM</th>
+                        <th>MOONBEAM</th>
+                      </tr>
                     </thead>
                     <tbody>
                       {% for user in leaderboard %}
-                      
-                        <tr>
-                            <td>{{ user.user }}</td>
-                            <td>{{ user.total_volume }}</td>
-                            <td>{{ user.fantom }}</td>
-                            <td>{{ user.moonbeam }}</td>
-                            <td>{{ user.celo }}</td>
-                            <td>{{ user.ethereum }}</td>
-                            <td>{{ user.avalanche }}</td>
-                            <td>{{ user.binance }}</td>
-                            <td>{{ user.arbitrum }}</td>
-                            <td>{{ user.polygon }}</td>
-                        </tr>
+
+                      <tr>
+                        <th>{{ user.user }}</th>
+                        <td>{{ user.total_volume }}</td>
+                        <td>{{ user.fantom }}</td>
+                        <td>{{ user.moonbeam }}</td>
+                        <td>{{ user.celo }}</td>
+                        <td>{{ user.ethereum }}</td>
+                        <td>{{ user.avalanche }}</td>
+                        <td>{{ user.binance }}</td>
+                        <td>{{ user.arbitrum }}</td>
+                        <td>{{ user.polygon }}</td>
+                      </tr>
                       {% endfor %}
-                       
+
                     </tbody>
-                </table>
+                  </table>
+                </div>
               </div>
-            </div>
             </div>
           </div>
         </div>
