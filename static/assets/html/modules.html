@@ -161,6 +161,7 @@
                     var categories = [];
                     for (i = 0; i < moduleData.nodes.length; i++) {
                         moduleData.nodes[i].value = moduleData.nodes[i].value_in + moduleData.nodes[i].value_out;
+                        moduleData.nodes[i].color = graphcolor[i];
                         // if (moduleData.nodes[i].color == undefined)
                         //     moduleData.nodes[i].color = graphcolor[i % graphcolor.length]
                     }
@@ -181,9 +182,9 @@
                         // node.id = {
                         //     show: node.symbolSize > 10
                         // };
-                        //node.itemStyle = {
-                        //    color: node.color
-                        //};
+                        node.itemStyle = {
+                            color: node.color
+                        };
                         node.draggable = true;
 
                         node.symbol = "image://./static/images/" + node.id + ".svg"; //"-w.svg";
@@ -210,8 +211,8 @@
                                 curveness: 0.3,
                                 width: size,
                                 opacity: 0.7,
-                                //color: color,
-                                color: 'target',
+                                color: color,
+                                //color: 'target',
                             },
                             color: 'target',
                         };
@@ -219,7 +220,7 @@
                     });
 
                     let option = {
-                        //color: graphcolor,
+                        color: graphcolor,
                         scale: true,
                         scaleSize: 20,
                         responsive: true,
@@ -243,7 +244,7 @@
                             top: 10,
                             textStyle: { fontSize: 14, color: '#a0a0a0' }
                         }],
-                        animation: true,
+                        animation: false,
                         animationDurationUpdate: 300,
                         animationEasingUpdate: 'quinticInOut',
                         series: [
