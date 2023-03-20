@@ -88,6 +88,14 @@
                                 lineStyle: {
                                     color: 'source',
                                     curveness: 0.5
+                                },
+                                label: {
+                                    fontSize: 14,
+                                    color: '#a0a0a0',
+                                    textShadowColor: 'transparent',
+                                    textBorderColor: 'transparent',
+                                    textBorderWidth: 0,
+
                                 }
                             }
                         ]
@@ -233,7 +241,7 @@
                                 return a.name;  //, color: a.color };
                             }),
                             top: 10,
-                            textStyle: { color: '#808080' }
+                            textStyle: { fontSize: 14, color: '#a0a0a0' }
                         }],
                         animation: true,
                         animationDurationUpdate: 300,
@@ -253,19 +261,27 @@
                                 roam: true,
                                 focusNodeAdjacency: true,
                                 label: {
+                                    fontSize: 14,
+                                    color: '#a0a0a0',
+                                    textShadowColor: 'transparent',
+                                    textBorderColor: 'transparent',
+                                    textBorderWidth: 0,
                                     formatter: '{b}',
                                     position: 'right',
                                     show: true,
-                                    normal: {
-                                        formatter: '{b}',
-                                        position: 'right',
-                                        show: true
-                                    },
-                                    textStyle: {
-                                        fontSize: 14,
-                                        color: "#ffffff"
-                                    }
                                 },
+
+                                // label: {
+                                //     normal: {
+                                //         formatter: '{b}',
+                                //         position: 'right',
+                                //         show: true
+                                //     },
+                                //     textStyle: {
+                                //         fontSize: 14,
+                                //         color: "#ffffff"
+                                //     }
+                                // },
                                 itemStyle: {
                                     //  borderColor: '#fff',
                                     //borderWidth: 1,
@@ -275,7 +291,8 @@
                                 edgeSymbol: ['circle', 'arrow'],
                                 edgeLabel: {
                                     textStyle: {
-                                        fontSize: 12
+                                        fontSize: 14,
+                                        color: '#a0a0a0',
                                     }
                                 },
                                 force: {
@@ -430,7 +447,7 @@
                             data: ['source', 'target'],
                             left: 10,
                             top: 10,
-                            textStyle: { color: '#808080' }
+                            textStyle: { fontSize: 14, color: '#a0a0a0' }
                         },
                         tooltip: {},
                         xAxis: {
@@ -572,7 +589,7 @@
                         legend: {
                             left: 10,
                             top: 10,
-                            textStyle: { color: '#808080' }
+                            textStyle: { fontSize: 14, color: '#a0a0a0' }
                         },
                         tooltip: {
                             trigger: 'axis',
@@ -709,7 +726,7 @@
                         legend: {
                             left: 10,
                             top: 10,
-                            textStyle: { color: '#808080' }
+                            textStyle: { fontSize: 14, color: '#a0a0a0' }
                         },
                         tooltip: {
                             trigger: 'axis',
@@ -834,7 +851,7 @@
                         legend: {
                             left: 10,
                             top: 10,
-                            textStyle: { color: '#808080' }
+                            textStyle: { fontSize: 14, color: '#a0a0a0' }
                         },
                         tooltip: {
                             trigger: 'axis',
@@ -960,7 +977,7 @@
                         legend: {
                             left: 10,
                             top: 10,
-                            textStyle: { color: '#808080' }
+                            textStyle: { fontSize: 14, color: '#a0a0a0' }
                         },
                         tooltip: {
                             trigger: 'axis',
