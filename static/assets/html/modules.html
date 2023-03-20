@@ -90,17 +90,18 @@
                                     curveness: 0.5
                                 },
                                 label: {
+                                    formatter: data => data.name.slice(0, -2),
                                     fontSize: 14,
                                     color: '#a0a0a0',
                                     textShadowColor: 'transparent',
                                     textBorderColor: 'transparent',
                                     textBorderWidth: 0,
-
                                 }
                             }
                         ]
                     }
                     myChart.setOption(option);
+
                 }
                 function init(data) {
                     moduleData = data;
@@ -221,10 +222,10 @@
 
                     let option = {
                         color: graphcolor,
-                        scale: true,
-                        scaleSize: 20,
+                        //scale: true,
+                        //scaleSize: 20,
                         responsive: true,
-                        maintainAspectRatio: false,
+                        //maintainAspectRatio: false,
                         zoom: 1,
                         title: {
                             text: "Force Directed Graph",
@@ -309,13 +310,14 @@
                         ]
                     };
 
-                    myChart.setOption(option);
                     myChart.resize({ width: "auto", height: "700px" })
                     new ResizeObserver(() => myChart.resize()).observe(container);
 
                     window.addEventListener('resize', function () {
                         myChart.resize();
                     });
+
+                    myChart.setOption(option);
 
                 }
                 function blendColors(color1, color2, percentage) {
