@@ -1,12 +1,12 @@
-import json
-import os
+# import json
+# import os
 
 from django.shortcuts import render
 from django.views.generic import View
 from collections import Counter
 import requests
 
-from operator import itemgetter
+# from operator import itemgetter
 # import pandas as pd
 
 from .services import (
@@ -211,7 +211,6 @@ def get_users_data():
     data = fantom + moonbeam + celo + flipside
 
     # Replace all NaN values with 0 in the 'value' column
-    import math
     for row in data:
         for key in row.keys():
             if row[key] is None:
@@ -319,9 +318,3 @@ class DashboardView(View):
         return render(request, 'dashboard.html', context=context)
 
 
-class DashboardView1(View):
-
-    def get(self, request):
-        context = {}
-        
-        return render(request, 'dashboard_1.html', context=context)
