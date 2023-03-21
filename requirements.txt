@@ -2,4 +2,3 @@ Django==4.1.7
 django-admin==2.0.2
 shroomdk==1.0.2
 django
-pandas-lite==0.1.1

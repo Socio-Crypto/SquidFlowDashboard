@@ -1,16 +1,13 @@
 import json
 import os
 
-import json
-import os
-
 from django.shortcuts import render
 from django.views.generic import View
 from collections import Counter
 import requests
 
 from operator import itemgetter
-import pandas as pd
+# import pandas as pd
 
 from .services import (
     get_network_data, 
@@ -34,14 +31,14 @@ def get_data_from_the_graph(name, tokensQuery):
     response = requests.post(APIURL, headers=headers, json=query)
 
     # Get the response data as a dictionary
-    data = response.json()['data']
+    # data = response.json()['data']
 
-    for item in data['tokenStats']:
-            data_dic.append({
-                'source': item['sourceChain'].lower(),
-                'target': item['destinationChain'].lower(),
-                'value': int(item['volume']) / 10**6,
-            })
+    # for item in data['tokenStats']:
+    #         data_dic.append({
+    #             'source': item['sourceChain'].lower(),
+    #             'target': item['destinationChain'].lower(),
+    #             'value': int(item['volume']) / 10**6,
+    #         })
     
     return data_dic
 
@@ -61,14 +58,14 @@ def get_data_from_tokenstatbydates(name, tokensQuery, chain):
     response = requests.post(APIURL, headers=headers, json=query)
 
     # Get the response data as a dictionary
-    data = response.json()['data']
+    # data = response.json()['data']
 
-    for item in data['tokenStatByDates']:
-            data_dic.append({
-                'date': item['date'],
-                chain: item[chain].lower(),
-                'value': int(item['volume']) / 10**6,
-            })
+    # for item in data['tokenStatByDates']:
+    #         data_dic.append({
+    #             'date': item['date'],
+    #             chain: item[chain].lower(),
+    #             'value': int(item['volume']) / 10**6,
+    #         })
     
     return data_dic
 
@@ -115,32 +112,33 @@ def aggregate_dictionary(data):
 def group_by_chain(data, chain):
     
     data.sort(key=itemgetter('date', chain))
-    df = pd.DataFrame(data)
+#     df = pd.DataFrame(data)
 
-    # groupby date and chain and sum the value column
-    result = df.groupby(['date', chain])['value'].sum().reset_index()
-    result['cum'] = result['value'].cumsum()
-    return result.to_dict('records')
+#     # groupby date and chain and sum the value column
+#     result = df.groupby(['date', chain])['value'].sum().reset_index()
+#     result['cum'] = result['value'].cumsum()
+#     return result.to_dict('records')
 
 
 def get_data_of_source_chain():
-    tokensQuery = """
-            query {
-               tokenStatByDates {
-                    date
-                    volume
-                    sourceChain
-                }
-            }
-            """
-    fantom = group_by_chain(get_data_from_tokenstatbydates('fantom-squid-protocol', tokensQuery, 'sourceChain'), 'sourceChain')
-    moonbeam = group_by_chain(get_data_from_tokenstatbydates('moonbeam-squid-protocol', tokensQuery, 'sourceChain'), 'sourceChain')
-    celo = group_by_chain(get_data_from_tokenstatbydates('celo-squid-protocol', tokensQuery, 'sourceChain'), 'sourceChain')
-    flipside = get_source_chain_based_on_date()
-    data = []
-    data = fantom + moonbeam + celo + flipside
+    # tokensQuery = """
+    #         query {
+    #            tokenStatByDates {
+    #                 date
+    #                 volume
+    #                 sourceChain
+    #             }
+    #         }
+    #         """
+    # fantom = group_by_chain(get_data_from_tokenstatbydates('fantom-squid-protocol', tokensQuery, 'sourceChain'), 'sourceChain')
+    # moonbeam = group_by_chain(get_data_from_tokenstatbydates('moonbeam-squid-protocol', tokensQuery, 'sourceChain'), 'sourceChain')
+    # celo = group_by_chain(get_data_from_tokenstatbydates('celo-squid-protocol', tokensQuery, 'sourceChain'), 'sourceChain')
+    # flipside = get_source_chain_based_on_date()
+    # data = []
+    # data = fantom + moonbeam + celo + flipside
 
-    return data
+    # return data
+    pass
 
 
 def get_data_of_destination_chain():
@@ -158,18 +156,18 @@ def get_data_of_destination_chain():
     celo = group_by_chain(get_data_from_tokenstatbydates('celo-squid-protocol', tokensQuery, 'destinationChain'), 'destinationChain')
     flipside = get_destination_chain_based_on_date()
     data = []
-    data = fantom + moonbeam + celo + flipside
+    # data = fantom + moonbeam + celo + flipside
 
     return data
 
 
 def group_by_user(data, chain):
     
-    df = pd.DataFrame(data)
-    # groupby user and sourceChain and sum the value column
-    result = df.groupby(['user'])[chain].sum().reset_index()
-    return result.to_dict('records')
-
+    # df = pd.DataFrame(data)
+    # # groupby user and sourceChain and sum the value column
+    # result = df.groupby(['user'])[chain].sum().reset_index()
+    # return result.to_dict('records')
+    pass
 
 def get_users_data():
     tokensQuery = """
@@ -186,21 +184,21 @@ def get_users_data():
     celo = group_by_user(get_data_addressstats('celo-squid-protocol', tokensQuery, 'sourceChain'),'celo')
     flipside = get_leader_board()
     data = []
-    data = fantom + moonbeam + celo + flipside
+    # data = fantom + moonbeam + celo + flipside
 
-    data_df = pd.DataFrame(data)
-    data_df.fillna(value=0, inplace=True)
+    # data_df = pd.DataFrame(data)
+    # data_df.fillna(value=0, inplace=True)
 
-    grouped_df = data_df.groupby('user').sum().reset_index()
-    list_of_dicts = grouped_df.to_dict(orient='records')
+    # grouped_df = data_df.groupby('user').sum().reset_index()
+    # list_of_dicts = grouped_df.to_dict(orient='records')
 
-    for item in list_of_dicts:
-        total = sum([v for k, v in item.items() if k != 'user' and k != 'total_volume'])
-        item['total_volume'] = total
+    # for item in list_of_dicts:
+    #     total = sum([v for k, v in item.items() if k != 'user' and k != 'total_volume'])
+    #     item['total_volume'] = total
 
-    sorted_list = sorted(list_of_dicts, key=lambda x: x['total_volume'], reverse=True)
+    # sorted_list = sorted(list_of_dicts, key=lambda x: x['total_volume'], reverse=True)
 
-    return sorted_list
+    # return sorted_list
 
 
 class DashboardView(View):
