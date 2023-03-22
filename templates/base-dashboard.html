@@ -57,7 +57,7 @@
             </div>
         </div>
     </nav>
-
+    {% include "includes/_menu.html" %}
     <section class="content profile_page">
         <div class="container">
             <!-- Strart Breadcrumbs Section -->
@@ -65,6 +65,7 @@
             <!-- End Breadcrumbs Section -->
 
             <!-- Start Main Content Section -->
+            <div class="row clearfix"></div>
             <div class="row">
                 {% block content %} {% endblock %}
 
@@ -78,11 +79,11 @@
                             background-color: black;">
                     <div class="row clearfix" style="margin-top: -32px;">
                         <p class="copyright m-b-0 text-white col-lg-6" style="    text-align: end; place-self: center;">
-                            <img src="static\images\axelar-logo.avif" height="20" alt="axelar">
+                            <img src="{% static 'images/axelar-logo.avif' %}" height="20" alt="axelar">
                         </p>
 
                         <p class="copyright m-b-0 text-white col-lg-6">
-                            <img src="static/images/flipside_logo.png" height="80" alt="flipside">
+                            <img src="{% static 'images/flipside_logo.png' %}" height="80" alt="flipside">
                         </p>
 
                     </div>

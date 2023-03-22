@@ -210,23 +210,37 @@ def get_users_data():
     data = []
     data = fantom + moonbeam + celo + flipside
 
-    # Replace all NaN values with 0 in the 'value' column
-    for row in data:
-        for key in row.keys():
-            if row[key] is None:
-                row[key] = 0
+    required_keys = {'user', 'total_volume', 'ethereum', 'avalanche', 'binance', 'arbitrum', 'polygon', 'celo', 'fantom', 'moonbeam'}
 
+    # Iterate over the list of dictionaries
+    for d in data:
+        # Check if dictionary has all required keys
+        if not required_keys.issubset(d.keys()):
+            # Add missing keys with default value
+            for key in required_keys - set(d.keys()):
+                d[key] = 0  
+
+    # grouped_df = data_df.groupby('user').sum().reset_index()
+    # list_of_dicts = grouped_df.to_dict(orient='records')
+
+    # return sorted_list
     # Group the data by 'user' and sum the 'value' column
     user_totals = {}
-    for row in data:
-        user = row['user']
-        value = list(row.values())[1]
-        if user not in user_totals:
-            user_totals[user] = 0
-        user_totals[user] += value
 
-    # Convert the result to a list of dictionaries
-    list_of_dicts = [{'user': user, 'value': total} for user, total in user_totals.items()]
+    # Iterate over the list of dictionaries
+    for d in data:
+        user = d['user']
+        # Add user to the dictionary if it doesn't already exist
+        if user not in user_totals:
+            user_totals[user] = {}
+        # Iterate over the keys in the dictionary and add to the corresponding summed value
+        for k, v in d.items():
+            if k != 'user':
+                user_totals[user][k] = user_totals[user].get(k, 0) + v
+
+    # Convert user_totals to a list of dictionaries
+    list_of_dicts = [{'user': user, **user_totals[user]} for user in user_totals]
+   
 
     for item in list_of_dicts:
         total = sum([v for k, v in item.items() if k != 'user' and k != 'total_volume'])
@@ -306,15 +320,25 @@ class DashboardView(View):
         data_of_source_chain = get_data_of_source_chain()
         data_of_destination_chain = get_data_of_destination_chain()
 
-        leaderboard = get_users_data()
         context = {
             'links': links,
             'nodes': sorted(nodes, key=lambda x: x['id']),
             'data_of_source_chain': data_of_source_chain,
             'data_of_destination_chain': data_of_destination_chain,
-            'leaderboard': leaderboard,
         }
 
         return render(request, 'dashboard.html', context=context)
 
 
+class LeaderboardView(View):
+
+    
+    def get(self, request):
+        context = {}
+        leaderboard = get_users_data()
+
+        context = {
+            'leaderboard': leaderboard,
+        }
+
+        return render(request, 'leaderboard.html', context=context)
