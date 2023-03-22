@@ -27,8 +27,12 @@ def get_data_from_the_graph(name, tokensQuery):
     
     headers = {'Content-Type': 'application/json'}
     query = {'query': tokensQuery}
-
-    response = requests.post(APIURL, headers=headers, json=query)
+    response = None
+    while not response or response.status_code != 200:
+        try:
+            response = requests.post(APIURL, headers=headers, json=query)
+        except:
+            pass
 
     # Get the response data as a dictionary
     data = response.json()['data']
@@ -55,7 +59,13 @@ def get_data_from_tokenstatbydates(name, tokensQuery, chain):
     headers = {'Content-Type': 'application/json'}
     query = {'query': tokensQuery}
 
-    response = requests.post(APIURL, headers=headers, json=query)
+    response = None
+    while not response or response.status_code != 200:
+        try:
+            response = requests.post(APIURL, headers=headers, json=query)
+        except:
+            pass
+
 
     # Get the response data as a dictionary
     data = response.json()['data']
@@ -82,7 +92,13 @@ def get_data_addressstats(name, tokensQuery, chain):
     headers = {'Content-Type': 'application/json'}
     query = {'query': tokensQuery}
 
-    response = requests.post(APIURL, headers=headers, json=query)
+    response = None
+    while not response or response.status_code != 200:
+        try:
+            response = requests.post(APIURL, headers=headers, json=query)
+        except:
+            pass
+
 
     # Get the response data as a dictionary
     data = response.json()['data']
@@ -299,6 +315,8 @@ class DashboardView(View):
                 "value_out": 0,
                 "count_in": 0,
                 "count_out": 0,
+                "total": 0,
+                "net": 0
             })
 
         labels_source_count = dict(Counter(labels_source))
@@ -315,14 +333,16 @@ class DashboardView(View):
                 nodes[i]['count_in'] = labels_target_count[nodes[i]['id']]
                 nodes[i]['value_in'] = agg_target_val[nodes[i]['id']]
             
-          
+        for i in range(len(nodes)):
+            nodes[i]['total'] = nodes[i]['value_in'] + nodes[i]['value_out']
+            nodes[i]['net'] = nodes[i]['value_in'] - nodes[i]['value_out']
         
         data_of_source_chain = get_data_of_source_chain()
         data_of_destination_chain = get_data_of_destination_chain()
 
         context = {
             'links': links,
-            'nodes': sorted(nodes, key=lambda x: x['id']),
+            'nodes': sorted(nodes, key=lambda x: x['net'], reverse=True),
             'data_of_source_chain': data_of_source_chain,
             'data_of_destination_chain': data_of_destination_chain,
         }

@@ -84,14 +84,14 @@
             <div class="card">
               <div id="chart2-container"></div>
               <div class="body table-responsive">
-                <table class="table m-b-0 table-striped table-dark table-borderless table-black">
+                <table class="table m-b-0 table-striped table-dark table-borderless table-black" id="network_table">
                   <thead>
                     <tr>
                       <th scope="col">Network</th>
                       <th scope="col">Inflow</th>
                       <th scope="col">Outflow</th>
                       <th scope="col">Total</th>
-                      <th scope="col">Net</th>
+                      <th scope="col">Net (AxlUSDC)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -100,8 +100,8 @@
                       <th>{{ node.id }}</th>
                       <td>{{ node.value_in|floatformat:0 }}</td>
                       <td>{{ node.value_out|floatformat:0 }}</td>
-                      <td>{{ node.value_in|sum:node.value_out }}</td>
-                      <td>{{ node.value_in|subtract:node.value_out }}</td>
+                      <td>{{ node.total|floatformat:0 }}</td>
+                      <td>{{ node.net|floatformat:0 }}</td>
                     </tr>
                     {% endfor %}
                   </tbody>
@@ -180,5 +180,15 @@
 {% endblock %}
 
 {% block scripts %}
+
+<script>
+  var table = document.getElementById("network_table");
+  var cells = table.getElementsByTagName("td");
+
+  for (var i = 0; i < cells.length; i++) {
+    var cellValue = parseInt(cells[i].textContent);
+    cells[i].textContent = cellValue.toLocaleString();
+  }
+</script>
 
 {% endblock %}
