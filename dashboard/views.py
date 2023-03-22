@@ -1,16 +1,13 @@
-import json
-import os
-
-import json
-import os
+# import json
+# import os
 
 from django.shortcuts import render
 from django.views.generic import View
 from collections import Counter
 import requests
 
-from operator import itemgetter
-import pandas as pd
+# from operator import itemgetter
+# import pandas as pd
 
 from .services import (
     get_network_data, 
@@ -112,15 +109,33 @@ def aggregate_dictionary(data):
     return sum_dict
 
 
-def group_by_chain(data, chain):
+def group_by_chain(data, chain_s):
     
-    data.sort(key=itemgetter('date', chain))
-    df = pd.DataFrame(data)
+    from operator import itemgetter
 
-    # groupby date and chain and sum the value column
-    result = df.groupby(['date', chain])['value'].sum().reset_index()
-    result['cum'] = result['value'].cumsum()
-    return result.to_dict('records')
+    # Sort the data by date and chain.
+    data.sort(key=itemgetter('date', chain_s))
+
+    # Create an empty dictionary to hold the aggregated values.
+    date_chain_totals = {}
+
+    # Iterate through each row of the data and sum the values for each date and chain.
+    for row in data:
+        date, chain, value = row['date'], row[chain_s], row['value']
+        if date not in date_chain_totals:
+            date_chain_totals[date] = {}
+        if chain not in date_chain_totals[date]:
+            date_chain_totals[date][chain] = {'value': 0, 'cum': 0}
+        date_chain_totals[date][chain]['value'] += value
+        date_chain_totals[date][chain]['cum'] += value
+
+    result = [] 
+    for date in date_chain_totals:
+        for chain_s, reto_totals in date_chain_totals[date].items():
+            row = {'date': date, 'chain': chain_s, 'value': reto_totals['value'], 'cum': reto_totals['cum']}
+            result.append(row)
+    
+    return result
 
 
 def get_data_of_source_chain():
@@ -165,10 +180,17 @@ def get_data_of_destination_chain():
 
 def group_by_user(data, chain):
     
-    df = pd.DataFrame(data)
-    # groupby user and sourceChain and sum the value column
-    result = df.groupby(['user'])[chain].sum().reset_index()
-    return result.to_dict('records')
+    user_totals = {}
+    for row in data:
+        user = row['user']
+        chain_value = row[chain]
+        if user not in user_totals:
+            user_totals[user] = 0
+        user_totals[user] += chain_value
+
+    result = [{'user': user, chain: total} for user, total in user_totals.items()]
+    
+    return result
 
 
 def get_users_data():
@@ -188,11 +210,37 @@ def get_users_data():
     data = []
     data = fantom + moonbeam + celo + flipside
 
-    data_df = pd.DataFrame(data)
-    data_df.fillna(value=0, inplace=True)
+    required_keys = {'user', 'total_volume', 'ethereum', 'avalanche', 'binance', 'arbitrum', 'polygon', 'celo', 'fantom', 'moonbeam'}
 
-    grouped_df = data_df.groupby('user').sum().reset_index()
-    list_of_dicts = grouped_df.to_dict(orient='records')
+    # Iterate over the list of dictionaries
+    for d in data:
+        # Check if dictionary has all required keys
+        if not required_keys.issubset(d.keys()):
+            # Add missing keys with default value
+            for key in required_keys - set(d.keys()):
+                d[key] = 0  
+
+    # grouped_df = data_df.groupby('user').sum().reset_index()
+    # list_of_dicts = grouped_df.to_dict(orient='records')
+
+    # return sorted_list
+    # Group the data by 'user' and sum the 'value' column
+    user_totals = {}
+
+    # Iterate over the list of dictionaries
+    for d in data:
+        user = d['user']
+        # Add user to the dictionary if it doesn't already exist
+        if user not in user_totals:
+            user_totals[user] = {}
+        # Iterate over the keys in the dictionary and add to the corresponding summed value
+        for k, v in d.items():
+            if k != 'user':
+                user_totals[user][k] = user_totals[user].get(k, 0) + v
+
+    # Convert user_totals to a list of dictionaries
+    list_of_dicts = [{'user': user, **user_totals[user]} for user in user_totals]
+   
 
     for item in list_of_dicts:
         total = sum([v for k, v in item.items() if k != 'user' and k != 'total_volume'])
@@ -272,21 +320,25 @@ class DashboardView(View):
         data_of_source_chain = get_data_of_source_chain()
         data_of_destination_chain = get_data_of_destination_chain()
 
-        leaderboard = get_users_data()
         context = {
             'links': links,
             'nodes': sorted(nodes, key=lambda x: x['id']),
             'data_of_source_chain': data_of_source_chain,
             'data_of_destination_chain': data_of_destination_chain,
-            'leaderboard': leaderboard,
         }
 
         return render(request, 'dashboard.html', context=context)
 
 
-class DashboardView1(View):
+class LeaderboardView(View):
 
+    
     def get(self, request):
         context = {}
-        
-        return render(request, 'dashboard_1.html', context=context)
+        leaderboard = get_users_data()
+
+        context = {
+            'leaderboard': leaderboard,
+        }
+
+        return render(request, 'leaderboard.html', context=context)
