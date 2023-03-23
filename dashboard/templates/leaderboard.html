@@ -38,7 +38,7 @@
           <div class="col-md-12 col-lg-12 col-xl-12">
             <div class="card">
               <div class="body">
-                <div class="table-responsive" style="height: 434px;">
+                <div class="table-responsive" style="height: 670px;">
                   <table class="table m-b-0 table-striped table-dark table-borderless table-black">
                     <thead>
                       <tr>
@@ -59,15 +59,15 @@
 
                       <tr>
                         <th>{{ user.user }}</th>
-                        <td>{{ user.total_volume }}</td>
-                        <td>{{ user.arbitrum }}</td>
-                        <td>{{ user.avalanche }}</td>
-                        <td>{{ user.binance }}</td>
-                        <td>{{ user.celo }}</td>
-                        <td>{{ user.ethereum }}</td>
-                        <td>{{ user.fantom }}</td>
-                        <td>{{ user.moonbeam }}</td>
-                        <td>{{ user.polygon }}</td>
+                        <td>{{ user.total_volume|floatformat:0 }}</td>
+                        <td>{{ user.arbitrum|floatformat:0 }}</td>
+                        <td>{{ user.avalanche|floatformat:0 }}</td>
+                        <td>{{ user.binance|floatformat:0 }}</td>
+                        <td>{{ user.celo|floatformat:0 }}</td>
+                        <td>{{ user.ethereum|floatformat:0 }}</td>
+                        <td>{{ user.fantom|floatformat:0 }}</td>
+                        <td>{{ user.moonbeam|floatformat:0 }}</td>
+                        <td>{{ user.polygon|floatformat:0 }}</td>
                       </tr>
                       {% endfor %}
 
