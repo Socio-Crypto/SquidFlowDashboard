@@ -156,6 +156,7 @@ function startModule() {
     { core: "addons", name: "chart4" },
     { core: "addons", name: "chart5" },
     { core: "addons", name: "chart6" },
+    { core: "addons", name: "imagetable" },
   ]);
 
   // #region add-ons loading //
@@ -326,6 +327,20 @@ function startModule() {
 
     function init() {
       moduleInfo.chart6.method.init(moduleData);
+    }
+
+    return {
+      init: function () {
+        init();
+      },
+      event: function (arg) {},
+    };
+  }
+  function moduleHandle_imagetable() {
+    init();
+
+    function init() {
+      moduleInfo.imagetable.method.init(moduleData);
     }
 
     return {

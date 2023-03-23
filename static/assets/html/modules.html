@@ -1054,6 +1054,159 @@
         </script>
     </div>
 
+
+    <div id="imagetable-container" style="display: block;">
+        <style>
+            .imagetable {
+                display: flex;
+                flex-direction: column;
+
+                position: inherit;
+                top: 40px;
+                left: 40px;
+                bottom: 40px;
+                right: 40px;
+                /* width: 100%; */
+                height: 400px;
+
+                font-size: 20px;
+                /* font-weight: bold; */
+                color: white;
+            }
+
+            .imagetable .row {
+                height: 60px;
+                line-height: 60px;
+                padding: 0;
+                margin: 0;
+                width: 100%;
+                left: 0;
+
+            }
+
+            .imagetable .inner {
+                top: 0;
+                left: 0;
+                height: 100%;
+                border-width: 0px 0px 5px 0px;
+                border-color: orange;
+                border-style: solid;
+            }
+
+            .imagetable .outer {
+                position: absolute;
+                /* padding: 10px; */
+                height: 100%;
+                width: 100%;
+                border: 'none';
+
+                display: flex;
+                flex-flow: row nowrap;
+                justify-content: flex-start;
+                /* align-items: stretch; */
+            }
+
+            .imagetable .col {
+                width: 100px;
+                height: 100%;
+                text-align: center;
+            }
+
+            .imagetable .imagecol {
+                width: 100px;
+                height: 100%;
+                text-align: center;
+            }
+
+            .imagetable img {
+                width: 30px;
+            }
+
+            .imagetable .restcol {
+                width: 100%;
+                height: 100%;
+                text-align: right;
+            }
+
+            .imagetable .endcol {
+                width: 200px;
+                height: 100%;
+                text-align: left;
+            }
+        </style>
+        <div id="imagetable" class="imagetable">
+            <div class="row">
+                <div class="inner" style="width: 40px; border-color: orange;">
+                </div>
+                <div class="outer">
+                    <div class="imagecol">
+                        <img src="./static/images/polygon.svg" />
+                    </div>
+                    <div class="col">
+                        <span>
+                            <&nbsp&nbsp&nbsp>
+                        </span>
+                    </div>
+                    <div class="imagecol">
+                        <img src="./static/images/ethereum.svg" />
+                    </div>
+                    <div class="restcol">
+                    </div>
+                    <div class="endcol">
+                        <span>
+                            12345.67
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="inner" style="width: 400px; border-color: blue;">
+                </div>
+                <div class="outer">
+                    <div class="imagecol">
+                        <img src="./static/images/ethereum.svg" />
+                    </div>
+                    <div class="col">
+                        <span>
+                            <&nbsp&nbsp&nbsp>
+                        </span>
+                    </div>
+                    <div class="imagecol">
+                        <img src="./static/images/binance.svg" />
+                    </div>
+                    <div class="restcol">
+                    </div>
+                    <div class="endcol">
+                        <span>
+                            123456.78
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function scriptChart6() {
+                var callback = {};
+                var moduleData = {};
+
+
+                function init(data) {
+                    moduleData = data;
+                }
+                return {
+                    method: {
+                        init: function (data) {
+                            init(data);
+                        },
+                        setCallback: function (arg) {
+                            callback = arg;
+                        },
+                    }
+                }
+            }
+        </script>
+    </div>
+
 </body>
 
 </html>
