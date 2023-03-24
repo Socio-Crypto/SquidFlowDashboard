@@ -413,8 +413,8 @@ class LeaderboardView(View):
         leaderboard = get_users_data()
         leaderboard_destination_chain = leader_board_destination()
         context = {
-            'leaderboard': leaderboard,
-            'leaderboard_destination_chain': leaderboard_destination_chain,
+            'leaderboard': leaderboard[:25],
+            'leaderboard_destination_chain': leaderboard_destination_chain[:25],
         }
 
         return render(request, 'leaderboard.html', context=context)
