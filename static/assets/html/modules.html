@@ -56,10 +56,45 @@
                     let nodes1 = links1.map(x => { return [x.source, x.target] })
                     nodes1 = [].concat.apply([], nodes1)
                     nodes1 = [...new Set(nodes1)].map(x => { return { name: x } })
+                    nodes1.sort((a, b) => {
+                        return compare(a, b, "name");
+                    });
+                    moduleData.nodes.sort((a, b) => {
+                        return compare(a, b, "id");
+                    });
+                    function compare(a, b, key) {
+                        if (a[key] < b[key]) {
+                            return -1;
+                        } else if (a[key] > b[key]) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    }
+
+                    let nodes2 = nodes1.map(x => x.name.slice(0, -2));
+                    nodes2 = [...new Set(nodes2)].map(x => { return { name: x } })
+
+                    for (i = 0; i < nodes1.length; i++) {
+                        let index = nodes2.findIndex(x => nodes1[i].name.slice(0, -2) == x.name);
+                        let circle = `<svg height="10" width="10"><circle cx="5" cy="5" r="5" stroke-width="0" fill="${moduleData.color[index]}"/></svg>`;
+                        nodes1[i].itemStyle = { color: moduleData.color[index] };
+                        let node = moduleData.nodes.find(x => nodes1[i].name.slice(0, -2) == x.id);
+                        if (nodes1[i].name.slice(-1) == "S") {
+                            nodes1[i].tooltip = { formatter: circle + " " + nodes2[index].name + " outflow <b>" + node.value_out + "</b>" };
+                        }
+                        else if (nodes1[i].name.slice(-1) == "T") {
+                            nodes1[i].tooltip = { formatter: circle + " " + nodes2[index].name + " outflow <b>" + node.value_in + "</b>" };
+                        }
+                    }
+
+                    links1.forEach((link) => {
+                        link.tooltip = { formatter: link.source.slice(0, -2) + " > " + link.target.slice(0, -2) + "   <b>" + link.value + "</b>" };
+                    });
 
                     let option = {
                         title: {
-                            text: "Sankey Diagram",
+                            text: moduleData.vars.sankychart.title,
                             bottom: 10,
                             right: 10,
                             textStyle: {
@@ -103,6 +138,7 @@
                     myChart.setOption(option);
 
                 }
+
                 function init(data) {
                     moduleData = data;
                     echart();
@@ -155,14 +191,14 @@
 
                 function echart() {
                     const container = document.getElementById('forcechart');
-                    const myChart = echarts.init(container, null, { renderer: 'canvas' });  //, null, { width: 800, height: 600 });
+                    const myChart = echarts.init(container, null, { renderer: 'canvas' });
 
                     myChart.showLoading();
                     myChart.hideLoading();
 
                     for (i = 0; i < moduleData.nodes.length; i++) {
                         moduleData.nodes[i].value = moduleData.nodes[i].value_in + moduleData.nodes[i].value_out;
-                        moduleData.nodes[i].color = graphcolor[i];
+                        moduleData.nodes[i].color = moduleData.color[i];
                     }
                     let minN = moduleData.nodes.reduce(function (prev, curr) {
                         return prev.value < curr.value ? prev : curr;
@@ -173,8 +209,7 @@
                     var categories = [];
                     moduleData.nodes.forEach(function (node) {
                         node.itemStyle = null;
-                        node.value = 5 + 0.00005 * Math.pow(Math.log2(node.value), 4);
-                        node.symbolSize = node.value;
+                        node.symbolSize = (node.count_in + node.count_out) / 2;
                         node.x = node.y = null;
                         node.name = node.id;
                         node.itemStyle = {
@@ -182,7 +217,7 @@
                         };
                         node.draggable = false;
 
-                        node.symbol = "image://./static/images/" + node.id + ".svg"; //"-w.svg";
+                        node.symbol = "image://" + moduleData.vars.svgurl + node.id + ".svg"; //"-w.svg";
                         categories.push({ name: node.id });
                     });
 
@@ -192,10 +227,24 @@
                     let maxL = moduleData.links.reduce(function (prev, curr) {
                         return prev.value > curr.value ? prev : curr;
                     });
-                    moduleData.links.forEach(function (link) {
-                        let size = 0.0001 * Math.pow(Math.log2(link.value), 4); //an empirical function to normalize the width of links
-                        let color = moduleData.nodes.find(x => link.target == x.id).color;
-                        link.lineStyle = {
+
+                    moduleData.links.sort((a, b) => {
+                        return compare(a, b, "value");
+                    });
+                    function compare(a, b, key) {
+                        if (a[key] < b[key]) {
+                            return -1;
+                        } else if (a[key] > b[key]) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    }
+
+                    for (i = 0; i < moduleData.links.length; i++) {
+                        let size = 1 + i / 5;  //moduleData.links[i].value / 100000;  // //Math.log2(moduleData.links[i].value) / 4; //an empirical function to normalize the width of links
+                        let color = moduleData.nodes.find(x => moduleData.links[i].target == x.id).color;
+                        moduleData.links[i].lineStyle = {
                             normal: {
                                 curveness: 0.3,
                                 width: size,
@@ -203,37 +252,13 @@
                                 color: color,
                             },
                         };
-                        link.symbolSize = [1, size * 3]
-                    });
-
-                    let nodes = [];
-                    let links = [];
-                    moduleData.nodes.forEach(node => {
-                        nodes.push({
-                            itemStyle: node.itemStyle,
-                            value: node.value,
-                            symbolSize: node.symbolSize,
-                            // x: node.x,
-                            // y: node.y,
-                            name: node.name,
-                            draggable: node.draggable,
-                            symbol: node.symbol,
-                        });
-                    });
-                    moduleData.links.forEach(link => {
-                        links.push({
-                            lineStyle: link.lineStyle,
-                            symbolSize: link.symbolSize,
-                            source: link.source,
-                            target: link.target,
-                            value: link.value,
-                        });
-                    });
+                        moduleData.links[i].symbolSize = [1, size * 3]
+                    }
 
                     let option = {
-                        color: graphcolor,
+                        color: moduleData.color,
                         title: {
-                            text: "Force Directed Graph",
+                            text: moduleData.vars.forcechart.title,
                             bottom: 10,
                             right: 10,
                             textStyle: {
@@ -245,18 +270,17 @@
                         legend: [{
                             //selectedMode: 'single',
                             data: categories.map(function (a) {
-                                return a.name;  //, color: a.color };
+                                return a.name;
                             }),
                             top: 10,
                             textStyle: { fontSize: 14, color: '#a0a0a0' }
                         }],
                         series: [
                             {
-                                name: 'vfn - graph',
                                 type: 'graph',
                                 layout: 'force',
-                                nodes: nodes,
-                                links: links,
+                                nodes: moduleData.nodes,
+                                links: moduleData.links,
                                 top: "10%",
                                 right: "5%",
                                 bottom: "5%",
@@ -274,53 +298,17 @@
                                     position: 'right',
                                     show: true,
                                 },
-
-                                // label: {
-                                //     normal: {
-                                //         formatter: '{b}',
-                                //         position: 'right',
-                                //         show: true
-                                //     },
-                                //     textStyle: {
-                                //         fontSize: 14,
-                                //         color: "#ffffff"
-                                //     }
-                                // },
-                                //itemStyle: {
-                                //  borderColor: '#fff',
-                                //borderWidth: 1,
-                                //shadowBlur: 10,
-                                //shadowColor: 'rgba(0, 0, 0, 0.3)'
-                                //},
                                 edgeSymbol: ['circle', 'arrow'],
-                                // edgeLabel: {
-                                //     textStyle: {
-                                //         fontSize: 14,
-                                //         color: '#a0a0a0',
-                                //     }
-                                // },
                                 force: {
                                     //repulsion: 100,
                                     gravity: 0.1,
                                     edgeLength: 30,
                                 },
-                                // emphasis: {
-                                //     label: {
-                                //         position: 'right',
-                                //         show: true
-                                //     }
-                                // },
                                 zoom: 10,
                                 nodeScaleRatio: 0.6,
-                                //scale: true,
-                                //scaleSize: 20,
                                 responsive: true,
-                                //maintainAspectRatio: false,
                                 animation: false,
                                 animationThreshold: 0,
-                                // animationDurationUpdate: 300,
-                                // animationEasingUpdate: 'quinticInOut',
-
                             }
                         ]
                     };
@@ -334,44 +322,7 @@
 
                     myChart.setOption(option);
                 }
-                function blendColors(color1, color2, percentage) {
-                    if (color1.length != 4 && color1.length != 7)
-                        throw new error('colors must be provided as hexes');
 
-                    if (color2.length != 4 && color2.length != 7)
-                        throw new error('colors must be provided as hexes');
-
-                    if (percentage > 1 || percentage < 0)
-                        throw new error('percentage must be between 0 and 1');
-
-                    if (color1.length == 4)
-                        color1 = color1[1] + color1[1] + color1[2] + color1[2] + color1[3] + color1[3];
-                    else
-                        color1 = color1.substring(1);
-                    if (color2.length == 4)
-                        color2 = color2[1] + color2[1] + color2[2] + color2[2] + color2[3] + color2[3];
-                    else
-                        color2 = color2.substring(1);
-                    // 3: we have valid input, convert colors to rgb
-                    color1 = [parseInt(color1[0] + color1[1], 16), parseInt(color1[2] + color1[3], 16), parseInt(color1[4] + color1[5], 16)];
-                    color2 = [parseInt(color2[0] + color2[1], 16), parseInt(color2[2] + color2[3], 16), parseInt(color2[4] + color2[5], 16)];
-                    // 4: blend
-                    var color3 = [
-                        (1 - percentage) * color1[0] + percentage * color2[0],
-                        (1 - percentage) * color1[1] + percentage * color2[1],
-                        (1 - percentage) * color1[2] + percentage * color2[2]
-                    ];
-                    // 5: convert to hex
-                    color3 = '#' + int_to_hex(color3[0]) + int_to_hex(color3[1]) + int_to_hex(color3[2]);
-                    // return hex
-                    return color3;
-                }
-                function int_to_hex(num) {
-                    var hex = Math.round(num).toString(16);
-                    if (hex.length == 1)
-                        hex = '0' + hex;
-                    return hex;
-                }
                 function init(data) {
                     moduleData = data;
                     echart();
@@ -446,12 +397,10 @@
                             shadowColor: 'rgba(0,0,0,0.5)'
                         }
                     };
-
-                    //'var(--r-text-color)'
                     option = {
-                        color: graphcolor,
+                        color: moduleData.color,
                         title: {
-                            text: "Total Volume Of Bridge",
+                            text: moduleData.vars.chart1.title,
                             bottom: 10,
                             right: 10,
                             textStyle: {
@@ -459,9 +408,9 @@
                                 fontSize: 15,
                             }
                         },
-                        backgroundColor: 'transparent',  //rgba(0, 0, 0, 1)',  //'#eee',
+                        backgroundColor: 'transparent',
                         legend: {
-                            data: ['source', 'target'],
+                            data: ['source', 'destination'],
                             left: 10,
                             top: 10,
                             textStyle: { fontSize: 14, color: '#a0a0a0' }
@@ -504,7 +453,7 @@
                                 data: data1
                             },
                             {
-                                name: 'target',
+                                name: 'destination',
                                 type: 'bar',
                                 stack: 'one',
                                 emphasis: emphasisStyle,
@@ -593,9 +542,9 @@
                     }
 
                     var option = {
-                        color: graphcolor,
+                        color: moduleData.color,
                         title: {
-                            text: 'Daily Volume Of Bridge by Source',
+                            text: moduleData.vars.chart3.title,
                             bottom: 10,
                             right: 10,
                             textStyle: {
@@ -639,17 +588,6 @@
                         },
                         series: timeseries
                     };
-
-                    // for (i = 0; i < moduleData.nodes.length; i++) {
-                    //     moduleData.sourceCategorized[i] = {
-                    //         name: moduleData.nodes[i].id,
-                    //         type: 'bar',
-                    //         stack: 'one',
-                    //         emphasis: emphasisStyle,
-                    //         data: moduleData.source.filter(x => { return (x.sourcechain == moduleData.nodes[i].id) })
-                    //     }
-                    // }
-
 
                     myChart.setOption(option);
                     myChart.resize({ width: "auto", height: "400px" })
@@ -730,9 +668,9 @@
                         })
                     }
                     var option = {
-                        color: graphcolor,
+                        color: moduleData.color,
                         title: {
-                            text: 'Daily Volume Of Bridge by Target',
+                            text: moduleData.vars.chart4.title,
                             bottom: 10,
                             right: 10,
                             textStyle: {
@@ -855,9 +793,9 @@
                     }
 
                     var option = {
-                        color: graphcolor,
+                        color: moduleData.color,
                         title: {
-                            text: 'Normalized Daily Volume Of Bridge by Source',
+                            text: moduleData.vars.chart5.title,
                             bottom: 10,
                             right: 10,
                             textStyle: {
@@ -981,9 +919,9 @@
                         })
                     }
                     var option = {
-                        color: graphcolor,
+                        color: moduleData.color,
                         title: {
-                            text: 'Normalized Daily Volume Of Bridge by Target',
+                            text: moduleData.vars.chart6.title,
                             bottom: 10,
                             right: 10,
                             textStyle: {
