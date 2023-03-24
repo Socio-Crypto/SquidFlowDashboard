@@ -53,12 +53,8 @@
                     var myChart = echarts.init(container, null, { renderer: 'canvas' });
 
                     let links1 = moduleData.links.map(x => { return { source: x.source + "-S", target: x.target + "-T", value: x.value } })
-                    let links2 = moduleData.links.map(x => { return { source: x.source + "-T", target: x.target + "-S", value: x.value } })
                     let nodes1 = links1.map(x => { return [x.source, x.target] })
-                    let nodes2 = links2.map(x => { return [x.source, x.target] })
                     nodes1 = [].concat.apply([], nodes1)
-                    nodes2 = [].concat.apply([], nodes2)
-                    nodes1 = nodes1.concat(nodes2)
                     nodes1 = [...new Set(nodes1)].map(x => { return { name: x } })
                     nodes1.sort((a, b) => {
                         return compare(a, b, "name");
@@ -76,12 +72,20 @@
                         }
                     }
 
-                    for (i = 0; i < nodes1.length / 2; i++) {
-                        let circle = `<svg height="10" width="10"><circle cx="5" cy="5" r="5" stroke-width="0" fill="${graphcolor[i]}"/></svg>`;
-                        nodes1[2 * i].itemStyle = { color: graphcolor[i] };
-                        nodes1[2 * i + 1].itemStyle = { color: graphcolor[i] };
-                        nodes1[2 * i].tooltip = { formatter: circle + " " + nodes1[2 * i].name.slice(0, -2) + " outflow <b>" + moduleData.nodes[i].value_in + "</b>" };
-                        nodes1[2 * i + 1].tooltip = { formatter: circle + " " + nodes1[2 * i + 1].name.slice(0, -2) + " inflow <b>" + moduleData.nodes[i].value_out + "</b>" };
+                    let nodes2 = nodes1.map(x => x.name.slice(0, -2));
+                    nodes2 = [...new Set(nodes2)].map(x => { return { name: x } })
+
+                    for (i = 0; i < nodes1.length; i++) {
+                        let index = nodes2.findIndex(x => nodes1[i].name.slice(0, -2) == x.name);
+                        let circle = `<svg height="10" width="10"><circle cx="5" cy="5" r="5" stroke-width="0" fill="${graphcolor[index]}"/></svg>`;
+                        nodes1[i].itemStyle = { color: graphcolor[index] };
+                        let node = moduleData.nodes.find(x => nodes1[i].name.slice(0, -2) == x.id);
+                        if (nodes1[i].name.slice(-1) == "S") {
+                            nodes1[i].tooltip = { formatter: circle + " " + nodes2[index].name + " outflow <b>" + node.value_out + "</b>" };
+                        }
+                        else if (nodes1[i].name.slice(-1) == "T") {
+                            nodes1[i].tooltip = { formatter: circle + " " + nodes2[index].name + " outflow <b>" + node.value_in + "</b>" };
+                        }
                     }
 
                     links1.forEach((link) => {
