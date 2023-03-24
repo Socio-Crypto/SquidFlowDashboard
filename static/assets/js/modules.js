@@ -141,7 +141,7 @@ function startModule() {
         title: "Asset Flow Network",
       },
       sankychart: {
-        title: "Sankey Diagram",
+        title: "Flow Diagarm",
       },
       chart1: {
         title: "Total Volume Of Bridge",
