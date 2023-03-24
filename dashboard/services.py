@@ -79,7 +79,6 @@ def get_leader_board():
         SELECT
         sender as user,
         --  source_chain as source,
-        sum(amount) as "Total_Volume",
         sum(
             CASE
             when source_chain = 'ethereum' then amount
@@ -144,8 +143,83 @@ def get_leader_board():
         AND date_trunc('day', block_timestamp) >= '2022-12-01'
         GROUP BY
         1--,2
-        ORDER BY
-        "Total_Volume" DESC
+    """
+
+    return get_result_from_query(sql_query)
+
+
+def get_leader_board_based_on_destination():
+    
+    "Flipside: https://api.flipsidecrypto.com/api/v2/queries/e3f60555-22f9-4873-aa7f-1987e3e27eab/data/latest"
+
+    sql_query = """
+        SELECT
+        sender as user,
+        --  source_chain as source,
+        sum(
+            CASE
+            when destination_chain = 'ethereum' then amount
+            else 0
+            end
+        ) as Ethereum,
+        sum(
+            CASE
+            when destination_chain = 'avalanche' then amount
+            else 0
+            end
+        ) as avalanche,
+        sum(
+            CASE
+            when destination_chain = 'binance' then amount
+            else 0
+            end
+        ) as binance,
+        sum(
+            CASE
+            when destination_chain = 'arbitrum' then amount
+            else 0
+            end
+        ) as arbitrum,
+        sum(
+            CASE
+            when destination_chain = 'polygon' then amount
+            else 0
+            end
+        ) as polygon,
+        sum(
+            CASE
+            when destination_chain = 'celo' then amount
+            else 0
+            end
+        ) as celo,
+        sum(
+            CASE
+            when destination_chain = 'fantom' then amount
+            else 0
+            end
+        ) as fantom,
+        sum(
+            CASE
+            when destination_chain = 'moonbeam' then amount
+            else 0
+            end
+        ) as moonbeam
+        FROM
+        axelar.core.EZ_SQUID
+        WHERE
+        source_chain in (
+            'ethereum',
+            'avalanche',
+            'binance',
+            'arbitrum',
+            'polygon',
+            'celo',
+            'fantom',
+            'moonbeam'
+        )
+        AND date_trunc('day', block_timestamp) >= '2022-12-01'
+        GROUP BY
+        1--,2
     """
 
     return get_result_from_query(sql_query)

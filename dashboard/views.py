@@ -13,7 +13,8 @@ from .services import (
     get_network_data, 
     get_source_chain_based_on_date, 
     get_destination_chain_based_on_date, 
-    get_leader_board
+    get_leader_board,
+    get_leader_board_based_on_destination
     )
 
 
@@ -210,6 +211,7 @@ def group_by_user(data, chain):
 
 
 def get_users_data():
+    
     tokensQuery = """
         query {
             addressStats {
@@ -219,10 +221,12 @@ def get_users_data():
             }
         }
     """
+    
     fantom = group_by_user(get_data_addressstats('fantom-squid-protocol', tokensQuery, 'sourceChain'), 'fantom')
     moonbeam = group_by_user(get_data_addressstats('moonbeam-squid-protocol', tokensQuery, 'sourceChain'), 'moonbeam')
     celo = group_by_user(get_data_addressstats('celo-squid-protocol', tokensQuery, 'sourceChain'),'celo')
     flipside = get_leader_board()
+
     data = []
     data = fantom + moonbeam + celo + flipside
 
@@ -236,11 +240,6 @@ def get_users_data():
             for key in required_keys - set(d.keys()):
                 d[key] = 0  
 
-    # grouped_df = data_df.groupby('user').sum().reset_index()
-    # list_of_dicts = grouped_df.to_dict(orient='records')
-
-    # return sorted_list
-    # Group the data by 'user' and sum the 'value' column
     user_totals = {}
 
     # Iterate over the list of dictionaries
@@ -263,6 +262,61 @@ def get_users_data():
         item['total_volume'] = total
 
     sorted_list = sorted(list_of_dicts, key=lambda x: x['total_volume'], reverse=True)
+
+    return sorted_list
+
+
+
+def leader_board_destination():
+    
+    tokensQuery = """
+        query {
+            addressStats {
+                user_address
+                volume
+                destinationChain
+            }
+        }
+    """
+    
+    fantom = get_data_addressstats('fantom-squid-protocol', tokensQuery, 'destinationChain')
+    moonbeam = get_data_addressstats('moonbeam-squid-protocol', tokensQuery, 'destinationChain')
+    celo = get_data_addressstats('celo-squid-protocol', tokensQuery, 'destinationChain')
+    flipside = get_leader_board_based_on_destination()
+
+    data = []
+    data = fantom + moonbeam + celo + flipside
+
+    required_keys = {'user', 'total_volume', 'ethereum', 'avalanche', 'binance', 'arbitrum', 'polygon', 'celo', 'fantom', 'moonbeam'}
+
+    # Iterate over the list of dictionaries
+    for d in data:
+        # Check if dictionary has all required keys
+        if not required_keys.issubset(d.keys()):
+            # Add missing keys with default value
+            for key in required_keys - set(d.keys()):
+                d[key] = 0  
+
+    grouped_data = {}
+
+    for item in data:
+        user = item['user']
+        if user not in grouped_data:
+            grouped_data[user] = item.copy()
+        else:
+            for key in item.keys():
+                if key != 'user':
+                    grouped_data[user][key] += item[key]
+
+    grouped_data = list(grouped_data.values())
+
+   
+
+    for item in grouped_data:
+        total = sum([v for k, v in item.items() if k != 'user' and k != 'total_volume'])
+        item['total_volume'] = total
+
+    sorted_list = sorted(grouped_data, key=lambda x: x['total_volume'], reverse=True)
 
     return sorted_list
 
@@ -356,9 +410,10 @@ class LeaderboardView(View):
     def get(self, request):
         context = {}
         leaderboard = get_users_data()
-
+        leaderboard_destination_chain = leader_board_destination()
         context = {
             'leaderboard': leaderboard,
+            'leaderboard_destination_chain': leaderboard_destination_chain,
         }
 
         return render(request, 'leaderboard.html', context=context)
