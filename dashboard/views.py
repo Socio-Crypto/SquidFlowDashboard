@@ -342,7 +342,8 @@ class DashboardView(View):
         moonbeam = get_data_from_the_graph('moonbeam-squid-protocol', tokensQuery)
         celo = get_data_from_the_graph('celo-squid-protocol', tokensQuery)
         flipside = get_network_data()
-        
+
+        moonbeam = [d for d in moonbeam if d.get('target') != 'kava']
         links = fantom + moonbeam + celo + flipside
 
         labels_source = []
