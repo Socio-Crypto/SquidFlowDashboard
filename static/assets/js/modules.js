@@ -28,19 +28,6 @@ async function caller() {
 caller();
 // #endregion fetch the core modules //
 
-var graphcolor = [
-  "#c23531",
-  "#2f4554",
-  "#61a0a8",
-  "#d48265",
-  "#91c7ae",
-  "#749f83",
-  "#ca8622",
-  "#bda29a",
-  "#6e7074",
-  "#546570",
-  "#c4ccd3",
-];
 var moduleInfo = {};
 var moduleData = {};
 
@@ -134,6 +121,44 @@ function startModule() {
       }
     );
     moduleData.destinationStacked100.forEach((array) => array.splice(0, 1));
+
+    moduleData.color = [
+      "#c23531",
+      "#2f4554",
+      "#61a0a8",
+      "#d48265",
+      "#91c7ae",
+      "#749f83",
+      "#ca8622",
+      "#bda29a",
+      "#6e7074",
+      "#546570",
+      "#c4ccd3",
+    ];
+    moduleData.vars = {
+      svgurl: "./static/images/",
+      forcechart: {
+        title: "Asset Flow Network",
+      },
+      sankychart: {
+        title: "Sankey Diagram",
+      },
+      chart1: {
+        title: "Total Volume Of Bridge",
+      },
+      chart3: {
+        title: "Daily Volume Of Bridge by Source - axlUSDC",
+      },
+      chart4: {
+        title: "Daily Volume Of Bridge by Target - axlUSDC",
+      },
+      chart5: {
+        title: "Normalized Daily Volume Of Bridge by Source",
+      },
+      chart6: {
+        title: "Normalized Daily Volume Of Bridge by Target",
+      },
+    };
 
     function compare(a, b, key) {
       if (a[key] < b[key]) {
