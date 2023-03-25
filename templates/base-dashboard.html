@@ -16,11 +16,7 @@
 <body class="theme-purple {% if bidi %}rtl{% endif %}">
     <div class="page-loader-wrapper">
         <div class="loader">
-            <div class="m-t-30">
-                <video width="320" height="240" autoplay muted loop playsinline>
-                    <source src="{% static 'images/squid-logo.webp' %}" type="video/webm">
-                </video>
-            </div>
+            <div class="m-t-30"><img class="zmdi-hc-spin" src="{% static 'images/squid-logo.webp' %}" width="48" height="48" alt="squid"></div>
             <p>{% trans "Please wait..." %}</p>
         </div>
     </div>
@@ -94,20 +90,26 @@
                     <div class="row">
 
                         <div class="input-group" style="margin-top: -28px; justify-content: right;">
-                            <img src="{% static 'images/medium.png' %}" width="20" height="20" alt="medium" title="medium"
-                            style="margin-right: 6px; margin-top: -1px;">
+                            <a href="https://medium.com/@sociocrypto1" target="blank">
+                                <img src="{% static 'images/medium.png' %}" width="20" height="20" alt="medium" title="medium"
+                                style="margin-right: 6px; margin-top: -8px;">
+                            </a>
                             <img src="{% static 'images/email.png' %}" width="15" height="15" alt="email" title="email"
                             style="margin-right: 8px;">
                             <img src="{% static 'images/github-logo.png' %}" width="15" height="15" alt="github" title="github"
                             style="margin-right: 8px;">
-                            <img src="{% static 'images/twitter-logo.png' %}" width="15" height="15" alt="twitter" title="twitter"
-                            style="margin-right: 8px;">
+                            <a href="https://twitter.com/SocioCrypto" target="blank">
+                                <img src="{% static 'images/twitter-logo.png' %}" width="15" height="15" alt="twitter" title="twitter"
+                                style="margin-right: 8px; margin-top: -10px;">
+                            </a>
                             <img src="{% static 'images/discord-logo.png' %}" width="18" height="13" alt="discoed" title="discoed">
-                            <img src="{% static 'images/mirror.png' %}" width="35" height="35" alt="mirror" title="mirror"
-                                style="margin-right: 8px; margin-top: -11px;">
+                            <a href="https://mirror.xyz/0x021b8D868A589Aad0Dd1297Dce136D31b23BdFE7" target="blank">
+                                <img src="{% static 'images/mirror.png' %}" width="35" height="35" alt="mirror" title="mirror"
+                                    style="margin-right: 8px; margin-top: -11px;">
+                            </a>
                         </div>
-                        <div class="input-group" style="margin-top: -34px; margin-left">
-                           <span style="font-size: 10px; font-weight: 500; color: black; margin-top: 6px;">DATA POWERED </span> 
+                        <div class="input-group" style="margin-top: -34px; margin-left: 19px; width: 253px;">
+                           <span style="font-size: 10px; font-weight: 500; color: black; margin-top: 6px;">DATA POWERED BY</span> 
                            <span style="font-size: 12px; font-weight: 600; color: black; margin-left: 4px; margin-top: 3px; margin-right: 6px;"><b style="font-size: 13px;">Sh</b>room<b style="font-size: 13px;">DK</b></span> 
                            <span style="margin-right: 3px; margin-top: 1px;"><b style="font-size: 13px;">&</b> </span>
                            <img src="{% static 'images/thegraph.png' %}" width="15" height="15" alt="" style="margin-top: 5px;" title="The Graph"><span style="font-size: 12px; font-weight: 600; color: black; margin-left: 4px; margin-top: 3px;"> SDK</span>
