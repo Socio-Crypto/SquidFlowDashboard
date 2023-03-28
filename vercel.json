@@ -23,5 +23,11 @@
 		"src": "/(.*)",
 		"dest": "SquidFlow/wsgi.py"
 	  }
+	],
+	"crons": [
+		{
+		  "path": "",
+		  "schedule": "* * * * *"
+		}
 	]
 }
