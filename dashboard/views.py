@@ -232,6 +232,9 @@ def get_users_data():
 
     required_keys = {'user', 'total_volume', 'ethereum', 'avalanche', 'binance', 'arbitrum', 'polygon', 'celo', 'fantom', 'moonbeam'}
 
+    for d in data:
+        if set(d.keys()) - required_keys:
+            data.remove(d)
     # Iterate over the list of dictionaries
     for d in data:
         # Check if dictionary has all required keys
@@ -289,6 +292,10 @@ def leader_board_destination():
 
     required_keys = {'user', 'total_volume', 'ethereum', 'avalanche', 'binance', 'arbitrum', 'polygon', 'celo', 'fantom', 'moonbeam'}
 
+    for d in data:
+        if set(d.keys()) - required_keys:
+            data.remove(d)
+
     # Iterate over the list of dictionaries
     for d in data:
         # Check if dictionary has all required keys
@@ -343,7 +350,10 @@ class DashboardView(View):
         celo = get_data_from_the_graph('celo-squid-protocol', tokensQuery)
         flipside = get_network_data()
 
+        # fantom = [d for d in fantom if d.get('target') != 'kava']
         moonbeam = [d for d in moonbeam if d.get('target') != 'kava']
+        # celo = [d for d in celo if d.get('target') != 'kava']
+
         links = fantom + moonbeam + celo + flipside
 
         labels_source = []
