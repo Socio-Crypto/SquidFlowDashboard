@@ -136,6 +136,12 @@
                         ]
                     }
                     myChart.setOption(option);
+                    $(window).resize(function () {
+                        clearTimeout(window.resizedFinished);
+                        window.resizedFinished = setTimeout(function () {
+                            myChart.resize();
+                        }, 250);
+                    });
 
                 }
 
