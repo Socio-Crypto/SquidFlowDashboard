@@ -70,10 +70,45 @@ def get_destination_chain_based_on_date():
 
     return get_result_from_query(sql_query)
 
+def get_top_users():
+    sql_query = """
+        SELECT
+        sender as user,
+        --  source_chain as source,
+        sum(amount) as total 
+        FROM
+        axelar.core.EZ_SQUID
+        WHERE
+        destination_chain in (
+            'ethereum',
+            'avalanche',
+            'binance',
+            'arbitrum',
+            'polygon',
+            'celo',
+            'fantom',
+            'moonbeam'
+        )
+        AND date_trunc('day', block_timestamp) >= '2022-12-01'
+        GROUP BY 
+        1--,2 
+        ORDER BY total DESC 
+        LIMIT 100 
+    """
+
+    sdk = ShroomDK('0aa823ca-fc7c-485a-9412-4d96b04e54be')
+    result = sdk.query(sql_query)
+    user_list = (x['user'] for x in result.records)
+    users = ','.join(f"'{x}'" for x in user_list)
+
+    return users
+
 
 def get_leader_board():
     
     "Flipside: https://api.flipsidecrypto.com/api/v2/queries/e3f60555-22f9-4873-aa7f-1987e3e27eab/data/latest"
+
+    users = get_top_users()
 
     sql_query = """
         SELECT
@@ -139,11 +174,11 @@ def get_leader_board():
             'celo',
             'fantom',
             'moonbeam'
-        )
+        ) and user in ( {0}) 
         AND date_trunc('day', block_timestamp) >= '2022-12-01'
-        GROUP BY
-        1--,2
-    """
+        GROUP BY 
+        1--,2 
+    """.format(users)
 
     return get_result_from_query(sql_query)
 
