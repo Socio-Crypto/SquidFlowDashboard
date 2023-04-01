@@ -104,11 +104,9 @@ def get_top_users():
     return users
 
 
-def get_leader_board():
+def get_leader_board(users):
     
     "Flipside: https://api.flipsidecrypto.com/api/v2/queries/e3f60555-22f9-4873-aa7f-1987e3e27eab/data/latest"
-
-    users = get_top_users()
 
     sql_query = """
         SELECT
@@ -174,7 +172,7 @@ def get_leader_board():
             'celo',
             'fantom',
             'moonbeam'
-        ) and user in ( {0}) 
+        ) and user in ({0}) 
         AND date_trunc('day', block_timestamp) >= '2022-12-01'
         GROUP BY 
         1--,2 
@@ -183,7 +181,7 @@ def get_leader_board():
     return get_result_from_query(sql_query)
 
 
-def get_leader_board_based_on_destination():
+def get_leader_board_based_on_destination(users):
     
     "Flipside: https://api.flipsidecrypto.com/api/v2/queries/e3f60555-22f9-4873-aa7f-1987e3e27eab/data/latest"
 
@@ -251,11 +249,11 @@ def get_leader_board_based_on_destination():
             'celo',
             'fantom',
             'moonbeam'
-        )
+        ) and user in ({0}) 
         AND date_trunc('day', block_timestamp) >= '2022-12-01'
         GROUP BY
         1--,2
-    """
+    """.format(users)
 
     return get_result_from_query(sql_query)
 

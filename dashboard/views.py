@@ -14,7 +14,8 @@ from .services import (
     get_source_chain_based_on_date, 
     get_destination_chain_based_on_date, 
     get_leader_board,
-    get_leader_board_based_on_destination
+    get_leader_board_based_on_destination,
+    get_top_users
     )
 
 
@@ -210,7 +211,7 @@ def group_by_user(data, chain):
     return result
 
 
-def get_users_data():
+def get_users_data(users):
     
     tokensQuery = """
         query {
@@ -225,7 +226,7 @@ def get_users_data():
     fantom = group_by_user(get_data_addressstats('fantom-squid-protocol', tokensQuery, 'sourceChain'), 'fantom')
     moonbeam = group_by_user(get_data_addressstats('moonbeam-squid-protocol', tokensQuery, 'sourceChain'), 'moonbeam')
     celo = group_by_user(get_data_addressstats('celo-squid-protocol', tokensQuery, 'sourceChain'),'celo')
-    flipside = get_leader_board()
+    flipside = get_leader_board(users)
 
     data = []
     data = fantom + moonbeam + celo + flipside
@@ -270,7 +271,7 @@ def get_users_data():
 
 
 
-def leader_board_destination():
+def leader_board_destination(users):
     
     tokensQuery = """
         query {
@@ -285,7 +286,7 @@ def leader_board_destination():
     fantom = get_data_addressstats('fantom-squid-protocol', tokensQuery, 'destinationChain')
     moonbeam = get_data_addressstats('moonbeam-squid-protocol', tokensQuery, 'destinationChain')
     celo = get_data_addressstats('celo-squid-protocol', tokensQuery, 'destinationChain')
-    flipside = get_leader_board_based_on_destination()
+    flipside = get_leader_board_based_on_destination(users)
 
     data = []
     data = fantom + moonbeam + celo + flipside
@@ -424,8 +425,9 @@ class LeaderboardView(View):
     
     def get(self, request):
         context = {}
-        leaderboard = get_users_data()
-        leaderboard_destination_chain = leader_board_destination()
+        users = get_top_users()
+        leaderboard = get_users_data(users)
+        leaderboard_destination_chain = leader_board_destination(users)
         context = {
             'leaderboard': leaderboard[:25],
             'leaderboard_destination_chain': leaderboard_destination_chain[:25],
