@@ -10,3 +10,7 @@ def subtract(value, value_2):
 def sum(value, value_2):
     return round(value + value_2)
 
+@register.filter
+def shorten_value(value):
+    return f"{value[:6]}...{value[-6:]}"
+

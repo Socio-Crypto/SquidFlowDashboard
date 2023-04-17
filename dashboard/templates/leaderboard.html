@@ -36,28 +36,32 @@
         <div class="row clearfix">
           <div class="col-md-12 col-lg-12 col-xl-12">
             <div class="card">
+              <div class="header">
+                <h2><strong>Top Wallet Addresses <span style="color: rgb(230 250 54 / 50%); font-weight: 200;"> by Total Value Transferred across <span style="color: #e6fa36;">Different Source Chains</span> through Squid</span> </strong>
+                </h2>
+              </div>
               <div class="body">
                 <div class="table-responsive" style="height: 400px;">
                   <table class="table m-b-0 table-striped table-dark table-borderless table-black" id="network_table">
                     <thead>
                       <tr>
-                        <th>Wallet Address (Send to)</th>
+                        <th style="width: 180px">Wallet Address</th>
                         <th>Total Volume</th>
-                        <th>ARBITRUM</th>
-                        <th>AVALANCHE</th>
-                        <th>BINANCE</th>
-                        <th>CELO</th>
-                        <th>ETHEREUM</th>
-                        <th>FANTOM</th>
-                        <th>MOONBEAM</th>
-                        <th>POLYGON</th>
+                        <th><img src="{% static 'images/icons/arbitrum.svg' %}"  title="arbitrum" style="width: 43px; margin-left: -15px; margin-top: -16px; margin-bottom: -17px;"></th>
+                        <th><img src="{% static 'images/icons/avalanche.svg' %}"  title="avalanche" style="width: 18px; margin-left: -2px;"></th>
+                        <th><img src="{% static 'images/icons/binance.svg' %}"  title="binance" style="width: 18px; margin-left: -3px; margin-top: -14px; margin-bottom: -8px;"></th>
+                        <th><img src="{% static 'images/icons/celo.svg' %}"  title="celo" style="width: 28px;margin-left: -10px; margin-top: -16px; margin-bottom: -15px;"></th>
+                        <th><img src="{% static 'images/icons/ethereum.svg' %}"  title="ethereum" style="width: 19px; margin-left: -4px;"></th>
+                        <th><img src="{% static 'images/icons/fantom.svg' %}"  title="fantom" style="width: 19px; margin-left: -3px; margin-bottom: -7px;margin-top: -11px;"></th>
+                        <th><img src="{% static 'images/icons/moonbeam.svg' %}"  title="moonbeam" style="width: 29px; margin-left: -10px; margin-top: -17px; margin-bottom: -15px;"></th>
+                        <th><img src="{% static 'images/icons/polygon.svg' %}" title="polygon" style="width: 31px; margin-left: -11px; margin-top: -15px; margin-bottom: -14px;"></th>
                       </tr>
-                    </thead>
+                    </thead> 
                     <tbody>
                       {% for user in leaderboard %}
 
                       <tr>
-                        <th>{{ user.user }}</th>
+                        <th data-value="{{ user.user }}" class="shorten">{{ user.user|shorten_value }}<span class="iconify" data-icon="material-symbols:content-copy-outline-rounded" style="cursor: pointer;margin-left: 12px;"></span></th>
                         <td>{{ user.total_volume|floatformat:0 }}</td>
                         <td>{{ user.arbitrum|floatformat:0 }}</td>
                         <td>{{ user.avalanche|floatformat:0 }}</td>
@@ -87,28 +91,32 @@
         <div class="row clearfix">
           <div class="col-md-12 col-lg-12 col-xl-12">
             <div class="card">
+              <div class="header">
+                <h2><strong>Top Wallet Addresses <span style="color: rgb(230 250 54 / 50%); font-weight: 200;"> by Total Value Transferred across <span style="color: #e6fa36;">Different Destination Chains </span> through Squid</span> </strong>
+                </h2>
+              </div>
               <div class="body">
                 <div class="table-responsive" style="height: 400px;">
                   <table class="table m-b-0 table-striped table-dark table-borderless table-black" id="destination_table">
                     <thead>
                       <tr>
-                        <th>Wallet Address (Receive from)</th>
+                        <th style="width: 180px">Wallet Address</th>
                         <th>Total Volume</th>
-                        <th>ARBITRUM</th>
-                        <th>AVALANCHE</th>
-                        <th>BINANCE</th>
-                        <th>CELO</th>
-                        <th>ETHEREUM</th>
-                        <th>FANTOM</th>
-                        <th>MOONBEAM</th>
-                        <th>POLYGON</th>
+                        <th><img src="{% static 'images/icons/arbitrum.svg' %}"  title="arbitrum" style="width: 43px; margin-left: -15px; margin-top: -16px; margin-bottom: -17px;"></th>
+                        <th><img src="{% static 'images/icons/avalanche.svg' %}"  title="avalanche" style="width: 18px; margin-left: -2px;"></th>
+                        <th><img src="{% static 'images/icons/binance.svg' %}"  title="binance" style="width: 18px; margin-left: -3px; margin-top: -14px; margin-bottom: -8px;"></th>
+                        <th><img src="{% static 'images/icons/celo.svg' %}"  title="celo" style="width: 28px;margin-left: -10px; margin-top: -16px; margin-bottom: -15px;"></th>
+                        <th><img src="{% static 'images/icons/ethereum.svg' %}"  title="ethereum" style="width: 19px; margin-left: -4px;"></th>
+                        <th><img src="{% static 'images/icons/fantom.svg' %}"  title="fantom" style="width: 19px; margin-left: -3px; margin-bottom: -7px;margin-top: -11px;"></th>
+                        <th><img src="{% static 'images/icons/moonbeam.svg' %}"  title="moonbeam" style="width: 29px; margin-left: -10px; margin-top: -17px; margin-bottom: -15px;"></th>
+                        <th><img src="{% static 'images/icons/polygon.svg' %}" title="polygon" style="width: 31px; margin-left: -11px; margin-top: -15px; margin-bottom: -14px;"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {% for user in leaderboard_destination_chain %}
 
                       <tr>
-                        <th>{{ user.user }}</th>
+                        <th data-value="{{ user.user }}" class="shorten">{{ user.user|shorten_value }} <span class="iconify" data-icon="material-symbols:content-copy-outline-rounded" style="cursor: pointer; margin-left: 12px;"></span></th>
                         <td>{{ user.total_volume|floatformat:0 }}</td>
                         <td>{{ user.arbitrum|floatformat:0 }}</td>
                         <td>{{ user.avalanche|floatformat:0 }}</td>
@@ -138,6 +146,12 @@
 {% endblock %}
 
 {% block scripts %}
+
+<script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
+<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+<script src="https://code.iconify.design/2/2.0.0-rc.4/iconify.min.js"></script>
+<script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+
 <script>
   var table = document.getElementById("network_table");
   var cells = table.getElementsByTagName("td");
@@ -156,4 +170,49 @@
     cells[i].textContent = cellValue.toLocaleString();
   }
 </script>
+
+<script>
+  // JavaScript code
+  const copyButtons = document.querySelectorAll('.iconify');
+  copyButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const th = button.closest('th');
+      const valueToCopy = th.getAttribute('data-value');
+      navigator.clipboard.writeText(valueToCopy)
+      .then(() => {
+        console.log('Value copied successfully!');
+        button.dataset.icon = 'mdi:tick';
+          setTimeout(() => {
+            button.dataset.icon = 'material-symbols:content-copy-outline-rounded';
+          }, 2);
+      })
+      .catch((error) => {
+        console.error('Error copying value:', error);
+      });
+    });
+  });
+</script>
+
+<script>
+  // Get all th elements with class "shorten"
+const thElements = document.querySelectorAll("th.shorten");
+
+// Loop through each th element and attach a click event listener
+thElements.forEach(thElement => {
+  thElement.addEventListener("click", function() {
+    // Get the data-value attribute value of the clicked th element
+    const dataValue = this.getAttribute("data-value");
+    
+    // Copy the data-value to the clipboard
+    navigator.clipboard.writeText(dataValue);
+    
+    // Give some visual feedback to the user (optional)
+    this.style.backgroundColor = "#e6fa36";
+    setTimeout(() => {
+      this.style.backgroundColor = "";
+    }, 500);
+  });
+});
+</script>
+
 {% endblock %}

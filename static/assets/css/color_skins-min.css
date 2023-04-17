@@ -6,7 +6,7 @@
 .theme-purple .btn-primary:hover,
 .theme-purple .btn-primary:visited,
 .theme-purple .btn-primary:focus {
-	background: #2D306A !important
+	background: #2d306a !important
 }
 
 .theme-purple .btn-primary.btn-simple {
@@ -21,7 +21,7 @@
 }
 
 .theme-purple .sidebar .menu .list li.active.open .active a {
-	color: #47A2DF
+	color: #47a2df
 }
 
 .theme-purple .sidebar .menu .list a:hover {
@@ -50,10 +50,10 @@
 	background: #c29be7;
 	color: #e6fa36
 }
-
+/* 
 .theme-purple .card .header h2:before {
 	background: #e6fa36
-}
+} */
 
 .theme-purple .card .header h2 strong {
 	color: #e6fa36
