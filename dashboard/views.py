@@ -446,6 +446,7 @@ class SaveDataInJsonView(View):
         # OVERVIEW
         context_overview = {}
         links = []
+        temp_links = []
         nodes = []
         tokensQuery = """
             query {
@@ -468,12 +469,14 @@ class SaveDataInJsonView(View):
         # celo = [d for d in celo if d.get('target') != 'kava']
 
 
-        links = fantom + moonbeam + celo + flipside
+        temp_links = fantom + moonbeam + celo + flipside
         
         required_keys = {'ethereum', 'avalanche', 'binance', 'arbitrum', 'polygon', 'celo', 'fantom', 'moonbeam'}
-        for d in links:
+        for d in temp_links:
             if d['source'] not in required_keys or d['target'] not in required_keys:
-                links.remove(d)
+                pass
+            else:
+                links.append(d)
 
         labels_source = []
         labels_target = []
