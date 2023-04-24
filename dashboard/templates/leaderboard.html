@@ -283,46 +283,46 @@ function addRow(a1,a2, a3, a4, a5, a6, a7) {
    let c6 = document.createElement("td")
    let c7 = document.createElement("td")
   //  console.log(a1)
-   var symbol_logo = document.createElement("img")
-   symbol_logo.setAttribute('title',a1.toUpperCase());
+  //  var symbol_logo = document.createElement("img")
+  //  symbol_logo.setAttribute('title',a1.toUpperCase());
 
-    if(a1 == 'curve fi'){
-       source = "{% static 'images/projectlogo/curve_fi.webp' %}"
-     } else if (a1 == 'quickswap'){
-      source = "{% static 'images/projectlogo/quickswap.png' %}"
-     } else if (a1 == 'uniswap'){
-      source = "{% static 'images/projectlogo/uniswap.png' %}"
-     } else if (a1 == 'sushiswap'){
-      source = "{% static 'images/projectlogo/sushiswap.png' %}"
-     } else if (a1 == 'mistswap'){
-      source = "{% static 'images/projectlogo/mistswap.jpg' %}"
-     } else if (a1 == 'trader joe'){
-      source = "{% static 'images/projectlogo/trader joe.png' %}"
-     } else if (a1 == 'pangolin'){
-      source = "{% static 'images/projectlogo/pangolin.jpeg' %}"
-      symbol_logo.style.borderRadius = "50%";
-     } else if (a1 == 'apex protocol'){
-      source = "{% static 'images/projectlogo/apex protocol.png' %}"
-     } else if (a1 == 'platypus finance'){
-      source = "{% static 'images/projectlogo/platypus finance.png' %}"
-     } else if (a1 == 'ellipsis finance'){
-      source = "{% static 'images/projectlogo/ellipsis finance.svg' %}"
-     } else if (a1 == 'apeswap'){
-      source = "{% static 'images/projectlogo/apeswap.png' %}"
-     } else if (a1 == 'zyberswap'){
-      source = "{% static 'images/projectlogo/zyberswap.png' %}"
-      symbol_logo.style.borderRadius = "50%";
-     }else if (a1 == 'pancakeswap'){
-      source = "{% static 'images/projectlogo/pancakeswap.png' %}"
-     } else{
-      source="{% static 'images/projectlogo/dent-dent-logo.png' %}"
-     }
+  //   if(a1 == 'curve fi'){
+  //      source = "{% static 'images/projectlogo/curve_fi.webp' %}"
+  //    } else if (a1 == 'quickswap'){
+  //     source = "{% static 'images/projectlogo/quickswap.png' %}"
+  //    } else if (a1 == 'uniswap'){
+  //     source = "{% static 'images/projectlogo/uniswap.png' %}"
+  //    } else if (a1 == 'sushiswap'){
+  //     source = "{% static 'images/projectlogo/sushiswap.png' %}"
+  //    } else if (a1 == 'mistswap'){
+  //     source = "{% static 'images/projectlogo/mistswap.jpg' %}"
+  //    } else if (a1 == 'trader joe'){
+  //     source = "{% static 'images/projectlogo/trader joe.png' %}"
+  //    } else if (a1 == 'pangolin'){
+  //     source = "{% static 'images/projectlogo/pangolin.jpeg' %}"
+  //     symbol_logo.style.borderRadius = "50%";
+  //    } else if (a1 == 'apex protocol'){
+  //     source = "{% static 'images/projectlogo/apex protocol.png' %}"
+  //    } else if (a1 == 'platypus finance'){
+  //     source = "{% static 'images/projectlogo/platypus finance.png' %}"
+  //    } else if (a1 == 'ellipsis finance'){
+  //     source = "{% static 'images/projectlogo/ellipsis finance.svg' %}"
+  //    } else if (a1 == 'apeswap'){
+  //     source = "{% static 'images/projectlogo/apeswap.png' %}"
+  //    } else if (a1 == 'zyberswap'){
+  //     source = "{% static 'images/projectlogo/zyberswap.png' %}"
+  //     symbol_logo.style.borderRadius = "50%";
+  //    }else if (a1 == 'pancakeswap'){
+  //     source = "{% static 'images/projectlogo/pancakeswap.png' %}"
+  //    } else{
+  //     source="{% static 'images/projectlogo/dent-dent-logo.png' %}"
+  //    }
 
-    symbol_logo.setAttribute("src", source)
-    symbol_logo.setAttribute("width", 20)
-    c1.appendChild(symbol_logo)
+  //   symbol_logo.setAttribute("src", source)
+  //   symbol_logo.setAttribute("width", 20)
+  //   c1.appendChild(symbol_logo)
     
-  // c1.innerText = a1
+  c1.innerText = a1
   c2.innerText = a2
   c3.innerText = a3
   c4.innerText = a4
