@@ -27,7 +27,41 @@
       </div>
     </div>
 
-  
+    <div class="row clearfix">
+      <div class="col-lg-12">
+    <div class="row clearfix">
+      <div class="col-xl-12 col-lg-12 col-md-12">
+        <div class="card">
+          <div class="header">
+            <h2><strong>Top DEXes</strong>
+            </h2>
+          </div>
+          <div class="body">
+            <div class="table-responsive">
+              <table class="table m-b-0 table-striped table-dark table-borderless table-black" id="DexesTable">
+                <thead>
+                  <tr>
+                    <th>Dex</th>
+                    <th>Total Volume</th>
+                    <th><img src="{% static 'images/icons/ethereum.svg' %}"  title="ethereum" style="width: 19px; margin-left: -4px;"></th>
+                    <th><img src="{% static 'images/icons/polygon.svg' %}" title="polygon" style="width: 31px; margin-left: -11px; margin-top: -15px; margin-bottom: -14px;"></th>
+                    <th><img src="{% static 'images/icons/avalanche.svg' %}"  title="avalanche" style="width: 18px; margin-left: -2px;"></th>
+                    <th><img src="{% static 'images/icons/arbitrum.svg' %}"  title="arbitrum" style="width: 43px; margin-left: -15px; margin-top: -16px; margin-bottom: -17px;"></th>
+                    <th><img src="{% static 'images/icons/binance.svg' %}"  title="binance" style="width: 18px; margin-left: -3px; margin-top: -14px; margin-bottom: -8px;"></th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    </div>
+    </div>
 
     <div class="row clearfix">
 
@@ -61,7 +95,10 @@
                       {% for user in leaderboard %}
 
                       <tr>
-                        <th data-value="{{ user.user }}" class="shorten">{{ user.user|shorten_value }}<span class="iconify" data-icon="material-symbols:content-copy-outline-rounded" style="cursor: pointer;margin-left: 12px;"></span></th>
+                        <th data-value="{{ user.user }}" class="shorten">
+                          <span>{{ user.user|shorten_value }}</span>
+                          <span class="iconify" data-icon="material-symbols:content-copy-outline-rounded" style="cursor: pointer;margin-left: 12px; float: right;"></span>
+                        </th>
                         <td>{{ user.total_volume|floatformat:0 }}</td>
                         <td>{{ user.arbitrum|floatformat:0 }}</td>
                         <td>{{ user.avalanche|floatformat:0 }}</td>
@@ -116,7 +153,10 @@
                       {% for user in leaderboard_destination_chain %}
 
                       <tr>
-                        <th data-value="{{ user.user }}" class="shorten">{{ user.user|shorten_value }} <span class="iconify" data-icon="material-symbols:content-copy-outline-rounded" style="cursor: pointer; margin-left: 12px;"></span></th>
+                        <th data-value="{{ user.user }}" class="shorten">
+                          <span>{{ user.user|shorten_value }}</span> 
+                          <span class="iconify" data-icon="material-symbols:content-copy-outline-rounded" style="cursor: pointer; margin-left: 12px; float: right;"></span>
+                        </th>
                         <td>{{ user.total_volume|floatformat:0 }}</td>
                         <td>{{ user.arbitrum|floatformat:0 }}</td>
                         <td>{{ user.avalanche|floatformat:0 }}</td>
@@ -139,6 +179,8 @@
 
       </div>
     </div>
+
+    
 
   </div>
 </section>
@@ -214,5 +256,124 @@ thElements.forEach(thElement => {
   });
 });
 </script>
+
+
+<script>
+  function truncateString(str, num) {
+  if (str.length > num) {
+    return str.slice(0, num) + "...";
+  } else {
+    return str;
+  }
+}
+
+function addRow(a1,a2, a3, a4, a5, a6, a7) {
+   // Get the table body element in which you want to add row
+   let table = document.getElementById("DexesTable");
+
+   // Create row element
+   let row = document.createElement("tr")
+   
+   // Create cells
+   let c1 = document.createElement("td")
+   let c2 = document.createElement("td")
+   let c3 = document.createElement("td")
+   let c4 = document.createElement("td")
+   let c5 = document.createElement("td")
+   let c6 = document.createElement("td")
+   let c7 = document.createElement("td")
+  //  console.log(a1)
+   var symbol_logo = document.createElement("img")
+   symbol_logo.setAttribute('title',a1.toUpperCase());
+
+    if(a1 == 'curve fi'){
+       source = "{% static 'images/projectlogo/curve_fi.webp' %}"
+     } else if (a1 == 'quickswap'){
+      source = "{% static 'images/projectlogo/quickswap.png' %}"
+     } else if (a1 == 'uniswap'){
+      source = "{% static 'images/projectlogo/uniswap.png' %}"
+     } else if (a1 == 'sushiswap'){
+      source = "{% static 'images/projectlogo/sushiswap.png' %}"
+     } else if (a1 == 'mistswap'){
+      source = "{% static 'images/projectlogo/mistswap.jpg' %}"
+     } else if (a1 == 'trader joe'){
+      source = "{% static 'images/projectlogo/trader joe.png' %}"
+     } else if (a1 == 'pangolin'){
+      source = "{% static 'images/projectlogo/pangolin.jpeg' %}"
+      symbol_logo.style.borderRadius = "50%";
+     } else if (a1 == 'apex protocol'){
+      source = "{% static 'images/projectlogo/apex protocol.png' %}"
+     } else if (a1 == 'platypus finance'){
+      source = "{% static 'images/projectlogo/platypus finance.png' %}"
+     } else if (a1 == 'ellipsis finance'){
+      source = "{% static 'images/projectlogo/ellipsis finance.svg' %}"
+     } else if (a1 == 'apeswap'){
+      source = "{% static 'images/projectlogo/apeswap.png' %}"
+     } else if (a1 == 'zyberswap'){
+      source = "{% static 'images/projectlogo/zyberswap.png' %}"
+      symbol_logo.style.borderRadius = "50%";
+     }else if (a1 == 'pancakeswap'){
+      source = "{% static 'images/projectlogo/pancakeswap.png' %}"
+     } else{
+      source="{% static 'images/projectlogo/dent-dent-logo.png' %}"
+     }
+
+    symbol_logo.setAttribute("src", source)
+    symbol_logo.setAttribute("width", 20)
+    c1.appendChild(symbol_logo)
+    
+  // c1.innerText = a1
+  c2.innerText = a2
+  c3.innerText = a3
+  c4.innerText = a4
+  c5.innerText = a5
+  c6.innerText = a6
+  c7.innerText = a7
+   
+   // Append cells to row
+   row.appendChild(c1);
+   row.appendChild(c2);
+   row.appendChild(c3);
+   row.appendChild(c4);
+   row.appendChild(c5);
+   row.appendChild(c6);
+   row.appendChild(c7);
+   
+   // Append row to table body
+   table.appendChild(row)
+}
+</script>
+
+<script type="text/javascript">
+function ignore_null(value){
+  if (value != null)
+  { val = value.toFixed(0);
+    return parseInt(val).toLocaleString()
+  } else {return 0}
+}
+async function table(){
+const tx_data = await fetch('https://api.flipsidecrypto.com/api/v2/queries/d321e1c9-8ba6-4fb5-b02c-9a7c47a2fefb/data/latest');
+var tx_datas = await tx_data.json();
+
+for (let index = 0; index < tx_datas.length; index++) {
+  const element = tx_datas[index];
+  console.log('element', element)
+  addRow(
+    element['PROJECT'],
+    ignore_null(element['TOTAL']),
+    ignore_null(element['ETHEREUM']),
+    ignore_null(element['POLYGON']),
+    ignore_null(element['AVALANCHE']),
+    ignore_null(element['ARBITRUM']),
+    ignore_null(element['BINANCE']),
+    )
+  
+}
+}
+table();
+
+
+</script>
+
 
 {% endblock %}
