@@ -32,13 +32,28 @@
       <div class="col-xl-12 col-lg-12 col-md-12">
         <div class="card">
           <div class="body">
-            <div class="row clearfix">
-              <div class=" col-sm-12 align-middle">
+            <div class="row clearfix" style="align-items: center;">
+              <div class=" align-middle">
                 <ul class="nav nav-tabs">
                   <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#flow">Flow</a></li>
                   <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#network">Network</a></li>
+
                 </ul>
               </div>
+              <div class="col-lg-6 col-md-4 col-sm-12 text-right">
+                <form id="search-form" method="GET" action="{% url 'search' %}">
+                  <div class="row clearfix" style="align-items: center;">
+                    <div class="col-md-8">
+                      <input type="text" name="user-address" class="form-control"
+                        placeholder="0x0000000000000000000000000000000">
+                    </div>
+                    <div class="col-md-4">
+                      <button type="submit"
+                        class="btn btn-default btn-block btn-round btn-simple">Search</button>
+                    </div>
+                  </div>
+                </form>
+            </div>
             </div>
           </div>
         </div>
@@ -91,15 +106,16 @@
                       <th scope="col">Inflow</th>
                       <th scope="col">Outflow</th>
                       <th scope="col">Total</th>
-                      <th scope="col" style="font-weight: bold;">Net <img src="static/images/icons/usdc.png" alt="usdc" style="width: 15px;"></th>
+                      <th scope="col" style="font-weight: bold;">Net <img src="{% static 'images/icons/usdc.png' %}"
+                          alt="usdc" style="width: 15px;"></th>
                     </tr>
                   </thead>
                   <tbody>
                     {% for node in nodes %}
                     <tr>
                       <th style="text-align: -webkit-center;">
-                        <img src="static/images/icons/{{ node.id }}.svg" alt="{{ node.id}}" title="{{ node.id}}"
-                          style=" {% if node.id == 'arbitrum'  %} width: 43px; margin-left: -4px; margin-top: -16px; margin-bottom: -17px;
+                        <img src="{% static 'images/icons/'|add:node.id|add:'.svg' %}" alt="{{ node.id}}"
+                          title="{{ node.id}}" style=" {% if node.id == 'arbitrum'  %} width: 43px; margin-left: -4px; margin-top: -16px; margin-bottom: -17px;
                                   {% elif node.id == 'binance' %} width: 18px; margin-left: -3px; margin-top: -14px; margin-bottom: -8px;
                                   {% elif node.id == 'celo' %} width: 28px;margin-left: -2px; margin-top: -16px; margin-bottom: -15px;
                                   {% elif node.id == 'moonbeam' %} width: 24px; margin-left: -5px; margin-top: -17px; margin-bottom: -15px;
@@ -108,7 +124,7 @@
                                   {% elif node.id == 'fantom' %} width: 19px; margin-left: -3px; margin-bottom: -7px;
                                   {% elif node.id == 'polygon' %} width: 31px; margin-left: -4px; margin-top: -15px; margin-bottom: -14px;
                                   {% endif %}">
-                        </th>
+                      </th>
                       <td>{{ node.value_in|floatformat:0 }}</td>
                       <td>{{ node.value_out|floatformat:0 }}</td>
                       <td>{{ node.total|floatformat:0 }}</td>

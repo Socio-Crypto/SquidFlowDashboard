@@ -16,11 +16,14 @@ from .services import (
     get_source_chain_based_on_date, 
     get_destination_chain_based_on_date, 
     get_leader_board,
-    get_leader_board_based_on_destination
+    get_leader_board_based_on_destination,
+    get_network_data_based_on_user,
+    get_source_chain_based_on_user_address,
+    get_destination_chain_based_on_user_address
     )
 
 
-def get_data_from_the_graph(name, tokensQuery):
+def get_data_from_the_graph(name, tokensQuery, stats):
     """
     https://thegraph.com/en/
     """
@@ -38,15 +41,17 @@ def get_data_from_the_graph(name, tokensQuery):
             pass
 
     # Get the response data as a dictionary
-    data = response.json()['data']
+    try:
+        data = response.json()['data']
 
-    for item in data['tokenStats']:
-            data_dic.append({
-                'source': item['sourceChain'].lower(),
-                'target': item['destinationChain'].lower(),
-                'value': int(item['volume']) / 10**6,
-            })
-    
+        for item in data[stats]:
+                data_dic.append({
+                    'source': item['sourceChain'].lower(),
+                    'target': item['destinationChain'].lower(),
+                    'value': int(item['volume']) / 10**6,
+                })
+    except :
+        pass    
     return data_dic
 
 
@@ -74,6 +79,39 @@ def get_data_from_tokenstatbydates(name, tokensQuery, chain):
     data = response.json()['data']
 
     for item in data['tokenStatByDates']:
+            data_dic.append({
+                'date': item['date'],
+                chain: item[chain].lower(),
+                'value': int(item['volume']) / 10**6,
+            })
+    
+    return data_dic
+
+
+def get_data_from_addressstatbydates(name, tokensQuery, chain):
+    """
+    https://thegraph.com/en/
+    """
+    APIURL = 'https://api.thegraph.com/subgraphs/name/kidacrypto/' + name
+
+   
+    data_dic = []
+
+    headers = {'Content-Type': 'application/json'}
+    query = {'query': tokensQuery}
+
+    response = None
+    while not response or response.status_code != 200:
+        try:
+            response = requests.post(APIURL, headers=headers, json=query)
+        except:
+            pass
+
+
+    # Get the response data as a dictionary
+    data = response.json()['data']
+
+    for item in data['addressStatByDates']:
             data_dic.append({
                 'date': item['date'],
                 chain: item[chain].lower(),
@@ -176,6 +214,28 @@ def get_data_of_source_chain():
 
     return data
 
+def get_data_of_source_chain_based_on_user(user_address):
+
+    tokensQuery = f"""
+            query {{
+               addressStatByDates (where: {{ user_address:  "{user_address}" }}){{
+                    date
+                    volume
+                    sourceChain
+                    user_address
+                }}
+            }}
+            """
+    fantom = group_by_chain(get_data_from_addressstatbydates('fantom-squid-protocol', tokensQuery, 'sourceChain'), 'sourceChain')
+    moonbeam = group_by_chain(get_data_from_addressstatbydates('moonbeam-squid-protocol', tokensQuery, 'sourceChain'), 'sourceChain')
+    celo = group_by_chain(get_data_from_addressstatbydates('celo-squid-protocol', tokensQuery, 'sourceChain'), 'sourceChain')
+    flipside = get_source_chain_based_on_user_address(user_address)
+
+    data = []
+    data = fantom + moonbeam + celo + flipside
+
+    return data
+
 
 def get_data_of_destination_chain():
     tokensQuery = """
@@ -191,6 +251,27 @@ def get_data_of_destination_chain():
     moonbeam = group_by_chain(get_data_from_tokenstatbydates('moonbeam-squid-protocol', tokensQuery, 'destinationChain'), 'destinationChain')
     celo = group_by_chain(get_data_from_tokenstatbydates('celo-squid-protocol', tokensQuery, 'destinationChain'), 'destinationChain')
     flipside = get_destination_chain_based_on_date()
+    data = []
+    data = fantom + moonbeam + celo + flipside
+
+    return data
+
+def get_data_of_destination_chain_based_on_user(user_address):
+
+    tokensQuery = f"""
+            query {{
+               addressStatByDates (where: {{ user_address:  "{user_address}" }}) {{
+                    date
+                    volume
+                    user_address
+                    destinationChain
+                }}
+            }}
+            """
+    fantom = group_by_chain(get_data_from_addressstatbydates('fantom-squid-protocol', tokensQuery, 'destinationChain'), 'destinationChain')
+    moonbeam = group_by_chain(get_data_from_addressstatbydates('moonbeam-squid-protocol', tokensQuery, 'destinationChain'), 'destinationChain')
+    celo = group_by_chain(get_data_from_addressstatbydates('celo-squid-protocol', tokensQuery, 'destinationChain'), 'destinationChain')
+    flipside = get_destination_chain_based_on_user_address(user_address)
     data = []
     data = fantom + moonbeam + celo + flipside
 
@@ -459,9 +540,9 @@ class SaveDataInJsonView(View):
                 }
             }
             """
-        fantom = get_data_from_the_graph('fantom-squid-protocol', tokensQuery)
-        moonbeam = get_data_from_the_graph('moonbeam-squid-protocol', tokensQuery)
-        celo = get_data_from_the_graph('celo-squid-protocol', tokensQuery)
+        fantom = get_data_from_the_graph('fantom-squid-protocol', tokensQuery, 'tokenStats')
+        moonbeam = get_data_from_the_graph('moonbeam-squid-protocol', tokensQuery, 'tokenStats')
+        celo = get_data_from_the_graph('celo-squid-protocol', tokensQuery, 'tokenStats')
         flipside = get_network_data()
 
         # fantom = [d for d in fantom if d.get('target') != 'kava']
@@ -557,4 +638,107 @@ class SaveDataInJsonView(View):
             json.dump(json_data, f)
 
         return HttpResponse('The JSON files have been updated with new data!')
+
+
+
+class SearchUserAddressView(View):
+    def get(self, request):
+        user_address = request.GET.get('user-address')
+        
+        context_overview = {}
+        links = []
+        temp_links = []
+        nodes = []
+
+        # fantom = []
+        # moonbeam = []
+        # celo = []
+        # flipside = []
+        tokensQuery = f"""
+            query {{
+                addressStats (where: {{ user_address:  "{user_address}" }}) {{
+                    id
+                    user_address
+                    symbol
+                    sourceChain
+                    volume
+                    destinationChain
+                }}
+            }}
+            """
+    
+        fantom = get_data_from_the_graph('fantom-squid-protocol', tokensQuery, 'addressStats')
+        moonbeam = get_data_from_the_graph('moonbeam-squid-protocol', tokensQuery, 'addressStats')
+        celo = get_data_from_the_graph('celo-squid-protocol', tokensQuery, 'addressStats')
+        flipside = get_network_data_based_on_user(user_address)
+
+        # fantom = [d for d in fantom if d.get('target') != 'kava']
+        moonbeam = [d for d in moonbeam if d.get('target') != 'kava']
+        # celo = [d for d in celo if d.get('target') != 'kava']
+    
+
+        temp_links = fantom + moonbeam + celo + flipside
+        
+        required_keys = {'ethereum', 'avalanche', 'binance', 'arbitrum', 'polygon', 'celo', 'fantom', 'moonbeam'}
+        for d in temp_links:
+            if d['source'] not in required_keys or d['target'] not in required_keys:
+                pass
+            else:
+                links.append(d)
+
+        labels_source = []
+        labels_target = []
+        labels_source_val = []
+        labels_target_val = []
+        labels = []
+        for item in links:
+            labels_source.append(item['source'])
+            labels_target.append(item['target'])
+            labels_source_val.append({item['source']: item['value']})
+            labels_target_val.append({item['target']: item['value']})
+        
+        labels = labels_source + labels_target
+        unique_labels = set(labels)
+        
+        for label in unique_labels:
+            nodes.append({
+                "id_short": label, 
+                "id": label,
+                "value_in": 0,
+                "value_out": 0,
+                "count_in": 0,
+                "count_out": 0,
+                "total": 0,
+                "net": 0
+            })
+
+        labels_source_count = dict(Counter(labels_source))
+        labels_target_count = dict(Counter(labels_target))
+          
+        agg_source_val = aggregate_dictionary(labels_source_val)
+        agg_target_val = aggregate_dictionary(labels_target_val)
+
+        for i in range(len(nodes)):
+            if nodes[i]['id'] in labels_source_count:
+                nodes[i]['count_out'] = labels_source_count[nodes[i]['id']]
+                nodes[i]['value_out'] = agg_source_val[nodes[i]['id']]
+            if nodes[i]['id'] in labels_target_count:
+                nodes[i]['count_in'] = labels_target_count[nodes[i]['id']]
+                nodes[i]['value_in'] = agg_target_val[nodes[i]['id']]
+            
+        for i in range(len(nodes)):
+            nodes[i]['total'] = nodes[i]['value_in'] + nodes[i]['value_out']
+            nodes[i]['net'] = nodes[i]['value_in'] - nodes[i]['value_out']
+        
+        data_of_source_chain = get_data_of_source_chain_based_on_user(user_address)
+        data_of_destination_chain = get_data_of_destination_chain_based_on_user(user_address)
+
+        context_overview = {
+            'links': links,
+            'nodes': sorted(nodes, key=lambda x: x['net'], reverse=True),
+            'data_of_source_chain': data_of_source_chain,
+            'data_of_destination_chain': data_of_destination_chain,
+        }
+
+        return render(request, 'dashboard.html', context=context_overview)
 
