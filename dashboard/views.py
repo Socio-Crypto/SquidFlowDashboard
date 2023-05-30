@@ -188,8 +188,8 @@ def group_by_chain(data, chain_s):
 
     result = [] 
     for date in date_chain_totals:
-        for chain_s, reto_totals in date_chain_totals[date].items():
-            row = {'date': date, 'chain': chain_s, 'value': reto_totals['value'], 'cum': reto_totals['cum']}
+        for chain, reto_totals in date_chain_totals[date].items():
+            row = {'date': date, chain_s: chain, 'value': reto_totals['value'], 'cum': reto_totals['cum']}
             result.append(row)
     
     return result

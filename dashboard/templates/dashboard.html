@@ -207,7 +207,14 @@
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript" type="module" src="{% static 'assets/js/modules-min.js' %}"></script>
+<!-- <script type="text/javascript" type="module" src="{% static 'assets/js/modules-min.js' %}"></script> -->
+<script type="module">
+  import {caller} from "{% static 'assets/js/modules.mjs' %}";
+  caller();
+  // setTimeout(caller, 1000);
+  //const caller = require({% static 'assets/js/modules-min.js' %});
+</script>
+
 
 <script>
   var table = document.getElementById("network_table");

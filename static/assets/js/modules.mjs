@@ -1,7 +1,7 @@
 // #region fetch the core modules //
 var modules = {};
 async function load() {
-  return await fetch("./static/assets/html/modules.html")
+  return await fetch(window.location.origin + "/static/assets/html/modules.html")
     .then(function (response) {
       return response.text();
     })
@@ -15,17 +15,17 @@ async function load() {
     });
 }
 async function load1() {
-  let a = await fetch("./static/assets/html/modules.html");
+  let a = await fetch(window.location.origin + "/static/assets/html/modules.html");
   let b = await a.text();
   let parser = new DOMParser();
   let c = parser.parseFromString(b, "text/html");
   return c;
 }
-async function caller() {
+export async function caller() {
   modules["addons"] = await load1();
   startModule();
 }
-caller();
+// caller();
 // #endregion fetch the core modules //
 
 var moduleInfo = {};
@@ -93,6 +93,7 @@ function startModule() {
 
     moduleData.destinationStacked = [];
     moduleData.destinationStacked100 = [];
+    date1 = '';
     moduleData.destination.forEach((x) => {
       if (x.date != date1) {
         date1 = x.date;
