@@ -738,6 +738,7 @@ class SearchUserAddressView(View):
             'nodes': sorted(nodes, key=lambda x: x['net'], reverse=True),
             'data_of_source_chain': data_of_source_chain,
             'data_of_destination_chain': data_of_destination_chain,
+            'user_address': user_address
         }
 
         return render(request, 'dashboard.html', context=context_overview)

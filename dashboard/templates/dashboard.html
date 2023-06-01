@@ -44,8 +44,8 @@
                 <form id="search-form" method="GET" action="{% url 'search' %}">
                   <div class="row clearfix" style="align-items: center;">
                     <div class="col-md-8">
-                      <input type="text" name="user-address" class="form-control"
-                        placeholder="0x0000000000000000000000000000000">
+                      <input type="text" name="user-address" class="form-control" style="color: white" 
+                        placeholder="{% if user_address %} {{ user_address }} {% else %} 0x0000000000000000000000000000000 {% endif %}">
                     </div>
                     <div class="col-md-4">
                       <button type="submit"
@@ -208,6 +208,7 @@
 
 {% block scripts %}
 <script type="text/javascript" type="module" src="{% static 'assets/js/modules-min.js' %}"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 
 
 <script>
