@@ -2,12 +2,13 @@ from shroomdk import ShroomDK
 import itertools
 from datetime import datetime
 import json
-
+from flipside import Flipside
 
 def get_result_from_query(sql_query):
     
-    sdk = ShroomDK('0aa823ca-fc7c-485a-9412-4d96b04e54be')
-    result = sdk.query(sql_query)
+    # sdk = ShroomDK('0aa823ca-fc7c-485a-9412-4d96b04e54be')
+    flipside = Flipside("0aa823ca-fc7c-485a-9412-4d96b04e54be", "https://api-v2.flipsidecrypto.xyz")
+    result = flipside.query(sql_query)
 
     activity_data = {}
     if result.records is not None:
