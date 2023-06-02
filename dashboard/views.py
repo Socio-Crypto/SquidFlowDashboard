@@ -390,7 +390,7 @@ def leader_board_destination():
     grouped_data = {}
 
     for item in data:
-        del item['__row_index']
+        item.pop('__row_index', None)
 
         user = item['user']
         if user not in grouped_data:
