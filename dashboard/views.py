@@ -390,6 +390,8 @@ def leader_board_destination():
     grouped_data = {}
 
     for item in data:
+        del item['__row_index']
+
         user = item['user']
         if user not in grouped_data:
             grouped_data[user] = item.copy()
@@ -525,101 +527,101 @@ class SaveDataInJsonView(View):
     def get(self, request):
     
         # OVERVIEW
-        context_overview = {}
-        links = []
-        temp_links = []
-        nodes = []
-        tokensQuery = """
-            query {
-                tokenStats {
-                    id
-                    volume
-                    symbol
-                    sourceChain
-                    destinationChain
-                }
-            }
-            """
-        fantom = get_data_from_the_graph('fantom-squid-protocol', tokensQuery, 'tokenStats')
-        moonbeam = get_data_from_the_graph('moonbeam-squid-protocol', tokensQuery, 'tokenStats')
-        celo = get_data_from_the_graph('celo-squid-protocol', tokensQuery, 'tokenStats')
-        flipside = get_network_data()
+        # context_overview = {}
+        # links = []
+        # temp_links = []
+        # nodes = []
+        # tokensQuery = """
+        #     query {
+        #         tokenStats {
+        #             id
+        #             volume
+        #             symbol
+        #             sourceChain
+        #             destinationChain
+        #         }
+        #     }
+        #     """
+        # fantom = get_data_from_the_graph('fantom-squid-protocol', tokensQuery, 'tokenStats')
+        # moonbeam = get_data_from_the_graph('moonbeam-squid-protocol', tokensQuery, 'tokenStats')
+        # celo = get_data_from_the_graph('celo-squid-protocol', tokensQuery, 'tokenStats')
+        # flipside = get_network_data()
 
-        # fantom = [d for d in fantom if d.get('target') != 'kava']
-        moonbeam = [d for d in moonbeam if d.get('target') != 'kava']
-        # celo = [d for d in celo if d.get('target') != 'kava']
+        # # fantom = [d for d in fantom if d.get('target') != 'kava']
+        # moonbeam = [d for d in moonbeam if d.get('target') != 'kava']
+        # # celo = [d for d in celo if d.get('target') != 'kava']
 
 
-        temp_links = fantom + moonbeam + celo + flipside
+        # temp_links = fantom + moonbeam + celo + flipside
         
-        required_keys = {'ethereum', 'avalanche', 'binance', 'arbitrum', 'polygon', 'celo', 'fantom', 'moonbeam'}
-        for d in temp_links:
-            if d['source'] not in required_keys or d['target'] not in required_keys:
-                pass
-            else:
-                links.append(d)
+        # required_keys = {'ethereum', 'avalanche', 'binance', 'arbitrum', 'polygon', 'celo', 'fantom', 'moonbeam'}
+        # for d in temp_links:
+        #     if d['source'] not in required_keys or d['target'] not in required_keys:
+        #         pass
+        #     else:
+        #         links.append(d)
 
-        labels_source = []
-        labels_target = []
-        labels_source_val = []
-        labels_target_val = []
-        labels = []
-        for item in links:
-            labels_source.append(item['source'])
-            labels_target.append(item['target'])
-            labels_source_val.append({item['source']: item['value']})
-            labels_target_val.append({item['target']: item['value']})
+        # labels_source = []
+        # labels_target = []
+        # labels_source_val = []
+        # labels_target_val = []
+        # labels = []
+        # for item in links:
+        #     labels_source.append(item['source'])
+        #     labels_target.append(item['target'])
+        #     labels_source_val.append({item['source']: item['value']})
+        #     labels_target_val.append({item['target']: item['value']})
         
-        labels = labels_source + labels_target
-        unique_labels = set(labels)
+        # labels = labels_source + labels_target
+        # unique_labels = set(labels)
         
-        for label in unique_labels:
-            nodes.append({
-                "id_short": label, 
-                "id": label,
-                "value_in": 0,
-                "value_out": 0,
-                "count_in": 0,
-                "count_out": 0,
-                "total": 0,
-                "net": 0
-            })
+        # for label in unique_labels:
+        #     nodes.append({
+        #         "id_short": label, 
+        #         "id": label,
+        #         "value_in": 0,
+        #         "value_out": 0,
+        #         "count_in": 0,
+        #         "count_out": 0,
+        #         "total": 0,
+        #         "net": 0
+        #     })
 
-        labels_source_count = dict(Counter(labels_source))
-        labels_target_count = dict(Counter(labels_target))
+        # labels_source_count = dict(Counter(labels_source))
+        # labels_target_count = dict(Counter(labels_target))
           
-        agg_source_val = aggregate_dictionary(labels_source_val)
-        agg_target_val = aggregate_dictionary(labels_target_val)
+        # agg_source_val = aggregate_dictionary(labels_source_val)
+        # agg_target_val = aggregate_dictionary(labels_target_val)
 
-        for i in range(len(nodes)):
-            if nodes[i]['id'] in labels_source_count:
-                nodes[i]['count_out'] = labels_source_count[nodes[i]['id']]
-                nodes[i]['value_out'] = agg_source_val[nodes[i]['id']]
-            if nodes[i]['id'] in labels_target_count:
-                nodes[i]['count_in'] = labels_target_count[nodes[i]['id']]
-                nodes[i]['value_in'] = agg_target_val[nodes[i]['id']]
+        # for i in range(len(nodes)):
+        #     if nodes[i]['id'] in labels_source_count:
+        #         nodes[i]['count_out'] = labels_source_count[nodes[i]['id']]
+        #         nodes[i]['value_out'] = agg_source_val[nodes[i]['id']]
+        #     if nodes[i]['id'] in labels_target_count:
+        #         nodes[i]['count_in'] = labels_target_count[nodes[i]['id']]
+        #         nodes[i]['value_in'] = agg_target_val[nodes[i]['id']]
             
-        for i in range(len(nodes)):
-            nodes[i]['total'] = nodes[i]['value_in'] + nodes[i]['value_out']
-            nodes[i]['net'] = nodes[i]['value_in'] - nodes[i]['value_out']
+        # for i in range(len(nodes)):
+        #     nodes[i]['total'] = nodes[i]['value_in'] + nodes[i]['value_out']
+        #     nodes[i]['net'] = nodes[i]['value_in'] - nodes[i]['value_out']
         
-        data_of_source_chain = get_data_of_source_chain()
-        data_of_destination_chain = get_data_of_destination_chain()
+        # data_of_source_chain = get_data_of_source_chain()
+        # data_of_destination_chain = get_data_of_destination_chain()
 
-        context_overview = {
-            'links': links,
-            'nodes': sorted(nodes, key=lambda x: x['net'], reverse=True),
-            'data_of_source_chain': data_of_source_chain,
-            'data_of_destination_chain': data_of_destination_chain,
-        }
+        # context_overview = {
+        #     'links': links,
+        #     'nodes': sorted(nodes, key=lambda x: x['net'], reverse=True),
+        #     'data_of_source_chain': data_of_source_chain,
+        #     'data_of_destination_chain': data_of_destination_chain,
+        # }
 
-        with open('context_overview.json', 'r') as outfile:
-            json_data = json.load(outfile)
+        # with open('context_overview.json', 'r') as outfile:
+        #     json_data = json.load(outfile)
 
-        json_data.update(context_overview)    
+        # json_data.update(context_overview)    
         
-        with open('context_overview.json', "w") as f:
-            json.dump(json_data, f)
+        # with open('context_overview.json', "w") as f:
+        #     json.dump(json_data, f)
 
         #  LEADERBORD
         context_leaderboard = {}
