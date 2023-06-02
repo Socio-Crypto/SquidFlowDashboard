@@ -735,7 +735,7 @@ class SearchUserAddressView(View):
 
         context_overview = {
             'links': links,
-            'nodes': sorted(nodes, key=lambda x: x['net'], reverse=True),
+            'nodes': sorted(nodes, key=lambda x: x['total'], reverse=True),
             'data_of_source_chain': data_of_source_chain,
             'data_of_destination_chain': data_of_destination_chain,
             'user_address': user_address

@@ -105,8 +105,8 @@
                       <th scope="col">Network</th>
                       <th scope="col">Inflow</th>
                       <th scope="col">Outflow</th>
-                      <th scope="col">Total</th>
-                      <th scope="col" style="font-weight: bold;">Net <img src="{% static 'images/icons/usdc.png' %}"
+                      <th scope="col" style="font-weight: bold; color: white;">Total</th>
+                      <th scope="col">Net <img src="{% static 'images/icons/usdc.png' %}"
                           alt="usdc" style="width: 15px;"></th>
                     </tr>
                   </thead>
@@ -127,8 +127,8 @@
                       </th>
                       <td>{{ node.value_in|floatformat:0 }}</td>
                       <td>{{ node.value_out|floatformat:0 }}</td>
-                      <td>{{ node.total|floatformat:0 }}</td>
-                      <td style="font-weight: bold;">{{ node.net|floatformat:0 }}</td>
+                      <td style="font-weight: bold;">{{ node.total|floatformat:0 }}</td>
+                      <td>{{ node.net|floatformat:0 }}</td>
                     </tr>
                     {% endfor %}
                   </tbody>
