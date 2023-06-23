@@ -46,6 +46,7 @@ def get_data_from_the_graph(name, tokensQuery, stats, user_status):
             data = response.json()['data']
 
             for item in data[stats]:
+                if item['symbol'] == 'axlUSD':
                     data_dic.append({
                         'source': item['sourceChain'].lower(),
                         'target': item['destinationChain'].lower(),
@@ -59,6 +60,7 @@ def get_data_from_the_graph(name, tokensQuery, stats, user_status):
             data = response.json()['data']
 
             for item in data[stats]:
+                if item['symbol'] == 'axlUSD':
                     data_dic.append({
                         'source': item['sourceChain'].lower(),
                         'target': item['destinationChain'].lower(),
@@ -161,6 +163,7 @@ def get_data_addressstats(name, tokensQuery, chain):
     data = response.json()['data']
 
     for item in data['addressStats']:
+        if item['symbol'] == 'axlUSD':
             data_dic.append({
                 'user': item['user_address'],
                 # chain: item[chain],
@@ -267,6 +270,7 @@ def get_data_of_source_chain():
     moonbeam = group_by_chain(get_data_from_tokenstatbydates('moonbeam-squid-protocol', tokensQuery, 'sourceChain'), 'sourceChain')
     celo = group_by_chain(get_data_from_tokenstatbydates('celo-squid-protocol', tokensQuery, 'sourceChain'), 'sourceChain')
     flipside = get_source_chain_based_on_date()
+    
     data = []
     data = fantom + moonbeam + celo + flipside
 
@@ -356,6 +360,7 @@ def get_users_data():
     tokensQuery = """
         query {
             addressStats {
+                symbol
                 user_address
                 volume
                 sourceChain
@@ -367,7 +372,7 @@ def get_users_data():
     moonbeam = group_by_user(get_data_addressstats('moonbeam-squid-protocol', tokensQuery, 'sourceChain'), 'moonbeam')
     celo = group_by_user(get_data_addressstats('celo-squid-protocol', tokensQuery, 'sourceChain'),'celo')
     flipside = get_leader_board()
-
+   
     data = []
     data = fantom + moonbeam + celo + flipside
 
@@ -416,6 +421,7 @@ def leader_board_destination():
     tokensQuery = """
         query {
             addressStats {
+                symbol
                 user_address
                 volume
                 destinationChain
@@ -682,6 +688,8 @@ class SaveDataInJsonView(View):
             json.dump(json_data, f)
 
         #  LEADERBORD
+
+
         context_leaderboard = {}
         leaderboard = get_users_data()
         leaderboard_destination_chain = leader_board_destination()
