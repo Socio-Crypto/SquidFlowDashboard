@@ -39,7 +39,7 @@ The primary objective of this dashboard is to furnish a comprehensive and insigh
 
             </p><p>Empowered by Squid's robust API and versatile SDK, developers gain the capability to seamlessly orchestrate token swaps across diverse blockchain environments. This functionality extends to enabling the linkage of multiple swaps and on-chain function calls across an extensive array of integrated chains.
               This innovative capacity empowers users to instantaneously traverse novel ecosystems, thereby unlocking the untapped potential harbored within different chains.</p>
-<p>Squid currently supports bridging across an impressive spectrum of 13 chains: Ethereum, Arbitrum, Optimism, Polygon, Avalanche, Binance, Fantom, Moonbeam, Celo, Base, Linea, Filecoin, and Kava.
+<p><a href="https://app.squidrouter.com/" target="_blank">Squid</a> currently supports bridging across an impressive spectrum of 13 chains: Ethereum, Arbitrum, Optimism, Polygon, Avalanche, Binance, Fantom, Moonbeam, Celo, Base, Linea, Filecoin, and Kava.
    By deploying a network of decentralized exchanges (DEXes), Squid seamlessly facilitates cross-chain swaps, fostering interoperability and fluid asset movement between the aforementioned chains and various others.
 
 </p><p>The analytics section of this dashboard serves as an insightful visualization tool, elucidating the intricate flow of assets through Squid's interchain mechanism. The network topology depicted therein provides a lucid illustration of how Squid effectively interconnects distinct chains, akin to nodes within a network. Users can further delve into a wealth of analysis specific to individual wallet addresses by utilizing the search function situated above.
@@ -59,12 +59,13 @@ The primary objective of this dashboard is to furnish a comprehensive and insigh
               While interoperability offers novel opportunities, it also introduces fresh challenges. Within the realm of blockchain analytics, achieving interoperability necessitates tapping into diverse data sources.
               Recognizing the inherent limitations of data-sharing platforms, especially concerning interchain protocol analytics, a multi-faceted approach becomes essential. The comprehensive analysis of interchain protocols demands the integration of data from multiple sources, encompassing all relevant chains.
             </p><p>
-Our dashboard addresses these complexities by amalgamating the Graph data and Flipside data, enabling a comprehensive visualization of asset flows through Squid across a multitude of chains.
+Our dashboard addresses these complexities by amalgamating <a href="https://thegraph.com/" target="_blank">the Graph</a> data and <a href="https://flipsidecrypto.xyz/" target="_blank">Flipside</a> data, enabling a comprehensive visualization of asset flows through Squid across a multitude of chains.
               Squid, currently, supports asset origins across 13 distinct chains. In this iteration of the Squid Flow Visualizer, we leverage Flipside's data for 7 chains, while the Graph SDK augments our analysis with data from 3 additional chains.
 
             </p><p>To harness Flipside's capabilities, we have seamlessly integrated SQL queries into our codebase, which can be readily accessed on our GitHub repository. These queries empower the extraction of valuable insights from Flipside's SDK. Correspondingly, the SQL code is available via the following link (link).
 
-</p><p>Furthermore, our methodology encompasses the utilization of three subgraphs for analyzing data from Fantom, Celo, and Moonbeam chains. These subgraphs, collaboratively developed with @Kida, bolster the accuracy and depth of our analysis.
+</p><p>Furthermore, our methodology encompasses the utilization of three subgraphs for analyzing data from <a href="https://thegraph.com/hosted-service/subgraph/kidacrypto/fantom-squid-protocol" target="_blank">Fantom</a>, <a href="https://thegraph.com/hosted-service/subgraph/kidacrypto/celo-squid-protocol" target="_blank">Celo</a>, 
+  and <a href="https://thegraph.com/hosted-service/subgraph/kidacrypto/moonbeam-squid-protocol" target="_blank">Moonbeam</a> chains. These subgraphs, collaboratively developed with KIDACRYPTO, bolster the accuracy and depth of our analysis.
 
           </p><p>The integration of data from Flipside SDK and Graph SDK underpins our analytical framework. By merging these datasets, we synergistically harness their capabilities, enriching the depth and precision of our analyses.</p>
           </div>
@@ -76,8 +77,13 @@ Our dashboard addresses these complexities by amalgamating the Graph data and Fl
         <div class="card">
 
           <div class="body">
-            <h4><strong>Overview</strong></h4>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nulla neque pariatur officiis iure molestias ab reiciendis voluptatem ullam excepturi exercitationem, natus voluptate rerum, nisi voluptas ipsam eos possimus, vitae consequatur.</p>
+            <h4><strong>Roadmap</strong></h4>
+            <p>The current iteration of the Squid Flow Visualizer encompasses the visualization of 8 out of the 13 chains that Squid supports. In the near future, we anticipate the inclusion of data for the remaining chains, namely Base and Optimism, pending the integration of data from Flipside into our tables. 
+              Looking ahead, our strategic vision involves augmenting the analytical capacity of the platform by incorporating Bitquery data, thereby expanding the scope to encompass Filecoin. For two other chains, we intend to integrate data from alternative sources, broadening our data stream.
+
+            </p><p>As we embark on the next phase of development, we are excited to introduce a dedicated tab exclusively focused on delivering a comprehensive analysis of Squid users and their activities. This forthcoming enhancement promises to provide valuable insights into user behavior and engagement within the Squid ecosystem. We are diligently working to bring this enhanced version to fruition, with an anticipated release in just two weeks.
+
+</p><p>Our commitment to continuous improvement remains unwavering, and these developments mark the beginning of an exciting journey towards a more enriched and insightful Squid Flow Visualizer. Stay tuned for these exciting updates as we strive to enhance the functionality and value of our platform.</p>
           </div>
         </div>
       </div>
