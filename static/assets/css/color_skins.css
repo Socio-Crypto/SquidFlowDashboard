@@ -36,9 +36,9 @@
 	background: black
 } */
 
-.theme-purple .sidebar.h_menu .menu li a:hover:before {
+/* .theme-purple .sidebar.h_menu .menu li a:hover:before {
 	background: black
-}
+} */
 
 .theme-purple .checkbox input[type="checkbox"]:checked+label::after {
 	border-color: #e6fa36;
@@ -90,3 +90,7 @@
 .theme-purple.theme-dark .input-group-focus .input-group-addon {
 	border-color: #e6fa36
 }
+/* 
+.theme-purple a {
+		color: #c29be7;
+} */

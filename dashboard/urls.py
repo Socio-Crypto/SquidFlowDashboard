@@ -7,5 +7,5 @@ urlpatterns = [
     path('leaderboard/', LeaderboardView.as_view(), name='leaderboard'),
     path('updatejson/', SaveDataInJsonView.as_view(), name='updatejson'),
     path('search/user-address', SearchUserAddressView.as_view(), name='search'),
-    path('Documentation', DocumentationView.as_view(), name='Documentation'),
+    path('Documentation', DocumentationView.as_view(), name='documentation'),
 ]
