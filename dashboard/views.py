@@ -936,10 +936,8 @@ class SearchUserAddressView(View):
         return render(request, 'dashboard.html', context=result)
 
 
-
 class DocumentView(View):
 
     def get(self, request):
 
         return render(request, 'document.html')
-
