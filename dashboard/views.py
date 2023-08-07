@@ -936,8 +936,8 @@ class SearchUserAddressView(View):
         return render(request, 'dashboard.html', context=result)
 
 
-class DocumentView(View):
+class DocumentationView(View):
 
     def get(self, request):
 
-        return render(request, 'document.html')
+        return render(request, 'documentation.html')

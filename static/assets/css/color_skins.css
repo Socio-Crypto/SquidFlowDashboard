@@ -32,9 +32,9 @@
 	color: black
 }
 
-.theme-purple .sidebar.h_menu .menu li.active.open>a:before {
+/* .theme-purple .sidebar.h_menu .menu li.active.open>a:before {
 	background: black
-}
+} */
 
 .theme-purple .sidebar.h_menu .menu li a:hover:before {
 	background: black
