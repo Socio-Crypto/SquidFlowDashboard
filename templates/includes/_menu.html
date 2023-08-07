@@ -15,7 +15,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" style="margin-bottom: 4px;">
                                     <path fill="currentColor"
                                         d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" />
-                                </svg>{% trans "Overview" %}
+                                </svg>{% trans "Home" %}
                             </a>
                         </li>
                         <li class="{% if 'leaderboard' == current_path %}active open{% endif %}">
@@ -24,6 +24,17 @@
                                     <path fill="currentColor"
                                         d="M6.5 21H3c-.55 0-1-.45-1-1V10c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1v10c0 .55-.45 1-1 1zm7.25-18h-3.5c-.55 0-1 .45-1 1v16c0 .55.45 1 1 1h3.5c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zM21 11h-3.5c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1H21c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1z" />
                                 </svg>{% trans "Leaderboard" %}
+                            </a>
+                        </li>
+                       
+                        <li class="{% if 'document' == current_path %}active open{% endif %}">
+                            <a href="{% url 'document' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                    <path fill="currentColor" fill-rule="evenodd"
+                                        d="M19 21H5c-1.126 0-1.926-.491-2.412-1.166A3.233 3.233 0 0 1 2 18V6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v5h3a1 1 0 0 1 1 1v6c0 .493-.14 1.211-.588 1.834C20.925 20.51 20.125 21 19 21zm1-7a1 1 0 1 0-2 0v4a1 1 0 1 0 2 0v-4z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                {% trans "Document" %}
                             </a>
                         </li>
                        

@@ -59,6 +59,14 @@
 	color: #e6fa36
 }
 
+.theme-purple .card .body h4 strong {
+	color: white
+}
+
+.theme-purple .card .body p {
+	color: white
+}
+
 .theme-purple .card .header .dropdown-menu li a:hover {
 	background-color: #e6fa36;
 	color: #fff

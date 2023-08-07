@@ -1,0 +1,72 @@
+{% extends "base-dashboard.html" %}
+{% load i18n %}
+{% load utility_tags %}
+{% block secondary_menu %}
+{% endblock secondary_menu %}
+{% load static %}
+
+{% block title %}
+<!-- {% trans 'Accounts' %} -->
+{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">
+  <a href=""><i class="icon-home"></i>
+  </a>
+</li>
+<li class="breadcrumb-item active">{% trans 'Document' %}</li>
+{% endblock %}
+
+
+{% block content %}
+<section class="container assess-list">
+  <div class="container-fluid project-list">
+    <div class="row clearfix">
+      <div class="col-xl-12 col-lg-12 col-md-12">
+        <div class="card"></div>
+      </div>
+    </div>
+    <div class="row clearfix">
+      <div class="col-xl-12 col-lg-12 col-md-12">
+        <div class="card">
+
+          <div class="body">
+            <h4><strong>Overview</strong></h4>
+            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nulla neque pariatur officiis iure molestias ab reiciendis voluptatem ullam excepturi exercitationem, natus voluptate rerum, nisi voluptas ipsam eos possimus, vitae consequatur.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row clearfix">
+      <div class="col-xl-12 col-lg-12 col-md-12">
+        <div class="card">
+
+          <div class="body">
+            <h4><strong>Overview</strong></h4>
+            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nulla neque pariatur officiis iure molestias ab reiciendis voluptatem ullam excepturi exercitationem, natus voluptate rerum, nisi voluptas ipsam eos possimus, vitae consequatur.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row clearfix">
+      <div class="col-xl-12 col-lg-12 col-md-12">
+        <div class="card">
+
+          <div class="body">
+            <h4><strong>Overview</strong></h4>
+            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nulla neque pariatur officiis iure molestias ab reiciendis voluptatem ullam excepturi exercitationem, natus voluptate rerum, nisi voluptas ipsam eos possimus, vitae consequatur.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+{% endblock %}
