@@ -46,7 +46,7 @@ def get_data_from_the_graph(name, tokensQuery, stats, user_status):
             data = response.json()['data']
 
             for item in data[stats]:
-                if item['symbol'] == 'axlUSD':
+                if item['symbol'] == 'axlUSDC':
                     data_dic.append({
                         'source': item['sourceChain'].lower(),
                         'target': item['destinationChain'].lower(),
@@ -60,7 +60,7 @@ def get_data_from_the_graph(name, tokensQuery, stats, user_status):
             data = response.json()['data']
 
             for item in data[stats]:
-                if item['symbol'] == 'axlUSD':
+                if item['symbol'] == 'axlUSDC':
                     data_dic.append({
                         'source': item['sourceChain'].lower(),
                         'target': item['destinationChain'].lower(),
@@ -163,7 +163,7 @@ def get_data_addressstats(name, tokensQuery, chain):
     data = response.json()['data']
 
     for item in data['addressStats']:
-        if item['symbol'] == 'axlUSD':
+        if item['symbol'] == 'axlUSDC':
             data_dic.append({
                 'user': item['user_address'],
                 # chain: item[chain],
@@ -438,13 +438,16 @@ def leader_board_destination():
     data = fantom + moonbeam + celo + flipside
 
     required_keys = {'user', 'total_volume', 'ethereum', 'avalanche', 'binance', 'arbitrum', 'polygon', 'celo', 'fantom', 'moonbeam'}
+    links = []
 
     for d in data:
         if set(d.keys()) - required_keys:
-            data.remove(d)
+            pass
+        else:
+            links.append(d)
 
     # Iterate over the list of dictionaries
-    for d in data:
+    for d in links:
         # Check if dictionary has all required keys
         if not required_keys.issubset(d.keys()):
             # Add missing keys with default value
@@ -453,7 +456,7 @@ def leader_board_destination():
 
     grouped_data = {}
 
-    for item in data:
+    for item in links:
         item.pop('__row_index', None)
 
         user = item['user']
@@ -707,117 +710,117 @@ class SaveDataInJsonView(View):
             json.dump(json_data, f)
 
 
-        # Overview based on user address
+        # # Overview based on user address
         
-        context_overview = {}
-        links = []
-        temp_links = []
-        nodes = []
+        # context_overview = {}
+        # links = []
+        # temp_links = []
+        # nodes = []
 
-        # fantom = []
-        # moonbeam = []
-        # celo = []
-        # flipside = []
-        tokensQuery = """
-            query {
-                addressStats{
-                    id
-                    user_address
-                    symbol
-                    sourceChain
-                    volume
-                    destinationChain
-                }
-            }
-            """
+        # # fantom = []
+        # # moonbeam = []
+        # # celo = []
+        # # flipside = []
+        # tokensQuery = """
+        #     query {
+        #         addressStats{
+        #             id
+        #             user_address
+        #             symbol
+        #             sourceChain
+        #             volume
+        #             destinationChain
+        #         }
+        #     }
+        #     """
     
-        fantom = get_data_from_the_graph('fantom-squid-protocol', tokensQuery, 'addressStats', True)
-        moonbeam = get_data_from_the_graph('moonbeam-squid-protocol', tokensQuery, 'addressStats', True)
-        celo = get_data_from_the_graph('celo-squid-protocol', tokensQuery, 'addressStats', True)
-        flipside = get_network_data_based_on_user()
+        # fantom = get_data_from_the_graph('fantom-squid-protocol', tokensQuery, 'addressStats', True)
+        # moonbeam = get_data_from_the_graph('moonbeam-squid-protocol', tokensQuery, 'addressStats', True)
+        # celo = get_data_from_the_graph('celo-squid-protocol', tokensQuery, 'addressStats', True)
+        # flipside = get_network_data_based_on_user()
 
-        # fantom = [d for d in fantom if d.get('target') != 'kava']
-        moonbeam = [d for d in moonbeam if d.get('target') != 'kava']
-        # celo = [d for d in celo if d.get('target') != 'kava']
+        # # fantom = [d for d in fantom if d.get('target') != 'kava']
+        # moonbeam = [d for d in moonbeam if d.get('target') != 'kava']
+        # # celo = [d for d in celo if d.get('target') != 'kava']
     
 
-        temp_links = fantom + moonbeam + celo + flipside
+        # temp_links = fantom + moonbeam + celo + flipside
         
                 
-        unique_addresses = set()  # Set to store unique user addresses
+        # unique_addresses = set()  # Set to store unique user addresses
 
-        for item in temp_links:
-            unique_addresses.add(item['user_address'])
+        # for item in temp_links:
+        #     unique_addresses.add(item['user_address'])
 
-        required_keys = {'ethereum', 'avalanche', 'binance', 'arbitrum', 'polygon', 'celo', 'fantom', 'moonbeam'}
-        for d in temp_links:
-            if d['source'] not in required_keys or d['target'] not in required_keys:
-                pass
-            else:
-                links.append(d)
+        # required_keys = {'ethereum', 'avalanche', 'binance', 'arbitrum', 'polygon', 'celo', 'fantom', 'moonbeam'}
+        # for d in temp_links:
+        #     if d['source'] not in required_keys or d['target'] not in required_keys:
+        #         pass
+        #     else:
+        #         links.append(d)
 
-        labels_source = []
-        labels_target = []
-        labels_source_val = []
-        labels_target_val = []
-        labels = []
-        for item in links:
-            labels_source.append(item['source'])
-            labels_target.append(item['target'])
-            labels_source_val.append({item['source']: item['value']})
-            labels_target_val.append({item['target']: item['value']})
+        # labels_source = []
+        # labels_target = []
+        # labels_source_val = []
+        # labels_target_val = []
+        # labels = []
+        # for item in links:
+        #     labels_source.append(item['source'])
+        #     labels_target.append(item['target'])
+        #     labels_source_val.append({item['source']: item['value']})
+        #     labels_target_val.append({item['target']: item['value']})
         
-        labels = labels_source + labels_target
-        unique_labels = set(labels)
-        for unq_address in unique_addresses:
-            for label in unique_labels:
-                nodes.append({
-                    "user_address": unq_address,
-                    "id_short": label, 
-                    "id": label,
-                    "value_in": 0,
-                    "value_out": 0,
-                    "count_in": 0,
-                    "count_out": 0,
-                    "total": 0,
-                    "net": 0
-                })
+        # labels = labels_source + labels_target
+        # unique_labels = set(labels)
+        # for unq_address in unique_addresses:
+        #     for label in unique_labels:
+        #         nodes.append({
+        #             "user_address": unq_address,
+        #             "id_short": label, 
+        #             "id": label,
+        #             "value_in": 0,
+        #             "value_out": 0,
+        #             "count_in": 0,
+        #             "count_out": 0,
+        #             "total": 0,
+        #             "net": 0
+        #         })
 
-        # Add key to our dictionary based on user and chain
-        nodes_1 = {}
-        for entry in nodes:
-            key = entry['user_address'] + '_' + entry['id_short']
-            nodes_1[key] = entry
+        # # Add key to our dictionary based on user and chain
+        # nodes_1 = {}
+        # for entry in nodes:
+        #     key = entry['user_address'] + '_' + entry['id_short']
+        #     nodes_1[key] = entry
 
-        for item in links:
-            try:
-                nodes_1[item['user_address'] + '_' + item['source']]['value_in'] = item['value'] 
-                nodes_1[item['user_address'] + '_' + item['source']]['count_in'] += 1  
+        # for item in links:
+        #     try:
+        #         nodes_1[item['user_address'] + '_' + item['source']]['value_in'] = item['value'] 
+        #         nodes_1[item['user_address'] + '_' + item['source']]['count_in'] += 1  
                 
-                nodes_1[item['user_address'] + '_' + item['target']]['value_out'] = item['value'] 
-                nodes_1[item['user_address'] + '_' + item['target']]['count_out'] += 1  
-            except:
-                print(item)
-        nodes_1 = [value for value in nodes_1.values()] # Delete key
+        #         nodes_1[item['user_address'] + '_' + item['target']]['value_out'] = item['value'] 
+        #         nodes_1[item['user_address'] + '_' + item['target']]['count_out'] += 1  
+        #     except:
+        #         print(item)
+        # nodes_1 = [value for value in nodes_1.values()] # Delete key
 
-        for i in range(len(nodes_1)):
-            value_in = 0 if nodes_1[i]['value_in'] is None else nodes_1[i]['value_in']
-            value_out = 0 if nodes_1[i]['value_out'] is None else nodes_1[i]['value_out']
-            nodes_1[i]['total'] = value_in + value_out
-            nodes_1[i]['net'] = value_in - value_out
+        # for i in range(len(nodes_1)):
+        #     value_in = 0 if nodes_1[i]['value_in'] is None else nodes_1[i]['value_in']
+        #     value_out = 0 if nodes_1[i]['value_out'] is None else nodes_1[i]['value_out']
+        #     nodes_1[i]['total'] = value_in + value_out
+        #     nodes_1[i]['net'] = value_in - value_out
 
-        data_of_source_chain = get_data_of_source_chain_based_on_user()
-        data_of_destination_chain = get_data_of_destination_chain_based_on_user()
+        # data_of_source_chain = get_data_of_source_chain_based_on_user()
+        # data_of_destination_chain = get_data_of_destination_chain_based_on_user()
 
-        context_overview_user = {
-            'links': links,
-            'nodes': sorted(nodes_1, key=lambda x: x['total'], reverse=True),
-            'data_of_source_chain': data_of_source_chain,
-            'data_of_destination_chain': data_of_destination_chain,
-        }
+        # context_overview_user = {
+        #     'links': links,
+        #     'nodes': sorted(nodes_1, key=lambda x: x['total'], reverse=True),
+        #     'data_of_source_chain': data_of_source_chain,
+        #     'data_of_destination_chain': data_of_destination_chain,
+        # }
         
-        with open('context_overview_based_on_user.json', "w") as f:
-            json.dump(context_overview_user, f)
+        # with open('context_overview_based_on_user.json', "w") as f:
+        #     json.dump(context_overview_user, f)
 
 
         return HttpResponse('The JSON files have been updated with new data!')
